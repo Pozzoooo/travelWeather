@@ -1,0 +1,7 @@
+<resources>
+    <string name="appName">TravelWeather</string>
+    <string name="titleActivityMaps">Map</string>
+
+    <string name="startPosition">Início</string>
+    <string name="finishPosition">Final</string>
+</resources>
