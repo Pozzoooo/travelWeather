@@ -5,6 +5,9 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +21,9 @@ import java.util.ArrayList;
 
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.LocationBusiness;
+import pozzo.apps.travelweather.network.ApiFactory;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Atividade para exibir o mapa.
@@ -26,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationBusiness locationBusiness;
 
     private GoogleMap mMap;
+    private EditText ePlace;
     private LatLng startPosition;
     private LatLng finishPosition;
 
@@ -37,6 +44,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        ePlace = (EditText) findViewById(R.id.ePlace);
+        ePlace.setOnEditorActionListener(onPlace);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -148,4 +157,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setFinish(latLng);
         }
     };
+
+    private TextView.OnEditorActionListener onPlace = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			queryWeather(v.getText().toString());
+			return true;
+        }
+    };
+
+	private void queryWeather(final String location) {
+		new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				String query = "select * from weather.forecast where woeid in " +
+						"(select woeid from geo.places(1) where text=\"" + location + "\")";
+				Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
+				System.out.println(new String(((TypedByteArray) response.getBody()).getBytes()));
+				return null;
+			}
+		}.execute();
+	}
 }

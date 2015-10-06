@@ -11,4 +11,10 @@
         android:id="@+id/map"
         android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
         tools:context=".MapsActivity" />
+
+    <EditText
+        android:id="@+id/ePlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
 </RelativeLayout>
