@@ -5,9 +5,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,7 +29,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ForecastBusiness forecastBusiness;
 
     private GoogleMap mMap;
-    private EditText ePlace;
     private LatLng startPosition;
     private LatLng finishPosition;
 
@@ -45,8 +41,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        ePlace = (EditText) findViewById(R.id.ePlace);
-        ePlace.setOnEditorActionListener(onPlace);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -77,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setStartPosition(LatLng startPosition) {
         this.startPosition = startPosition;
         if(startPosition != null) {
-            addMark(startPosition, R.string.startPosition);
+            queryWeather(startPosition);
             pointMapTo(startPosition);
         }
     }
@@ -93,8 +87,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Adiciona marcacao no mapa.
      */
-    private void addMark(LatLng latLng, int text) {
-        mMap.addMarker(new MarkerOptions().position(latLng).title(getString(text)));
+    private void addMark(LatLng latLng, String text) {
+        mMap.addMarker(new MarkerOptions().position(latLng).title(text));
     }
 
     /**
@@ -103,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setFinish(LatLng finishPosition) {
         this.finishPosition = finishPosition;
         if(finishPosition != null) {
-            addMark(finishPosition, R.string.finishPosition);
+            queryWeather(finishPosition);
             pointMapTo(finishPosition);
             updateTrack(mMap);
         }
@@ -156,15 +150,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clear();
             setStartPosition(startPosition);
             setFinish(latLng);
-            queryWeather(latLng);
-        }
-    };
-
-    private TextView.OnEditorActionListener onPlace = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//			queryWeather(v.getText().toString());
-			return true;
         }
     };
 
@@ -177,7 +162,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(Forecast s) {
-                System.out.println("Previsao para: " + location + " de: " + s.getText());
+                addMark(location, s.getText());
             }
         }.execute();
 	}

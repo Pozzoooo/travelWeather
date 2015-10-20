@@ -15,6 +15,8 @@ import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
 /**
+ * Forecast business logic.
+ *
  * Created by sarge on 10/19/15.
  */
 public class ForecastBusiness {
