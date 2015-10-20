@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.LocationBusiness;
+import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.network.ApiFactory;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
@@ -155,8 +156,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clear();
             setStartPosition(startPosition);
             setFinish(latLng);
+            previewFor(latLng);
         }
     };
+
+    /**
+     * Previsao para um dado ponto geografico.
+     */
+    private void previewFor(LatLng position) {
+        String address = new GeoCoderHelper(this).getAddress(position);
+        queryWeather(address);
+    }
 
     private TextView.OnEditorActionListener onPlace = new TextView.OnEditorActionListener() {
         @Override
@@ -167,15 +177,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
 	private void queryWeather(final String location) {
-		new AsyncTask<Void, Void, Void>() {
+		new AsyncTask<Void, Void, String>() {
 			@Override
-			protected Void doInBackground(Void... params) {
+			protected String doInBackground(Void... params) {
 				String query = "select * from weather.forecast where woeid in " +
 						"(select woeid from geo.places(1) where text=\"" + location + "\")";
 				Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
-				System.out.println(new String(((TypedByteArray) response.getBody()).getBytes()));
-				return null;
+				return new String(((TypedByteArray) response.getBody()).getBytes());
 			}
-		}.execute();
+
+            @Override
+            protected void onPostExecute(String s) {
+                System.out.println("Previsao para: " + location + " de: " + s);
+            }
+        }.execute();
 	}
 }
