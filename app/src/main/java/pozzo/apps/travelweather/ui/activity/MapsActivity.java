@@ -20,17 +20,16 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 import pozzo.apps.travelweather.R;
+import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
-import pozzo.apps.travelweather.helper.GeoCoderHelper;
-import pozzo.apps.travelweather.network.ApiFactory;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+import pozzo.apps.travelweather.model.Forecast;
 
 /**
  * Atividade para exibir o mapa.
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private LocationBusiness locationBusiness;
+    private ForecastBusiness forecastBusiness;
 
     private GoogleMap mMap;
     private EditText ePlace;
@@ -39,6 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     {
         locationBusiness = new LocationBusiness();
+        forecastBusiness = new ForecastBusiness();
     }
 
     @Override
@@ -156,39 +156,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             clear();
             setStartPosition(startPosition);
             setFinish(latLng);
-            previewFor(latLng);
+            queryWeather(latLng);
         }
     };
-
-    /**
-     * Previsao para um dado ponto geografico.
-     */
-    private void previewFor(LatLng position) {
-        String address = new GeoCoderHelper(this).getAddress(position);
-        queryWeather(address);
-    }
 
     private TextView.OnEditorActionListener onPlace = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			queryWeather(v.getText().toString());
+//			queryWeather(v.getText().toString());
 			return true;
         }
     };
 
-	private void queryWeather(final String location) {
-		new AsyncTask<Void, Void, String>() {
+	private void queryWeather(final LatLng location) {
+		new AsyncTask<Void, Void, Forecast>() {
 			@Override
-			protected String doInBackground(Void... params) {
-				String query = "select * from weather.forecast where woeid in " +
-						"(select woeid from geo.places(1) where text=\"" + location + "\")";
-				Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
-				return new String(((TypedByteArray) response.getBody()).getBytes());
+			protected Forecast doInBackground(Void... params) {
+                return forecastBusiness.from(location, MapsActivity.this);
 			}
 
             @Override
-            protected void onPostExecute(String s) {
-                System.out.println("Previsao para: " + location + " de: " + s);
+            protected void onPostExecute(Forecast s) {
+                System.out.println("Previsao para: " + location + " de: " + s.getText());
             }
         }.execute();
 	}
