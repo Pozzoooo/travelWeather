@@ -124,8 +124,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         locationBusiness.getDirections(startPosition, finishPosition);
 
                 PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
+                //Start jah possui
+                LatLng lastForecast = directionPoint.get(0);
                 for(int i = 0 ; i < directionPoint.size() ; i++) {
-                    rectLine.add(directionPoint.get(i));
+                    LatLng latLng = directionPoint.get(i);
+                    rectLine.add(latLng);
+                    //Um mod para nao checar em todos os pontos, sao muitos
+                    if(i % 500 == 1 && isMinDistanceToForecast(latLng, lastForecast)) {
+                        queryWeather(latLng);
+                        lastForecast = latLng;
+                    }
                 }
                 return rectLine;
             }
@@ -139,6 +147,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 pointMapTo(mid);
             }
         }.execute();
+    }
+
+    /**
+     * @return true if distance is enough for a new forecast.
+     */
+    private boolean isMinDistanceToForecast(LatLng from, LatLng to) {
+        double distance = Math.abs(from.latitude - to.latitude)
+                + Math.abs(from.longitude - to.longitude);
+        return distance > 0.7;
     }
 
     /**
