@@ -39,10 +39,12 @@ public class ForecastBusiness {
         Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
         String result = new String(((TypedByteArray) response.getBody()).getBytes());
         JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
-        JsonArray forecastArray = jsonResult
+        JsonObject channel = jsonResult
                 .getAsJsonObject("query")
                 .getAsJsonObject("results")
-                .getAsJsonObject("channel")
+                .getAsJsonObject("channel");
+
+        JsonArray forecastArray = channel
                 .getAsJsonObject("item")
                 .getAsJsonArray("forecast");
         Forecast[] forecasts = new Gson().fromJson(forecastArray, Forecast[].class);
