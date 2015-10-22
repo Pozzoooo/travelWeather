@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -81,8 +83,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * O dado mapa sera apontado para a dada posicao.
      */
     private void pointMapTo(LatLng latLng) {
-        //TODO este zoom deve ser esperto o suficiente para pegar todos os pontos marcados.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f));
+    }
+
+    /**
+     * O dado mapa sera apontado para a dada posicao.
+     */
+    private void pointMapTo(LatLngBounds latLng) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLng, 10));
     }
 
     /**
@@ -100,7 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         this.finishPosition = finishPosition;
         if(finishPosition != null) {
             queryWeather(finishPosition);
-            pointMapTo(finishPosition);
+            pointMapTo(LatLngBounds.builder()
+                    .include(startPosition).include(finishPosition).build());
             updateTrack(mMap);
         }
     }
@@ -143,10 +152,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             protected void onPostExecute(PolylineOptions rectLine) {
                 googleMap.addPolyline(rectLine);
-                LatLng mid = new LatLng(
-                        (startPosition.latitude + finishPosition.latitude) / 2.0,
-                        (startPosition.longitude + finishPosition.longitude) / 2.0);
-                pointMapTo(mid);
             }
         }.execute();
     }
