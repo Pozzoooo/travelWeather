@@ -1,9 +1,6 @@
 package pozzo.apps.travelweather.network;
 
-import com.google.gson.GsonBuilder;
-
-import java.lang.reflect.Modifier;
-
+import pozzo.apps.travelweather.helper.GsonFactory;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -32,12 +29,9 @@ public class ApiFactory {
                     .setEndpoint("https://query.yahooapis.com")
                     .setRequestInterceptor(new SendInterceptor())
                     .setErrorHandler(new HandleError())
-                    .setConverter(new GsonConverter(new GsonBuilder()
-                            .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
-                            .serializeNulls()
-                            .create()))
-                    .build()
-                    .create(YahooWeather.class);
+                    .setConverter(new GsonConverter(GsonFactory.getGson()))
+                            .build()
+                            .create(YahooWeather.class);
         }
         return yahooWeather;
     }

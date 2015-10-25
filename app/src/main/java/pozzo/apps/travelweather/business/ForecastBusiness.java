@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import pozzo.apps.travelweather.helper.GeoCoderHelper;
+import pozzo.apps.travelweather.helper.GsonFactory;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
@@ -54,7 +55,8 @@ public class ForecastBusiness {
         JsonArray forecastArray = channel
                 .getAsJsonObject("item")
                 .getAsJsonArray("forecast");
-        Forecast[] forecasts = new Gson().fromJson(forecastArray, Forecast[].class);
+        Gson gson = GsonFactory.getGson();
+        Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
         if(forecasts == null || forecasts.length <= 0)
             return null;
 

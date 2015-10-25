@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -57,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         pointToCurrentLocation();
 
         mMap.setOnMapClickListener(onMapClick);
+        mMap.setOnInfoWindowClickListener(onInfoWindowClick);
     }
 
     /**
@@ -163,9 +166,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap.OnMapClickListener onMapClick = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
-            clear();
-            setStartPosition(startPosition);
-            setFinish(latLng);
+            if(startPosition == null) {
+                setStartPosition(latLng);
+            } else {
+                clear();
+                setStartPosition(startPosition);
+                setFinish(latLng);
+            }
+        }
+    };
+
+    /**
+     * Click on popup.
+     */
+    private GoogleMap.OnInfoWindowClickListener onInfoWindowClick =
+            new GoogleMap.OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            Toast.makeText(MapsActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
         }
     };
 
