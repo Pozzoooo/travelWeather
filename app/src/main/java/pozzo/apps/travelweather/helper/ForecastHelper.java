@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.helper;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Locale;
 
 import pozzo.apps.travelweather.R;
@@ -42,4 +44,12 @@ public class ForecastHelper {
         return icon;
     }
 
+    /**
+     * @return true if distance is enough for a new forecast.
+     */
+    public static boolean isMinDistanceToForecast(LatLng from, LatLng to) {
+        double distance = Math.abs(from.latitude - to.latitude)
+                + Math.abs(from.longitude - to.longitude);
+        return distance > 0.7;
+    }
 }

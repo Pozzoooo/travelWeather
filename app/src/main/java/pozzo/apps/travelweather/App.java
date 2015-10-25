@@ -5,9 +5,11 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Uma view para mostrar de forma mais bonita a previsao
+ *  Link para redirecionar o usuario para pagina da Yahoo com a previsao completa
  *  click longo para tirar selecao da posicao atual.
  *  Realizar a separacao eraly, late...
+ *  Eu consigo mostrar a rota mais rapidamente?
+ *  Corrigir a perca de rota na rotacao de tela.
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?
@@ -22,6 +24,7 @@ import com.activeandroid.app.Application;
  *  Outra fonte para busca de previsao do tempo
  *  Menu a cada quantos km realiar a previsao
  *  Alterar previsao principal de hoje, amanha, depois etc
+ *  Utilizar ExecutorService para requisicao de previsao
  *
  * Created by sarge on 10/19/15.
  */

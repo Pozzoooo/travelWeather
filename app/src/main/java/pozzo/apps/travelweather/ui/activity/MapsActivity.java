@@ -75,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setStartPosition(LatLng startPosition) {
         this.startPosition = startPosition;
         if(startPosition != null) {
-            queryWeather(startPosition);
+            queryAndShowWeatherFor(startPosition);
             pointMapTo(startPosition);
         }
     }
@@ -91,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * O dado mapa sera apontado para a dada posicao.
      */
     private void pointMapTo(LatLngBounds latLng) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLng, 10));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70));
     }
 
     /**
@@ -108,7 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void setFinish(LatLng finishPosition) {
         this.finishPosition = finishPosition;
         if(finishPosition != null) {
-            queryWeather(finishPosition);
+            queryAndShowWeatherFor(finishPosition);
             pointMapTo(LatLngBounds.builder()
                     .include(startPosition).include(finishPosition).build());
             updateTrack(mMap);
@@ -132,21 +132,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         new AsyncTask<Void, Void, PolylineOptions>() {
             @Override
             protected PolylineOptions doInBackground(Void... params) {
-                ArrayList<LatLng> directionPoint =
+                final ArrayList<LatLng> directionPoint =
                         locationBusiness.getDirections(startPosition, finishPosition);
 
                 PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
-                //Start jah possui
-                LatLng lastForecast = directionPoint.get(0);
                 for(int i = 0 ; i < directionPoint.size() ; i++) {
                     LatLng latLng = directionPoint.get(i);
                     rectLine.add(latLng);
-                    //Um mod para nao checar em todos os pontos, sao muitos
-                    if(i % 500 == 1 && isMinDistanceToForecast(latLng, lastForecast)) {
-                        queryWeather(latLng);
-                        lastForecast = latLng;
-                    }
                 }
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        weatherOverDirection(directionPoint);
+                    }
+                }.start();
                 return rectLine;
             }
 
@@ -155,15 +155,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 googleMap.addPolyline(rectLine);
             }
         }.execute();
-    }
-
-    /**
-     * @return true if distance is enough for a new forecast.
-     */
-    private boolean isMinDistanceToForecast(LatLng from, LatLng to) {
-        double distance = Math.abs(from.latitude - to.latitude)
-                + Math.abs(from.longitude - to.longitude);
-        return distance > 0.7;
     }
 
     /**
@@ -178,15 +169,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-	private void queryWeather(final LatLng location) {
+    /**
+     * Request forecast for all over the route.
+     */
+    private void weatherOverDirection(ArrayList<LatLng> directionPoint) {
+        //Start jah possui
+        LatLng lastForecast = directionPoint.get(0);
+        for(int i = 0 ; i < directionPoint.size() ; i++) {
+            LatLng latLng = directionPoint.get(i);
+            if(i % 500 == 1 //Um mod para nao checar em todos os pontos, sao muitos
+                    && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
+                queryAndShowWeatherFor(latLng);
+                lastForecast = latLng;
+            }
+        }
+    }
+
+    /**
+     * Query and shows weather for the given location.
+     */
+	private void queryAndShowWeatherFor(final LatLng location) {
 		new AsyncTask<Void, Void, Weather>() {
 			@Override
 			protected Weather doInBackground(Void... params) {
-                return forecastBusiness.from(location, MapsActivity.this);
+                if(!isFinishing())
+                    return forecastBusiness.from(location, MapsActivity.this);
+                return null;
 			}
 
             @Override
             protected void onPostExecute(Weather weather) {
+                if(weather == null)
+                    return;
+
                 Forecast firstForecast = weather.getForecasts()[0];
                 String message = firstForecast.getText();
                 addMark(location, message, ForecastHelper.forecastIcon(firstForecast));
