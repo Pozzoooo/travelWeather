@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,6 +23,7 @@ import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
 import pozzo.apps.travelweather.helper.ForecastHelper;
 import pozzo.apps.travelweather.model.Forecast;
+import pozzo.apps.travelweather.model.Weather;
 
 /**
  * Atividade para exibir o mapa.
@@ -179,15 +179,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
 	private void queryWeather(final LatLng location) {
-		new AsyncTask<Void, Void, Forecast>() {
+		new AsyncTask<Void, Void, Weather>() {
 			@Override
-			protected Forecast doInBackground(Void... params) {
+			protected Weather doInBackground(Void... params) {
                 return forecastBusiness.from(location, MapsActivity.this);
 			}
 
             @Override
-            protected void onPostExecute(Forecast s) {
-                addMark(location, s.getText(), ForecastHelper.forecastIcon(s));
+            protected void onPostExecute(Weather weather) {
+                Forecast firstForecast = weather.getForecasts()[0];
+                String message = firstForecast.getText();
+                addMark(location, message, ForecastHelper.forecastIcon(firstForecast));
             }
         }.execute();
 	}

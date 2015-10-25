@@ -5,8 +5,6 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Tenho que corrigir a forma da query, para nao retornar tudo
- *  Mais um objeto para guardar a localizacao, ai mostro com o nome da cidade
  *  Uma view para mostrar de forma mais bonita a previsao
  *  click longo para tirar selecao da posicao atual.
  *  Realizar a separacao eraly, late...

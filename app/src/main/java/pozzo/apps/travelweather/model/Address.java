@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 /**
+ * Represent a single point in map.
+ *
  * Created by soldier on 10/4/15.
  */
 @Table(name = "address", id = BaseColumns._ID)
@@ -20,10 +22,10 @@ public class Address extends BaseModel {
     private String address;
 
     @Column(name = Col.LATITUDE)
-    private long latitude;
+    private double latitude;
 
     @Column(name = Col.LONGITUDE)
-    private long longitude;
+    private double longitude;
 
     public String getAddress() {
         return address;
@@ -33,19 +35,19 @@ public class Address extends BaseModel {
         this.address = address;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }
