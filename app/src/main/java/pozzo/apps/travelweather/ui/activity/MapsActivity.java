@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
+import pozzo.apps.travelweather.helper.ForecastHelper;
 import pozzo.apps.travelweather.model.Forecast;
 
 /**
@@ -186,31 +187,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(Forecast s) {
-                addMark(location, s.getText(), forecastIcon(s));
+                addMark(location, s.getText(), ForecastHelper.forecastIcon(s));
             }
         }.execute();
 	}
-
-    private int forecastIcon(Forecast forecast) {
-        int icon;
-        String text = forecast.getText();
-        if(text.contains("Sun")) {
-            icon = R.drawable.sun;
-        } else if(text.contains("Thunderstorms")) {
-            icon = R.drawable.thunderstorm;
-        } else if(text.contains("Rain")) {
-            icon = R.drawable.heavy_rain;
-        } else if(text.contains("Showers")) {
-            icon = R.drawable.rain;
-        } else if(text.contains("Partly Cloudy")) {
-            icon = R.drawable.partly_cloudy;
-        } else if(text.contains("Cloudy")) {
-            icon = R.drawable.cloudy;
-        } else if(text.contains("Snow")) {
-            icon = R.drawable.snow;
-        } else {
-            icon = R.drawable.cloudy_moon;
-        }
-        return icon;
-    }
 }

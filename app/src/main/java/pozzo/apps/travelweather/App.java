@@ -9,6 +9,7 @@ import com.activeandroid.app.Application;
  *  Mais um objeto para guardar a localizacao, ai mostro com o nome da cidade
  *  Uma view para mostrar de forma mais bonita a previsao
  *  click longo para tirar selecao da posicao atual.
+ *  Realizar a separacao eraly, late...
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?
@@ -21,6 +22,8 @@ import com.activeandroid.app.Application;
  *  Agendar uma viagem
  *  Notificar quando o tempo mudar apos ter agendado uma viagem
  *  Outra fonte para busca de previsao do tempo
+ *  Menu a cada quantos km realiar a previsao
+ *  Alterar previsao principal de hoje, amanha, depois etc
  *
  * Created by sarge on 10/19/15.
  */

@@ -26,6 +26,7 @@ public class ForecastBusiness {
      */
     public Forecast from(LatLng location, Context context) {
         String address = new GeoCoderHelper(context).getAddress(location);
+        //TODO pode retornar null
         return from(address);
     }
 
@@ -33,9 +34,10 @@ public class ForecastBusiness {
      * Forecast from given location.
      */
     public Forecast from(String location) {
-        //TODO acredito que nao precismos de Select * =]
-        String query = "select * from weather.forecast where woeid in " +
-                "(select woeid from geo.places(1) where text=\"" + location + "\")";
+        //item = condition + forecast
+        //and u='c' - Serve para pegar temperatura em celsius
+        String query = "select item from weather.forecast where woeid in " +
+                "(select woeid from geo.places(1) where text=\"" + location + "\") and u='c'";
         Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
         String result = new String(((TypedByteArray) response.getBody()).getBytes());
         JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
