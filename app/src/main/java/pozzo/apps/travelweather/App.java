@@ -9,6 +9,7 @@ import com.activeandroid.app.Application;
  *  Eu consigo mostrar a rota mais rapidamente?
  *  Corrigir a perca de rota na rotacao de tela.
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
+ *  Guardar sessao, melhor nao perder neh =]
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

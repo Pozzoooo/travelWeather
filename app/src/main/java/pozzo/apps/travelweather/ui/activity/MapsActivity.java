@@ -94,14 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * O dado mapa sera apontado para a dada posicao.
      */
     private void pointMapTo(LatLng latLng) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
     }
 
     /**
      * O dado mapa sera apontado para a dada posicao.
      */
     private void pointMapTo(LatLngBounds latLng) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), 1200, null);
     }
 
     /**
