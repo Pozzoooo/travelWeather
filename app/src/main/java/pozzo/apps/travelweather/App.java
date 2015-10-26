@@ -5,11 +5,10 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Link para redirecionar o usuario para pagina da Yahoo com a previsao completa
- *  click longo para tirar selecao da posicao atual.
  *  Realizar a separacao eraly, late...
  *  Eu consigo mostrar a rota mais rapidamente?
  *  Corrigir a perca de rota na rotacao de tela.
+ *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

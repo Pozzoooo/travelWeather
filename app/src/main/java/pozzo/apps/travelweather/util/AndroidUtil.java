@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.Util;
+package pozzo.apps.travelweather.util;
 
 import android.content.Context;
 import android.content.Intent;

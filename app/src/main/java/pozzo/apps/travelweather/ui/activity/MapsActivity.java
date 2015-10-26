@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -21,13 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import pozzo.apps.travelweather.R;
-import pozzo.apps.travelweather.Util.AndroidUtil;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
 import pozzo.apps.travelweather.helper.ForecastHelper;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
+import pozzo.apps.travelweather.util.AndroidUtil;
 
 /**
  * Atividade para exibir o mapa.
@@ -61,7 +63,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         pointToCurrentLocation();
 
-        mMap.setOnMapClickListener(onMapClick);
+        mMap.setOnMapClickListener(placeMarkerClick);
+        mMap.setOnMapLongClickListener(clearMarkerLongClick);
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
         clear();
     }
@@ -139,6 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void clear() {
         mMap.clear();
         markerWeathers = new HashMap<>();
+        setStartPosition(null);
+        setFinish(null);
     }
 
     /**
@@ -179,16 +184,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Usuario quer nos indicar alguma coisa \o/.
      */
-    private GoogleMap.OnMapClickListener onMapClick = new GoogleMap.OnMapClickListener() {
+    private GoogleMap.OnMapClickListener placeMarkerClick = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
             if(startPosition == null) {
                 setStartPosition(latLng);
             } else {
-                clear();
+                LatLng startPosition = MapsActivity.this.startPosition;
+                clear();//Make sure there is no garbage around
                 setStartPosition(startPosition);
                 setFinish(latLng);
             }
+        }
+    };
+
+    /**
+     * Popup to clear all markers.
+     */
+    private GoogleMap.OnMapLongClickListener clearMarkerLongClick =
+            new GoogleMap.OnMapLongClickListener() {
+        @Override
+        public void onMapLongClick(LatLng latLng) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+            builder.setMessage(R.string.removeAllMarkers);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    clear();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.create().show();
         }
     };
 
