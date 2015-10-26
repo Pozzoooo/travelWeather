@@ -5,14 +5,14 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Realizar a separacao eraly, late...
- *  Eu consigo mostrar a rota mais rapidamente?
- *  Corrigir a perca de rota na rotacao de tela.
- *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Guardar sessao, melhor nao perder neh =]
+ *  Pq nao estou utilizando meu objeto Rota?
+ *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
+ *  Eu consigo mostrar a rota mais rapidamente?
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?
+ *  Realizar a separacao eraly, late...
  *  Adicionar busca por cidade ou endereco? Me parece que indo por navegacao tao melhor no nosso cenario...
  *  Qual a limitacao na busca de previsao do tempo com a Yahoo?
  *  Qual a limitacao na busca de rotas com a Google?

@@ -2,11 +2,14 @@ package pozzo.apps.travelweather.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,6 +62,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+
+		final View view = findViewById(R.id.vgMain);
+		ViewTreeObserver observer = view.getViewTreeObserver();
+		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				fitCurrentRouteOnScreen();
+				view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+			}
+		});
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         pointToCurrentLocation();
@@ -91,21 +109,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * O dado mapa sera apontado para a dada posicao.
+     * Map will be centered on given point.
      */
     private void pointMapTo(LatLng latLng) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
     }
 
     /**
-     * O dado mapa sera apontado para a dada posicao.
+     * Map will fit the given bounds.
      */
     private void pointMapTo(LatLngBounds latLng) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), 1200, null);
     }
 
     /**
-     * Adiciona marcacao no mapa.
+     * Add 1 marker to the map related to the given Weather object.
      */
     private void addMark(Weather weather) {
         if(weather == null)
@@ -124,20 +142,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Define um novo ponto final.
+     * Sets the new finish point, or clear it.
      */
     private void setFinish(LatLng finishPosition) {
         this.finishPosition = finishPosition;
         if(finishPosition != null) {
             queryAndShowWeatherFor(finishPosition);
-            pointMapTo(LatLngBounds.builder()
-                    .include(startPosition).include(finishPosition).build());
-            updateTrack(mMap);
+            fitCurrentRouteOnScreen();
+            updateRoute(mMap);
         }
     }
 
     /**
-     * Limpa tudo que estiver no mapa.
+     * Should try to fit entire route on screen.
+     */
+    private void fitCurrentRouteOnScreen() {
+		if(startPosition != null && finishPosition != null)
+			pointMapTo(LatLngBounds.builder()
+					.include(startPosition).include(finishPosition).build());
+    }
+
+    /**
+     * Clear anything drawn on map.
      */
     private void clear() {
         mMap.clear();
@@ -147,9 +173,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Atualiza tragetoria.
+     * Update route.
      */
-    private void updateTrack(final GoogleMap googleMap) {
+    private void updateRoute(final GoogleMap googleMap) {
         if(startPosition == null || finishPosition == null)
             return;
 
@@ -182,7 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Usuario quer nos indicar alguma coisa \o/.
+     * User seems to be willing to do something, let's help him!
      */
     private GoogleMap.OnMapClickListener placeMarkerClick = new GoogleMap.OnMapClickListener() {
         @Override
