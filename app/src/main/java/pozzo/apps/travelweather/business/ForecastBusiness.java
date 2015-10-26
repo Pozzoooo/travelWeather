@@ -51,10 +51,8 @@ public class ForecastBusiness {
                 .getAsJsonObject("query")
                 .getAsJsonObject("results")
                 .getAsJsonObject("channel");
-
-        JsonArray forecastArray = channel
-                .getAsJsonObject("item")
-                .getAsJsonArray("forecast");
+        JsonObject item = channel.getAsJsonObject("item");
+        JsonArray forecastArray = item.getAsJsonArray("forecast");
         Gson gson = GsonFactory.getGson();
         Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
         if(forecasts == null || forecasts.length <= 0)
@@ -63,6 +61,7 @@ public class ForecastBusiness {
         Weather weather = new Weather();
         weather.setAddress(address);
         weather.setForecasts(forecasts);
+        weather.setUrl(item.get("link").getAsString());
         return weather;
     }
 }

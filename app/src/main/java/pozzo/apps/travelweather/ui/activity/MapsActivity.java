@@ -5,7 +5,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,11 +18,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import pozzo.apps.travelweather.R;
+import pozzo.apps.travelweather.Util.AndroidUtil;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
 import pozzo.apps.travelweather.helper.ForecastHelper;
+import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
 
@@ -37,6 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LatLng startPosition;
     private LatLng finishPosition;
+    private HashMap<Marker, Weather> markerWeathers;
 
     {
         locationBusiness = new LocationBusiness();
@@ -60,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnMapClickListener(onMapClick);
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
+        clear();
     }
 
     /**
@@ -100,9 +104,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Adiciona marcacao no mapa.
      */
-    private void addMark(LatLng latLng, String text, int resource) {
-        mMap.addMarker(new MarkerOptions().position(latLng).title(text)
-                .icon(BitmapDescriptorFactory.fromResource(resource)));
+    private void addMark(Weather weather) {
+        if(weather == null)
+            return;
+
+        Forecast firstForecast = weather.getForecasts()[0];
+        String message = firstForecast.getText();
+        int icon = ForecastHelper.forecastIcon(firstForecast);
+        Address address = weather.getAddress();
+        LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
+
+        MarkerOptions markerOptions = new MarkerOptions().position(location).title(message)
+                .icon(BitmapDescriptorFactory.fromResource(icon));
+        Marker marker = mMap.addMarker(markerOptions);
+        markerWeathers.put(marker, weather);
     }
 
     /**
@@ -123,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private void clear() {
         mMap.clear();
+        markerWeathers = new HashMap<>();
     }
 
     /**
@@ -183,7 +199,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             new GoogleMap.OnInfoWindowClickListener() {
         @Override
         public void onInfoWindowClick(Marker marker) {
-            Toast.makeText(MapsActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+            Weather weather = markerWeathers.get(marker);
+            AndroidUtil.openUrl(weather.getUrl(), MapsActivity.this);
         }
     };
 
@@ -195,7 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng lastForecast = directionPoint.get(0);
         for(int i = 0 ; i < directionPoint.size() ; i++) {
             LatLng latLng = directionPoint.get(i);
-            if(i % 500 == 1 //Um mod para nao checar em todos os pontos, sao muitos
+            if(i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
                     && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
                 queryAndShowWeatherFor(latLng);
                 lastForecast = latLng;
@@ -217,12 +234,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(Weather weather) {
-                if(weather == null)
-                    return;
-
-                Forecast firstForecast = weather.getForecasts()[0];
-                String message = firstForecast.getText();
-                addMark(location, message, ForecastHelper.forecastIcon(firstForecast));
+                addMark(weather);
             }
         }.execute();
 	}

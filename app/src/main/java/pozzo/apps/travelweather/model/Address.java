@@ -50,4 +50,29 @@ public class Address extends BaseModel {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Address address1 = (Address) o;
+
+        if (Double.compare(address1.latitude, latitude) != 0) return false;
+        if (Double.compare(address1.longitude, longitude) != 0) return false;
+        return !(address != null ? !address.equals(address1.address) : address1.address != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = address != null ? address.hashCode() : 0;
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
