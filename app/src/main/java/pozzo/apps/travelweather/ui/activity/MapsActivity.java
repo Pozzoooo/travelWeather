@@ -55,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+		restoreInstanceState(savedInstanceState);
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -76,25 +77,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		});
     }
 
-    @Override
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putParcelable("startPosition", startPosition);
+		outState.putParcelable("finishPosition", finishPosition);
+
+		super.onSaveInstanceState(outState);
+	}
+
+	private void restoreInstanceState(Bundle savedInstanceState) {
+		if(savedInstanceState != null) {
+			startPosition = savedInstanceState.getParcelable("startPosition");
+			finishPosition = savedInstanceState.getParcelable("finishPosition");
+		}
+	}
+
+	@Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        pointToCurrentLocation();
 
         mMap.setOnMapClickListener(placeMarkerClick);
         mMap.setOnMapLongClickListener(clearMarkerLongClick);
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
-        clear();
-    }
 
-    /**
-     * Gera o ponto incial.
-     */
-    private void pointToCurrentLocation() {
-        Location location = locationBusiness.getCurrentLocation(this);
-        if(location != null) {
-            setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-        }
+		LatLng startPosition = this.startPosition;
+		LatLng finishPosition = this.finishPosition;
+		clear();
+
+		if(startPosition == null) {
+			Location location = locationBusiness.getCurrentLocation(this);
+			startPosition = new LatLng(location.getLatitude(), location.getLongitude());
+		}
+
+		setStartPosition(startPosition);
+		setFinishPosition(finishPosition);
     }
 
     /**
@@ -144,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Sets the new finish point, or clear it.
      */
-    private void setFinish(LatLng finishPosition) {
+    private void setFinishPosition(LatLng finishPosition) {
         this.finishPosition = finishPosition;
         if(finishPosition != null) {
             queryAndShowWeatherFor(finishPosition);
@@ -169,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         markerWeathers = new HashMap<>();
         setStartPosition(null);
-        setFinish(null);
+        setFinishPosition(null);
     }
 
     /**
@@ -219,7 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng startPosition = MapsActivity.this.startPosition;
                 clear();//Make sure there is no garbage around
                 setStartPosition(startPosition);
-                setFinish(latLng);
+                setFinishPosition(latLng);
             }
         }
     };

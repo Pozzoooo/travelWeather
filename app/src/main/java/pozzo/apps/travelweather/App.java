@@ -5,8 +5,6 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Guardar sessao, melhor nao perder neh =]
- *  Pq nao estou utilizando meu objeto Rota?
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Eu consigo mostrar a rota mais rapidamente?
  *
@@ -20,6 +18,7 @@ import com.activeandroid.app.Application;
  *  2x
  *  Persistir dados
  *  Agendar uma viagem
+ *  Exibir ultima rota que estava sendo visualizada atraves do banco
  *  Notificar quando o tempo mudar apos ter agendado uma viagem
  *  Outra fonte para busca de previsao do tempo
  *  Menu a cada quantos km realiar a previsao
