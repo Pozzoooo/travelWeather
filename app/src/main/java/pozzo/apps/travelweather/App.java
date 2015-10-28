@@ -5,8 +5,13 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
+ *  Botao flutuante de busca
+ *  Menu lateral grudado no canto
+ *  Tratamento yahoo null com reenvio de cidade
+ *  Um spinner até a exibição da rota
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Eu consigo mostrar a rota mais rapidamente?
+ *  Adicionar Mint.
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

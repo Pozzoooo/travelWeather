@@ -28,6 +28,7 @@ import java.util.HashMap;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
+import pozzo.apps.travelweather.exception.AddressNotFoundException;
 import pozzo.apps.travelweather.helper.ForecastHelper;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
@@ -100,10 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(clearMarkerLongClick);
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
 
-		LatLng startPosition = this.startPosition;
-		LatLng finishPosition = this.finishPosition;
 		clear();
-
 		if(startPosition == null) {
 			Location location = locationBusiness.getCurrentLocation(this);
 			startPosition = new LatLng(location.getLatitude(), location.getLongitude());
@@ -184,8 +182,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void clear() {
         mMap.clear();
         markerWeathers = new HashMap<>();
-        setStartPosition(null);
-        setFinishPosition(null);
     }
 
     /**
@@ -200,6 +196,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             protected PolylineOptions doInBackground(Void... params) {
                 final ArrayList<LatLng> directionPoint =
                         locationBusiness.getDirections(startPosition, finishPosition);
+                if(directionPoint == null || directionPoint.isEmpty())
+                    return null;
 
                 PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
                 for(int i = 0 ; i < directionPoint.size() ; i++) {
@@ -218,7 +216,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(PolylineOptions rectLine) {
-                googleMap.addPolyline(rectLine);
+                if(rectLine != null)
+                    googleMap.addPolyline(rectLine);
             }
         }.execute();
     }
@@ -232,9 +231,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(startPosition == null) {
                 setStartPosition(latLng);
             } else {
-                LatLng startPosition = MapsActivity.this.startPosition;
-                clear();//Make sure there is no garbage around
-                setStartPosition(startPosition);
+                if(finishPosition != null) {
+                    LatLng startPosition = MapsActivity.this.startPosition;
+                    clear();//Make sure there is no garbage around
+                    setStartPosition(startPosition);
+                }
                 setFinishPosition(latLng);
             }
         }
@@ -253,6 +254,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     clear();
+                    setStartPosition(null);
+                    setFinishPosition(null);
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -281,6 +284,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Request forecast for all over the route.
      */
     private void weatherOverDirection(ArrayList<LatLng> directionPoint) {
+        if(directionPoint == null || directionPoint.isEmpty())
+            return;
+
         //Start jah possui
         LatLng lastForecast = directionPoint.get(0);
         for(int i = 0 ; i < directionPoint.size() ; i++) {
@@ -298,16 +304,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
 	private void queryAndShowWeatherFor(final LatLng location) {
 		new AsyncTask<Void, Void, Weather>() {
+            private Exception error;
+
 			@Override
 			protected Weather doInBackground(Void... params) {
                 if(!isFinishing())
-                    return forecastBusiness.from(location, MapsActivity.this);
+                    try {
+                        return forecastBusiness.from(location, MapsActivity.this);
+                    } catch (AddressNotFoundException e) {
+                        error = e;
+                    }
                 return null;
 			}
 
             @Override
             protected void onPostExecute(Weather weather) {
-                addMark(weather);
+                if(weather != null) {
+                    addMark(weather);
+                } else if(error instanceof AddressNotFoundException) {
+                    AndroidUtil.errorMessage(MapsActivity.this,
+                            getString(R.string.error_addressNotFound),
+                            R.string.warning, R.string.ok).create().show();
+                }
             }
         }.execute();
 	}

@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import pozzo.apps.travelweather.exception.AddressNotFoundException;
 import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.helper.GsonFactory;
 import pozzo.apps.travelweather.model.Address;
@@ -27,8 +28,14 @@ public class ForecastBusiness {
     /**
      * Forecast from given location.
      */
-    public Weather from(LatLng location, Context context) {
+    public Weather from(LatLng location, Context context) throws AddressNotFoundException {
+        if(location == null || context == null)
+            return null;
+
         String locationStr = new GeoCoderHelper(context).getAddress(location);
+        if(locationStr == null || locationStr.isEmpty())
+            throw new AddressNotFoundException();
+
         Address address = new Address();
         address.setAddress(locationStr);
         address.setLatitude(location.latitude);
