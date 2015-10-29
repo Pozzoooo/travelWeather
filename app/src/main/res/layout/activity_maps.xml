@@ -12,6 +12,28 @@
         android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
         tools:context=".MapsActivity" />
 
+    <LinearLayout
+        android:id="@+id/vgTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_bigger"
+        android:orientation="horizontal"
+        android:background="@drawable/screen_gradient"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <EditText
+            android:id="@+id/eSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_big"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="@dimen/margin_bigger"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:visibility="visible"/>
+    </LinearLayout>
+
     <ImageButton
         android:id="@+id/bSearch"
         android:layout_width="wrap_content"
@@ -19,20 +41,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/margin_big"
+        android:elevation="@dimen/elevation_floatingButton"
         android:contentDescription="@android:string/search_go"
         android:src="@android:drawable/ic_menu_search"
         android:onClick="onSearch"/>
-
-    <EditText
-        android:id="@+id/eSearch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/bSearch"
-        android:layout_alignTop="@id/bSearch"
-        android:layout_margin="@dimen/margin_big"
-        android:inputType="text"
-        android:imeOptions="actionDone"
-        android:visibility="gone"
-        tools:visibility="visible"/>
 </RelativeLayout>

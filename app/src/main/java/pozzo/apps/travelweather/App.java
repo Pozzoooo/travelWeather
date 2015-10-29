@@ -5,7 +5,6 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1xt
- *  Botao flutuante de busca
  *  Menu lateral grudado no canto
  *  Tratamento yahoo null com reenvio de cidade
  *  Um spinner até a exibição da rota
@@ -13,6 +12,7 @@ import com.activeandroid.app.Application;
  *  Eu consigo mostrar a rota mais rapidamente?
  *  Adicionar Mint.
  *  No menu, ter a previsão para hoje, amanhã ou depois
+ *  Distancia entre previsoes deve ser reltivo entre a distancia e inicio e fim.
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

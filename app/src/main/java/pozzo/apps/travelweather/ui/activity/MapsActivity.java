@@ -48,11 +48,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ForecastBusiness forecastBusiness;
 	private GeoCoderHelper geoCoderHelper;
 
-    private GoogleMap mMap;
     private LatLng startPosition;
     private LatLng finishPosition;
     private HashMap<Marker, Weather> markerWeathers;
+
+	private GoogleMap mMap;
 	private EditText eSearch;
+	private View vgTopBar;
 
     {
         locationBusiness = new LocationBusiness();
@@ -120,7 +122,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		setFinishPosition(finishPosition);
     }
 
-    /**
+	@Override
+	public void onBackPressed() {
+//		if(eSearch != null && eSearch.hasFocus())
+//			closeSearch();
+//		else
+			super.onBackPressed();
+	}
+
+	/**
      * @param startPosition Nova posicao inicial.
      */
     private void setStartPosition(LatLng startPosition) {
@@ -257,6 +267,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             new GoogleMap.OnMapLongClickListener() {
         @Override
         public void onMapLongClick(LatLng latLng) {
+			closeSearch();
             AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
             builder.setMessage(R.string.removeAllMarkers);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -343,13 +354,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Search button click event.
      */
     public void onSearch(View view) {
-        if(eSearch == null)
+        if(eSearch == null) {
 			eSearch = (EditText) findViewById(R.id.eSearch);
+			vgTopBar = findViewById(R.id.vgTopBar);
+		}
 
+		vgTopBar.setVisibility(View.VISIBLE);
+		vgTopBar.setAlpha(0.f);
+		vgTopBar.animate().alpha(1.f);
 		eSearch.setVisibility(View.VISIBLE);
 		eSearch.requestFocus();
 		eSearch.setOnEditorActionListener(onSearchGo);
     }
+
+	/**
+	 * Closes "search bar".
+	 */
+	private void closeSearch() {
+		vgTopBar.setVisibility(View.GONE);
+	}
 
 	/**
 	 * User wants to find his address.
