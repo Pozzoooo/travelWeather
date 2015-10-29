@@ -8,8 +8,11 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +25,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,6 +34,7 @@ import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
 import pozzo.apps.travelweather.exception.AddressNotFoundException;
 import pozzo.apps.travelweather.helper.ForecastHelper;
+import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
@@ -41,15 +46,18 @@ import pozzo.apps.travelweather.util.AndroidUtil;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private LocationBusiness locationBusiness;
     private ForecastBusiness forecastBusiness;
+	private GeoCoderHelper geoCoderHelper;
 
     private GoogleMap mMap;
     private LatLng startPosition;
     private LatLng finishPosition;
     private HashMap<Marker, Weather> markerWeathers;
+	private EditText eSearch;
 
     {
         locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
+		geoCoderHelper = new GeoCoderHelper(this);
     }
 
     @Override
@@ -104,7 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		clear();
 		if(startPosition == null) {
 			Location location = locationBusiness.getCurrentLocation(this);
-			startPosition = new LatLng(location.getLatitude(), location.getLongitude());
+			if(location != null)
+				startPosition = new LatLng(location.getLatitude(), location.getLongitude());
 		}
 
 		setStartPosition(startPosition);
@@ -329,4 +338,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }.execute();
 	}
+
+    /**
+     * Search button click event.
+     */
+    public void onSearch(View view) {
+        if(eSearch == null)
+			eSearch = (EditText) findViewById(R.id.eSearch);
+
+		eSearch.setVisibility(View.VISIBLE);
+		eSearch.requestFocus();
+		eSearch.setOnEditorActionListener(onSearchGo);
+    }
+
+	/**
+	 * User wants to find his address.
+	 */
+	private TextView.OnEditorActionListener onSearchGo = new TextView.OnEditorActionListener() {
+		@Override
+		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			String address = v.getText().toString();
+			if(!(event.getAction() == KeyEvent.ACTION_DOWN) || address.isEmpty())
+				return false;
+
+			try {
+				LatLng location = geoCoderHelper.getPositionFromFirst(address);
+				placeMarkerClick.onMapClick(location);
+			} catch (IOException e) {
+				AndroidUtil.errorMessage(MapsActivity.this,
+						getString(R.string.error_addressNotFound), R.string.warning, R.string.ok);
+				e.printStackTrace();
+			}
+			return true;
+		}
+	};
 }

@@ -4,7 +4,7 @@ import com.activeandroid.app.Application;
 
 /**
  * TODO
- *  1x
+ *  1xt
  *  Botao flutuante de busca
  *  Menu lateral grudado no canto
  *  Tratamento yahoo null com reenvio de cidade
@@ -12,6 +12,7 @@ import com.activeandroid.app.Application;
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Eu consigo mostrar a rota mais rapidamente?
  *  Adicionar Mint.
+ *  No menu, ter a previsão para hoje, amanhã ou depois
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

@@ -26,7 +26,6 @@ public class LocationBusiness {
      * @return Posicao atual do usuario.
      */
     public Location getCurrentLocation(Context context) {
-
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
         String bestProvider = locationManager.getBestProvider(new Criteria(), false);
