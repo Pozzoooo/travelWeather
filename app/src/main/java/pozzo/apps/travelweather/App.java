@@ -7,12 +7,12 @@ import com.activeandroid.app.Application;
  *  1xt
  *  Menu lateral grudado no canto
  *  Tratamento yahoo null com reenvio de cidade
- *  Um spinner até a exibição da rota
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Eu consigo mostrar a rota mais rapidamente?
  *  Adicionar Mint.
  *  No menu, ter a previsão para hoje, amanhã ou depois
  *  Distancia entre previsoes deve ser reltivo entre a distancia e inicio e fim.
+ *  Tratamento de rede, eh necessario estar conectado...
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?

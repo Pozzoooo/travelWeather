@@ -1,12 +1,14 @@
 package pozzo.apps.travelweather.ui.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,6 +46,8 @@ import pozzo.apps.travelweather.util.AndroidUtil;
  * Atividade para exibir o mapa.
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+	private static final int ANIM_ROUTE_TIME = 1200;
+
     private LocationBusiness locationBusiness;
     private ForecastBusiness forecastBusiness;
 	private GeoCoderHelper geoCoderHelper;
@@ -152,7 +156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Map will fit the given bounds.
      */
     private void pointMapTo(LatLngBounds latLng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), 1200, null);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null);
     }
 
     /**
@@ -211,6 +215,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
 
         new AsyncTask<Void, Void, PolylineOptions>() {
+			private ProgressDialog progressDialog;
+
+			@Override
+			protected void onPreExecute() {
+				progressDialog = new ProgressDialog(MapsActivity.this);
+				progressDialog.setIndeterminate(true);
+				//Soh mostramos se demorar consideravelmente
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (progressDialog != null)
+							progressDialog.show();
+					}
+				}, ANIM_ROUTE_TIME);
+			}
+
             @Override
             protected PolylineOptions doInBackground(Void... params) {
                 final ArrayList<LatLng> directionPoint =
@@ -235,6 +255,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(PolylineOptions rectLine) {
+				ProgressDialog progress = progressDialog;
+				progressDialog = null;
+				if(progress.isShowing())
+					progress.hide();
                 if(rectLine != null)
                     googleMap.addPolyline(rectLine);
             }
@@ -326,7 +350,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		new AsyncTask<Void, Void, Weather>() {
             private Exception error;
 
-			@Override
+            @Override
 			protected Weather doInBackground(Void... params) {
                 if(!isFinishing())
                     try {
