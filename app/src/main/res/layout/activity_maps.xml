@@ -1,48 +1,75 @@
-<RelativeLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/vgMain"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <RelativeLayout
+        android:id="@+id/vgMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/map"
-        android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
-        tools:context=".MapsActivity" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/vgTopBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/margin_bigger"
-        android:orientation="horizontal"
-        android:background="@drawable/screen_gradient"
-        android:visibility="gone"
-        tools:visibility="visible">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/map"
+            android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
+            tools:context=".MapsActivity" />
 
-        <EditText
-            android:id="@+id/eSearch"
+        <LinearLayout
+            android:id="@+id/vgTopBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_big"
-            android:layout_marginRight="70dp"
-            android:layout_marginTop="@dimen/margin_bigger"
-            android:inputType="text"
-            android:imeOptions="actionDone"
-            android:visibility="visible"/>
-    </LinearLayout>
+            android:paddingBottom="@dimen/margin_bigger"
+            android:orientation="horizontal"
+            android:background="@drawable/screen_gradient"
+            android:visibility="gone"
+            tools:visibility="visible">
 
-    <ImageButton
-        android:id="@+id/bSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/margin_big"
-        android:elevation="@dimen/elevation_floatingButton"
-        android:contentDescription="@android:string/search_go"
-        android:src="@android:drawable/ic_menu_search"
-        android:onClick="onSearch"/>
-</RelativeLayout>
+            <EditText
+                android:id="@+id/eSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginTop="@dimen/margin_bigger"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:visibility="visible"/>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/bMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingTop="@dimen/margin_bigger"
+            android:paddingBottom="@dimen/margin_bigger"
+            android:paddingRight="@dimen/margin_bigger"
+            android:background="@null"
+            android:src="@drawable/ic_drawer"
+            android:onClick="onMenu"/>
+
+        <ImageButton
+            android:id="@+id/bSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/margin_big"
+            android:elevation="@dimen/elevation_floatingButton"
+            android:contentDescription="@android:string/search_go"
+            android:src="@android:drawable/ic_menu_search"
+            android:onClick="onSearch"/>
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/navigationDrawer"
+        android:layout_width="@dimen/width_navigationDrawer"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:name="pozzo.apps.travelweather.ui.fragment.SideMenuFragment"
+        tools:layout="@layout/fragment_side_menu"/>
+</android.support.v4.widget.DrawerLayout>

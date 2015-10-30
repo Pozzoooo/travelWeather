@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -45,7 +47,8 @@ import pozzo.apps.travelweather.util.AndroidUtil;
 /**
  * Atividade para exibir o mapa.
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity
+		implements OnMapReadyCallback {
 	private static final int ANIM_ROUTE_TIME = 1200;
 
     private LocationBusiness locationBusiness;
@@ -56,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng finishPosition;
     private HashMap<Marker, Weather> markerWeathers;
 
+	private DrawerLayout drawerLayout;
 	private GoogleMap mMap;
 	private EditText eSearch;
 	private View vgTopBar;
@@ -132,6 +136,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //			closeSearch();
 //		else
 			super.onBackPressed();
+	}
+
+	private DrawerLayout getDrawerLayout() {
+		if(drawerLayout == null)
+			drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+		return drawerLayout;
 	}
 
 	/**
@@ -390,6 +400,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		eSearch.requestFocus();
 		eSearch.setOnEditorActionListener(onSearchGo);
     }
+
+	/**
+	 * User wants to open side menu.
+	 */
+	public void onMenu(View view) {
+		getDrawerLayout().openDrawer(GravityCompat.START);
+	}
 
 	/**
 	 * Closes "search bar".

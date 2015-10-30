@@ -3,4 +3,5 @@
     <dimen name="margin_big">8dp</dimen>
     <dimen name="margin_bigger">16dp</dimen>
     <dimen name="elevation_floatingButton">8dp</dimen>
+    <dimen name="width_navigationDrawer">240dp</dimen>
 </resources>
