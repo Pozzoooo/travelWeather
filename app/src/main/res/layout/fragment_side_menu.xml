@@ -7,7 +7,24 @@
     android:clickable="true"
     android:background="@android:color/darker_gray">
 
-    <CheckBox
+    <RadioGroup
+        android:id="@+id/rgDaySelection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rToday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/today"/>
+        <RadioButton
+            android:id="@+id/rTomorow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tomorow"/>
+        <RadioButton
+            android:id="@+id/rAfterTomorow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/afterTomorow"/>
+    </RadioGroup>
 </LinearLayout>
