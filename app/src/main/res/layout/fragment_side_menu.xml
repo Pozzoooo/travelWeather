@@ -11,6 +11,11 @@
         android:id="@+id/rgDaySelection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_forecastDate"/>
+
         <RadioButton
             android:id="@+id/rToday"
             android:layout_width="match_parent"

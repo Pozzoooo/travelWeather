@@ -4,8 +4,7 @@ import com.activeandroid.app.Application;
 
 /**
  * TODO
- *  1xt
- *  Selecionar dia ao recuperar previsao.
+ *  1x
  *  Tratamento yahoo null com reenvio de cidade
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Eu consigo mostrar a rota mais rapidamente?

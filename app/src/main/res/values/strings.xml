@@ -5,7 +5,7 @@
     <string name="ok">OK</string>
     <string name="warning">Atencao</string>
 
-    <string name="titleActivityMaps">Map</string>
+    <string name="title_activityMaps">Map</string>
 
     <string name="today">Hoje</string>
     <string name="tomorow">Amanha</string>
@@ -15,4 +15,5 @@
     <string name="finishPosition">Final</string>
     <string name="removeAllMarkers">Deseja remover todas as marcacoes?</string>
     <string name="error_addressNotFound">Endereco nao encontrado</string>
+    <string name="title_forecastDate">Previsao para</string>
 </resources>

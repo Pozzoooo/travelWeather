@@ -3,12 +3,14 @@ package pozzo.apps.travelweather.ui.activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -176,16 +178,35 @@ public class MapsActivity extends FragmentActivity
         if(weather == null)
             return;
 
-        Forecast firstForecast = weather.getForecasts()[0];
-        String message = firstForecast.getText();
-        int icon = ForecastHelper.forecastIcon(firstForecast);
-        Address address = weather.getAddress();
-        LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
+		Address address = weather.getAddress();
+		LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
+
+		Forecast forecast = getForecastFor(weather);
+        String message = forecast.getText();
+        int icon = ForecastHelper.forecastIcon(forecast);
 
         MarkerOptions markerOptions = new MarkerOptions().position(location).title(message)
                 .icon(BitmapDescriptorFactory.fromResource(icon));
         Marker marker = mMap.addMarker(markerOptions);
         markerWeathers.put(marker, weather);
+    }
+
+	/**
+	 * @return Forecast that should be shown to the user from given weather.
+	 */
+	private Forecast getForecastFor(Weather weather) {
+		int dayIndex = getDaySelection();
+		Forecast[] forecasts = weather.getForecasts();
+		dayIndex = forecasts.length > dayIndex ? dayIndex : forecasts.length-1;
+		return forecasts[dayIndex];
+	}
+
+	/**
+	 * A selecao do dia.
+	 */
+    private int getDaySelection() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getInt("selectedDay", 0);
     }
 
     /**
@@ -412,7 +433,8 @@ public class MapsActivity extends FragmentActivity
 	 * Closes "search bar".
 	 */
 	private void closeSearch() {
-		vgTopBar.setVisibility(View.GONE);
+		if(vgTopBar != null)
+			vgTopBar.setVisibility(View.GONE);
 	}
 
 	/**

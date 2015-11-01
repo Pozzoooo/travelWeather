@@ -14,13 +14,13 @@ import android.widget.RadioGroup;
 import pozzo.apps.travelweather.R;
 
 /**
- * Sera nosso menu lateral =D.
+ * Our main menu.
  *
  * Created by sarge on 10/29/15.
  */
 public class SideMenuFragment extends Fragment {
-	//TODO eh mesmo uma boa ideia salvar o id? Eu acho que nao...
 	private RadioGroup rgDaySelection;
+	private int[] days = new int[]{ R.id.rToday, R.id.rTomorow, R.id.rAfterTomorow };
 
 	@Nullable
 	@Override
@@ -35,16 +35,22 @@ public class SideMenuFragment extends Fragment {
 		return contentView;
 	}
 
+	/**
+	 * Fill view components with data.
+	 */
 	private void fillView(View contentView) {
 		SharedPreferences preferences =
 				PreferenceManager.getDefaultSharedPreferences(getActivity());
-		int selectedDay = preferences.getInt("selectedDay", R.id.rToday);
-		RadioButton selectedRadio = (RadioButton) contentView.findViewById(selectedDay);
+		int selectedDay = preferences.getInt("selectedDay", 0);
+		RadioButton selectedRadio = (RadioButton) contentView.findViewById(days[selectedDay]);
 		selectedRadio.setChecked(true);
 
 		rgDaySelection.setOnCheckedChangeListener(onDaySelection);
 	}
 
+	/**
+	 * When user changes the day selection.
+	 */
 	private RadioGroup.OnCheckedChangeListener onDaySelection =
 			new RadioGroup.OnCheckedChangeListener() {
 		@Override
@@ -53,12 +59,19 @@ public class SideMenuFragment extends Fragment {
 		}
 	};
 
+	/**
+	 * Save new configuration.
+	 */
 	private void saveSelection() {
 		SharedPreferences.Editor preferences =
 				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
 
 		int selectedId = rgDaySelection.getCheckedRadioButtonId();
-		if(selectedId > 0)
-			preferences.putInt("selectedDay", selectedId).apply();
+		int selectedDay = -1;
+		for(int i=0; i<days.length; ++i)
+			if(days[i] == selectedId)
+				selectedDay = i;
+		if(selectedDay >= 0)
+			preferences.putInt("selectedDay", selectedDay).apply();
 	}
 }
