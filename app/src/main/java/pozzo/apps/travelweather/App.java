@@ -5,8 +5,6 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Colocar logo do Yahoo na previsao.
- *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Adicionar Mint.
  *  Criar chave release para mapa.
  *

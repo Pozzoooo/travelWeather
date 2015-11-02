@@ -45,6 +45,7 @@ import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
+import pozzo.apps.travelweather.ui.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.ui.fragment.SideMenuFragment;
 import pozzo.apps.travelweather.util.AndroidUtil;
 
@@ -129,6 +130,7 @@ public class MapsActivity extends FragmentActivity
         mMap.setOnMapClickListener(placeMarkerClick);
         mMap.setOnMapLongClickListener(clearMarkerLongClick);
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
+		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
 		clear();
 		if(startPosition == null) {
@@ -369,6 +371,8 @@ public class MapsActivity extends FragmentActivity
             new GoogleMap.OnInfoWindowClickListener() {
         @Override
         public void onInfoWindowClick(Marker marker) {
+			//Link is not redirecting corretly
+
             Weather weather = markerWeathers.get(marker);
             AndroidUtil.openUrl(weather.getUrl(), MapsActivity.this);
         }
