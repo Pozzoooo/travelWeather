@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
@@ -44,14 +45,17 @@ import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
+import pozzo.apps.travelweather.ui.fragment.SideMenuFragment;
 import pozzo.apps.travelweather.util.AndroidUtil;
 
 /**
  * Atividade para exibir o mapa.
  */
 public class MapsActivity extends FragmentActivity
-		implements OnMapReadyCallback {
+		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
 	private static final int ANIM_ROUTE_TIME = 1200;
+
+	private int daySelection;
 
     private LocationBusiness locationBusiness;
     private ForecastBusiness forecastBusiness;
@@ -70,6 +74,7 @@ public class MapsActivity extends FragmentActivity
         locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
 		geoCoderHelper = new GeoCoderHelper(this);
+		daySelection = -1;
     }
 
     @Override
@@ -78,9 +83,13 @@ public class MapsActivity extends FragmentActivity
         setContentView(R.layout.activity_maps);
 		restoreInstanceState(savedInstanceState);
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment)
+				getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+		SideMenuFragment navigationDrawer = (SideMenuFragment)
+				getSupportFragmentManager().findFragmentById(R.id.navigationDrawer);
+		navigationDrawer.setOnDaySelectionChanged(this);
     }
 
     @Override
@@ -132,14 +141,9 @@ public class MapsActivity extends FragmentActivity
 		setFinishPosition(finishPosition);
     }
 
-	@Override
-	public void onBackPressed() {
-//		if(eSearch != null && eSearch.hasFocus())
-//			closeSearch();
-//		else
-			super.onBackPressed();
-	}
-
+	/**
+	 * Drawer lazy loaded.
+	 */
 	private DrawerLayout getDrawerLayout() {
 		if(drawerLayout == null)
 			drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -156,6 +160,18 @@ public class MapsActivity extends FragmentActivity
             pointMapTo(startPosition);
         }
     }
+
+	/**
+	 * Sets the new finish point, or clear it.
+	 */
+	private void setFinishPosition(LatLng finishPosition) {
+		this.finishPosition = finishPosition;
+		if(finishPosition != null) {
+			queryAndShowWeatherFor(finishPosition);
+			fitCurrentRouteOnScreen();
+			updateRoute(mMap);
+		}
+	}
 
     /**
      * Map will be centered on given point.
@@ -182,11 +198,10 @@ public class MapsActivity extends FragmentActivity
 		LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
 
 		Forecast forecast = getForecastFor(weather);
-        String message = forecast.getText();
         int icon = ForecastHelper.forecastIcon(forecast);
 
-        MarkerOptions markerOptions = new MarkerOptions().position(location).title(message)
-                .icon(BitmapDescriptorFactory.fromResource(icon));
+        MarkerOptions markerOptions = new MarkerOptions().position(location)
+				.title(forecast.getText()).icon(BitmapDescriptorFactory.fromResource(icon));
         Marker marker = mMap.addMarker(markerOptions);
         markerWeathers.put(marker, weather);
     }
@@ -200,26 +215,6 @@ public class MapsActivity extends FragmentActivity
 		dayIndex = forecasts.length > dayIndex ? dayIndex : forecasts.length-1;
 		return forecasts[dayIndex];
 	}
-
-	/**
-	 * A selecao do dia.
-	 */
-    private int getDaySelection() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        return preferences.getInt("selectedDay", 0);
-    }
-
-    /**
-     * Sets the new finish point, or clear it.
-     */
-    private void setFinishPosition(LatLng finishPosition) {
-        this.finishPosition = finishPosition;
-        if(finishPosition != null) {
-            queryAndShowWeatherFor(finishPosition);
-            fitCurrentRouteOnScreen();
-            updateRoute(mMap);
-        }
-    }
 
     /**
      * Should try to fit entire route on screen.
@@ -458,4 +453,43 @@ public class MapsActivity extends FragmentActivity
 			return true;
 		}
 	};
+
+	/**
+	 * Update all forecast icons on map.
+	 */
+	private void updateForecastsIcons() {
+		if(markerWeathers == null || markerWeathers.size() <= 0)
+			return;
+
+		HashMap<Marker, Weather> markerWeathers = this.markerWeathers;
+		this.markerWeathers = new HashMap<>();
+		for(Map.Entry<Marker, Weather> it : markerWeathers.entrySet()) {
+			it.getKey().remove();
+			addMark(it.getValue());
+		}
+	}
+
+	@Override
+	public void daySelectionChanged(int selectedDay) {
+		setDaySelection(selectedDay);
+		updateForecastsIcons();
+	}
+
+	/**
+	 * Forced definition of day selection, it will not update on disk.
+	 */
+	private void setDaySelection(int daySelection) {
+		this.daySelection = daySelection;
+	}
+
+	/**
+	 * A selecao do dia.
+	 */
+	private int getDaySelection() {
+		if(daySelection < 0) {
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+			daySelection = preferences.getInt("selectedDay", 0);
+		}
+		return daySelection;
+	}
 }

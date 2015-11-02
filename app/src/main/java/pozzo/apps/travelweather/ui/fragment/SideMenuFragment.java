@@ -19,6 +19,7 @@ import pozzo.apps.travelweather.R;
  * Created by sarge on 10/29/15.
  */
 public class SideMenuFragment extends Fragment {
+	private OnDaySelectionChanged onDaySelectionChanged;
 	private RadioGroup rgDaySelection;
 	private int[] days = new int[]{ R.id.rToday, R.id.rTomorow, R.id.rAfterTomorow };
 
@@ -73,5 +74,22 @@ public class SideMenuFragment extends Fragment {
 				selectedDay = i;
 		if(selectedDay >= 0)
 			preferences.putInt("selectedDay", selectedDay).apply();
+
+		if(onDaySelectionChanged != null)
+			onDaySelectionChanged.daySelectionChanged(selectedDay);
+	}
+
+	/**
+	 * @param onDaySelectionChanged Sets a new observer for day selection changed.
+	 */
+	public void setOnDaySelectionChanged(OnDaySelectionChanged onDaySelectionChanged) {
+		this.onDaySelectionChanged = onDaySelectionChanged;
+	}
+
+	/**
+	 * To observe when user changes its day selection for the forecast.
+	 */
+	public interface OnDaySelectionChanged {
+		void daySelectionChanged(int selectedDay);
 	}
 }
