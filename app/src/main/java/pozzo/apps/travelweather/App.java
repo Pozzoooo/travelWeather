@@ -5,17 +5,15 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
+ *  Colocar logo do Yahoo na previsao.
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
  *  Adicionar Mint.
+ *  Criar chave release para mapa.
  *
  *  ?
- *  A questao do horario de saida e chegada, como fica?
  *  Realizar a separacao eraly, late...
- *  Adicionar busca por cidade ou endereco? Me parece que indo por navegacao tao melhor no nosso cenario...
- *  Qual a limitacao na busca de previsao do tempo com a Yahoo?
- *  Qual a limitacao na busca de rotas com a Google?
+ *  A questao do horario de saida e chegada, como fica?
  *  No lugar de deixar no menu, talvez eu possa colocar como titulo, o hoje, amanha e tal...
- *  Distancia entre previsoes deve ser reltivo entre a distancia e inicio e fim.
  *
  *  2x
  *  Tratamento yahoo null com reenvio de cidade
@@ -32,3 +30,10 @@ import com.activeandroid.app.Application;
  */
 public class App extends Application {
 }
+
+/**
+ * Yahoo weather, 2,000 requisicoes por dia.
+ * 		https://developer.yahoo.com/weather/
+ * Google direction = 2,500 free directions requests per day and $0.50 USD / 1000 additional requests, up to 100,000 daily.
+ * 		https://developers.google.com/maps/documentation/directions/usage-limits
+ */
