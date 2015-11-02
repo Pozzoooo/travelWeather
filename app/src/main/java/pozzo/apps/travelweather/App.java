@@ -5,13 +5,8 @@ import com.activeandroid.app.Application;
 /**
  * TODO
  *  1x
- *  Tratamento yahoo null com reenvio de cidade
  *  Conferir se o redirecionamento para o Yahoo esta indo para o local certo.
- *  Eu consigo mostrar a rota mais rapidamente?
  *  Adicionar Mint.
- *  No menu, ter a previsão para hoje, amanhã ou depois
- *  Distancia entre previsoes deve ser reltivo entre a distancia e inicio e fim.
- *  Tratamento de rede, eh necessario estar conectado...
  *
  *  ?
  *  A questao do horario de saida e chegada, como fica?
@@ -19,8 +14,11 @@ import com.activeandroid.app.Application;
  *  Adicionar busca por cidade ou endereco? Me parece que indo por navegacao tao melhor no nosso cenario...
  *  Qual a limitacao na busca de previsao do tempo com a Yahoo?
  *  Qual a limitacao na busca de rotas com a Google?
+ *  No lugar de deixar no menu, talvez eu possa colocar como titulo, o hoje, amanha e tal...
+ *  Distancia entre previsoes deve ser reltivo entre a distancia e inicio e fim.
  *
  *  2x
+ *  Tratamento yahoo null com reenvio de cidade
  *  Persistir dados
  *  Agendar uma viagem
  *  Exibir ultima rota que estava sendo visualizada atraves do banco

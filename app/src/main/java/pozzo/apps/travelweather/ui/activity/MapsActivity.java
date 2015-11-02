@@ -297,6 +297,9 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap.OnMapClickListener placeMarkerClick = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
+            if(!checkNetworkAndWarn())
+                return;
+
             if(startPosition == null) {
                 setStartPosition(latLng);
             } else {
@@ -309,6 +312,27 @@ public class MapsActivity extends FragmentActivity
             }
         }
     };
+
+	/**
+	 * Checks network state and warn user if there is no connection.
+	 * @return true if seems to be connection available.
+	 */
+    private boolean checkNetworkAndWarn() {
+        boolean isConnected = AndroidUtil.isNetworkAvailable(this);
+        if(!isConnected) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this)
+					.setTitle(R.string.warning).setMessage(R.string.warning_needsConnection);
+			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.create().show();
+        }
+
+        return isConnected;
+    }
 
     /**
      * Popup to clear all markers.

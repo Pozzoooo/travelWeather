@@ -16,4 +16,5 @@
     <string name="removeAllMarkers">Deseja remover todas as marcacoes?</string>
     <string name="error_addressNotFound">Endereco nao encontrado</string>
     <string name="title_forecastDate">Previsao para</string>
+    <string name="warning_needsConnection">Voce precisa estar conectado a internet</string>
 </resources>
