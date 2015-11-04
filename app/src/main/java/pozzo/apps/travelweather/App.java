@@ -6,7 +6,6 @@ import com.activeandroid.app.Application;
  * TODO
  *  1x
  *  Adicionar Mint.
- *  Criar chave release para mapa.
  *
  *  ?
  *  Realizar a separacao eraly, late...
