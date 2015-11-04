@@ -6,6 +6,11 @@ import com.splunk.mint.Mint;
 /**
  * TODO
  *  1x
+ *  1- Adicionar um 'X' na pesquisa, que ao clicar, ele limpa o texto da pesquisado;
+ 2- Após pesquisar, se o usuário clicar na lupa novamente, esconder a caixa texto, deixando igual o estado inicial quando carrega a tela;
+ 3- Se o usuário pesquisar, e depois decidir selecionar um ponto tocando na tela, esconder a caixa texto da pesquisa;
+ 4- Deixar a linha da rota um pouco mais grossa e trocar o vermelho por outra cor mais fria, azul etc;
+ 5- Após ter traçado uma rota, se o usuário pressionar o botão voltar, deixar no estado inicial do app, posicionando apenas na origem. Se pressionar novamente, ai sim fecha o aplicativo;
  *
  *  ?
  *  Realizar a separacao eraly, late...

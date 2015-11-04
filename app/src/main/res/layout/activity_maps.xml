@@ -17,12 +17,11 @@
             android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
             tools:context=".MapsActivity" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/vgTopBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/margin_bigger"
-            android:orientation="horizontal"
             android:background="@drawable/screen_gradient"
             android:visibility="gone"
             tools:visibility="visible">
@@ -37,12 +36,22 @@
                 android:inputType="text"
                 android:imeOptions="actionGo"
                 android:visibility="visible"/>
-        </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/bClearSearch"
+                android:layout_width="@dimen/button_size"
+                android:layout_height="@dimen/button_size"
+                android:layout_marginRight="@dimen/margin_button"
+                android:layout_gravity="right|center_vertical"
+                android:background="@null"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:onClick="onClearSearch"/>
+        </FrameLayout>
 
         <ImageButton
             android:id="@+id/bMenu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/button_size"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:paddingTop="@dimen/margin_bigger"
@@ -54,8 +63,8 @@
 
         <ImageButton
             android:id="@+id/bSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/button_size"
+            android:layout_height="@dimen/button_size"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/margin_big"

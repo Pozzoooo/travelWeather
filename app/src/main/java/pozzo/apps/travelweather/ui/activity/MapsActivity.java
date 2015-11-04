@@ -520,4 +520,8 @@ public class MapsActivity extends FragmentActivity
 		}
 		return daySelection;
 	}
+
+    public void onClearSearch(View view) {
+        eSearch.setText("");
+    }
 }
