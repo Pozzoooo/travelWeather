@@ -54,10 +54,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //What tests?
     testCompile 'junit:junit:4.12'
+    //Google
     compile 'com.android.support:appcompat-v7:21.2.1'
-    compile 'com.squareup.retrofit:retrofit:1.6.1'
-    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.google.android.gms:play-services:7.8.0'
+    //Web requests
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    //Persistence
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    //Mint
+    compile "com.splunk.mint:mint:4.4.0"
 }

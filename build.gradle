@@ -17,6 +17,7 @@ allprojects {
         jcenter()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://mint.splunk.com/gradle/" }
     }
 }
 

@@ -1,11 +1,11 @@
 package pozzo.apps.travelweather;
 
 import com.activeandroid.app.Application;
+import com.splunk.mint.Mint;
 
 /**
  * TODO
  *  1x
- *  Adicionar Mint.
  *
  *  ?
  *  Realizar a separacao eraly, late...
@@ -26,6 +26,12 @@ import com.activeandroid.app.Application;
  * Created by sarge on 10/19/15.
  */
 public class App extends Application {
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Mint.initAndStartSession(this, "c315b759");
+	}
 }
 
 /**
