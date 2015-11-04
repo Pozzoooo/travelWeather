@@ -35,7 +35,7 @@
                 android:layout_marginRight="70dp"
                 android:layout_marginTop="@dimen/margin_bigger"
                 android:inputType="text"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionGo"
                 android:visibility="visible"/>
         </LinearLayout>
 

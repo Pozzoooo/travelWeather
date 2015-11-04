@@ -467,7 +467,7 @@ public class MapsActivity extends FragmentActivity
 		@Override
 		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 			String address = v.getText().toString();
-			if(!(event.getAction() == KeyEvent.ACTION_DOWN) || address.isEmpty())
+			if(event == null || !(event.getAction() == KeyEvent.ACTION_DOWN) || address.isEmpty())
 				return false;
 
 			try {
