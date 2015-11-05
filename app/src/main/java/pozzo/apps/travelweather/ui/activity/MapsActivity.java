@@ -57,6 +57,7 @@ public class MapsActivity extends FragmentActivity
 	private static final int ANIM_ROUTE_TIME = 1200;
 
 	private int daySelection;
+	private int lineColor;
 
     private LocationBusiness locationBusiness;
     private ForecastBusiness forecastBusiness;
@@ -121,6 +122,18 @@ public class MapsActivity extends FragmentActivity
 			startPosition = savedInstanceState.getParcelable("startPosition");
 			finishPosition = savedInstanceState.getParcelable("finishPosition");
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		/*
+		Se caixa de busca sendo mostrada
+			Esconder caixa de busca
+		Se finish selecionado
+			Limpar mapa e tentar pegar posicao atual
+		Senao, fecha app
+		 */
+		super.onBackPressed();
 	}
 
 	@Override
@@ -266,7 +279,9 @@ public class MapsActivity extends FragmentActivity
                 if(directionPoint == null || directionPoint.isEmpty())
                     return null;
 
-                PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
+				if(lineColor <= 0)
+					lineColor = getResources().getColor(R.color.colorAccent);
+                PolylineOptions rectLine = new PolylineOptions().width(7).color(lineColor);
                 for(int i = 0 ; i < directionPoint.size() ; i++) {
                     LatLng latLng = directionPoint.get(i);
                     rectLine.add(latLng);

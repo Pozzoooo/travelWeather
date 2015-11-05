@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:background="@android:color/darker_gray">
+    android:padding="@dimen/margin_bigger"
+    android:background="@drawable/background_window">
 
     <RadioGroup
         android:id="@+id/rgDaySelection"
@@ -14,6 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_big"
             android:text="@string/title_forecastDate"/>
 
         <RadioButton
