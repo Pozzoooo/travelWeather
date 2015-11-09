@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -449,15 +448,16 @@ public class MapsActivity extends FragmentActivity
     public void onSearch(View view) {
         if(eSearch == null) {
 			eSearch = (EditText) findViewById(R.id.eSearch);
+			eSearch.setOnEditorActionListener(onSearchGo);
 			vgTopBar = findViewById(R.id.vgTopBar);
 		}
 
-		vgTopBar.setVisibility(View.VISIBLE);
-		vgTopBar.setAlpha(0.f);
-		vgTopBar.animate().alpha(1.f);
-		eSearch.setVisibility(View.VISIBLE);
-		eSearch.requestFocus();
-		eSearch.setOnEditorActionListener(onSearchGo);
+        if(vgTopBar.getAlpha() == 1.f) {
+			vgTopBar.animate().alpha(0.f);
+		} else {
+            vgTopBar.animate().alpha(1.f);
+            eSearch.requestFocus();
+        }
     }
 
 	/**

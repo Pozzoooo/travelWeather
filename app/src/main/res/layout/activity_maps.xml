@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/margin_bigger"
             android:background="@drawable/screen_gradient"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:alpha="0"
+            tools:alpha="1">
 
             <EditText
                 android:id="@+id/eSearch"
