@@ -91,6 +91,10 @@ public class MapsActivity extends FragmentActivity
 		SideMenuFragment navigationDrawer = (SideMenuFragment)
 				getSupportFragmentManager().findFragmentById(R.id.navigationDrawer);
 		navigationDrawer.setOnDaySelectionChanged(this);
+
+		eSearch = (EditText) findViewById(R.id.eSearch);
+		eSearch.setOnEditorActionListener(onSearchGo);
+		vgTopBar = findViewById(R.id.vgTopBar);
     }
 
     @Override
@@ -313,6 +317,7 @@ public class MapsActivity extends FragmentActivity
     private GoogleMap.OnMapClickListener placeMarkerClick = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
+			hideTopBar();
             if(!checkNetworkAndWarn())
                 return;
 
@@ -357,7 +362,7 @@ public class MapsActivity extends FragmentActivity
             new GoogleMap.OnMapLongClickListener() {
         @Override
         public void onMapLongClick(LatLng latLng) {
-			closeSearch();
+			hideTopBar();
             AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
             builder.setMessage(R.string.removeAllMarkers);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -446,33 +451,34 @@ public class MapsActivity extends FragmentActivity
      * Search button click event.
      */
     public void onSearch(View view) {
-        if(eSearch == null) {
-			eSearch = (EditText) findViewById(R.id.eSearch);
-			eSearch.setOnEditorActionListener(onSearchGo);
-			vgTopBar = findViewById(R.id.vgTopBar);
-		}
-
         if(vgTopBar.getAlpha() == 1.f) {
-			vgTopBar.animate().alpha(0.f);
+			hideTopBar();
 		} else {
-            vgTopBar.animate().alpha(1.f);
-            eSearch.requestFocus();
+			showTopBar();
         }
     }
+
+	/**
+	 * Hide app top bar.
+	 */
+	private void hideTopBar() {
+		if(vgTopBar.getAlpha() != 0.f)
+			vgTopBar.animate().alpha(0.f);
+	}
+
+	/**
+	 * Show app top bar.
+	 */
+	private void showTopBar() {
+		vgTopBar.animate().alpha(1.f);
+		eSearch.requestFocus();
+	}
 
 	/**
 	 * User wants to open side menu.
 	 */
 	public void onMenu(View view) {
 		getDrawerLayout().openDrawer(GravityCompat.START);
-	}
-
-	/**
-	 * Closes "search bar".
-	 */
-	private void closeSearch() {
-		if(vgTopBar != null)
-			vgTopBar.setVisibility(View.GONE);
 	}
 
 	/**
