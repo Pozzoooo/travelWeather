@@ -129,14 +129,14 @@ public class MapsActivity extends FragmentActivity
 
 	@Override
 	public void onBackPressed() {
-		/*
-		Se caixa de busca sendo mostrada
-			Esconder caixa de busca
-		Se finish selecionado
-			Limpar mapa e tentar pegar posicao atual
-		Senao, fecha app
-		 */
-		super.onBackPressed();
+        boolean shouldQuit = !hideTopBar();
+        if(finishPosition != null) {
+            setFinishPosition(null);
+            setStartPosition(startPosition);
+            shouldQuit &= false;
+        }
+        if(shouldQuit)
+		    super.onBackPressed();
 	}
 
 	@Override
@@ -460,10 +460,15 @@ public class MapsActivity extends FragmentActivity
 
 	/**
 	 * Hide app top bar.
+     *
+     * @return true if hidden, false if already hidden.
 	 */
-	private void hideTopBar() {
-		if(vgTopBar.getAlpha() != 0.f)
-			vgTopBar.animate().alpha(0.f);
+	private boolean hideTopBar() {
+		if(vgTopBar.getAlpha() != 0.f) {
+            vgTopBar.animate().alpha(0.f);
+            return true;
+        }
+        return false;
 	}
 
 	/**

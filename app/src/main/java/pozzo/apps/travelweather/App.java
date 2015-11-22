@@ -6,7 +6,6 @@ import com.splunk.mint.Mint;
 /**
  * TODO
  *  1x
- 5- Após ter traçado uma rota, se o usuário pressionar o botão voltar, deixar no estado inicial do app, posicionando apenas na origem. Se pressionar novamente, ai sim fecha o aplicativo;
  *	Clarificar de alguma forma as acoes do usuario, tipo arrastar o marcador talvez.
  *
  *  ?
