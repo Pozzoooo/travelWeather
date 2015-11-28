@@ -133,6 +133,7 @@ public class MapsActivity extends FragmentActivity
 	public void onBackPressed() {
         boolean shouldQuit = !hideTopBar();
         if(finishPosition != null) {
+            clear();
             setFinishPosition(null);
             setStartPosition(startPosition);
             shouldQuit &= false;
