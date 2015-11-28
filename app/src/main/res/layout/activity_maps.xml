@@ -35,7 +35,8 @@
                 android:layout_marginTop="@dimen/margin_bigger"
                 android:inputType="text"
                 android:imeOptions="actionGo"
-                android:visibility="visible"/>
+                android:visibility="invisible"
+                tools:visibility="visible"/>
 
             <ImageButton
                 android:id="@+id/bClearSearch"

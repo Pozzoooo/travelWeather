@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.ui.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -466,6 +468,8 @@ public class MapsActivity extends FragmentActivity
 	private boolean hideTopBar() {
 		if(vgTopBar.getAlpha() != 0.f) {
             vgTopBar.animate().alpha(0.f);
+            eSearch.setVisibility(View.INVISIBLE);
+            hideKeyboardForced(eSearch);
             return true;
         }
         return false;
@@ -476,8 +480,20 @@ public class MapsActivity extends FragmentActivity
 	 */
 	private void showTopBar() {
 		vgTopBar.animate().alpha(1.f);
-		eSearch.requestFocus();
+        eSearch.setVisibility(View.VISIBLE);
+        eSearch.requestFocus();
+        showKeyboardForced();
 	}
+
+    private void showKeyboardForced() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    private void hideKeyboardForced(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
 	/**
 	 * User wants to open side menu.
