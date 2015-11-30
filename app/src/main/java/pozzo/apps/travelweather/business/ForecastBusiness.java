@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.splunk.mint.Mint;
 
 import pozzo.apps.travelweather.exception.AddressNotFoundException;
 import pozzo.apps.travelweather.helper.GeoCoderHelper;
@@ -53,22 +54,27 @@ public class ForecastBusiness {
                 "(select woeid from geo.places(1) where text=\"" + address.getAddress() + "\") and u='c'";
         Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
         String result = new String(((TypedByteArray) response.getBody()).getBytes());
-        JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
-        JsonObject channel = jsonResult
-                .getAsJsonObject("query")
-                .getAsJsonObject("results")
-                .getAsJsonObject("channel");
-        JsonObject item = channel.getAsJsonObject("item");
-        JsonArray forecastArray = item.getAsJsonArray("forecast");
-        Gson gson = GsonFactory.getGson();
-        Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
-        if(forecasts == null || forecasts.length <= 0)
-            return null;
+        try {
+            JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
+            JsonObject channel = jsonResult
+                    .getAsJsonObject("query")
+                    .getAsJsonObject("results")
+                    .getAsJsonObject("channel");
+            JsonObject item = channel.getAsJsonObject("item");
+            JsonArray forecastArray = item.getAsJsonArray("forecast");
+            Gson gson = GsonFactory.getGson();
+            Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
+            if (forecasts == null || forecasts.length <= 0)
+                return null;
 
-        Weather weather = new Weather();
-        weather.setAddress(address);
-        weather.setForecasts(forecasts);
-        weather.setUrl(item.get("link").getAsString());
-        return weather;
+            Weather weather = new Weather();
+            weather.setAddress(address);
+            weather.setForecasts(forecasts);
+            weather.setUrl(item.get("link").getAsString());
+            return weather;
+        } catch (ClassCastException e) {
+            Mint.logException(e);
+            return null;
+        }
     }
 }

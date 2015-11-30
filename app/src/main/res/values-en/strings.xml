@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">Travel Weather</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="warning">Warning</string>
+
+    <string name="title_activityMaps">Map</string>
+
+    <string name="today">Today</string>
+    <string name="tomorow">Tomorow</string>
+    <string name="afterTomorow">After Tomorow</string>
+
+    <string name="startPosition">Start</string>
+    <string name="finishPosition">Finish</string>
+    <string name="removeAllMarkers">Remove all makrs?</string>
+    <string name="error_addressNotFound">Address not found</string>
+    <string name="title_forecastDate">Forecast for</string>
+    <string name="warning_needsConnection">Internet connection required</string>
+</resources>

@@ -1,20 +1,20 @@
 <resources>
-    <string name="appName">TravelWeather</string>
+    <string name="appName">Clima da viagem</string>
     <string name="yes">Sim</string>
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>
-    <string name="warning">Atencao</string>
+    <string name="warning">Atenção</string>
 
     <string name="title_activityMaps">Map</string>
 
     <string name="today">Hoje</string>
-    <string name="tomorow">Amanha</string>
-    <string name="afterTomorow">Depois de amanha</string>
+    <string name="tomorow">Amanhã</string>
+    <string name="afterTomorow">Depois de amanhã</string>
 
     <string name="startPosition">Início</string>
     <string name="finishPosition">Final</string>
-    <string name="removeAllMarkers">Deseja remover todas as marcacoes?</string>
-    <string name="error_addressNotFound">Endereco nao encontrado</string>
-    <string name="title_forecastDate">Previsao para</string>
-    <string name="warning_needsConnection">Voce precisa estar conectado a internet</string>
+    <string name="removeAllMarkers">Deseja remover todas as marcações?</string>
+    <string name="error_addressNotFound">Endereço não encontrado</string>
+    <string name="title_forecastDate">Previsão para</string>
+    <string name="warning_needsConnection">Você precisa estar conectado com a internet</string>
 </resources>
