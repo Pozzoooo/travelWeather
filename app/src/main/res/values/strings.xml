@@ -17,4 +17,5 @@
     <string name="error_addressNotFound">Endereço não encontrado</string>
     <string name="title_forecastDate">Previsão para</string>
     <string name="warning_needsConnection">Você precisa estar conectado com a internet</string>
+    <string name="warning_pathNotFound">Não conseguimos gerar uma rota</string>
 </resources>

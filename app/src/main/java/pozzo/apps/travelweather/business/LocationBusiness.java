@@ -36,11 +36,13 @@ public class LocationBusiness {
      * Rota para o dado destino.
      */
     public ArrayList<LatLng> getDirections(LatLng startPosition, LatLng finishPosition) {
-        GMapV2Direction md = new GMapV2Direction();
+        if(startPosition == null || finishPosition == null)
+            return null;
 
+        GMapV2Direction md = new GMapV2Direction();
         Document doc = md.getDocument(
                 startPosition, finishPosition, GMapV2Direction.MODE_DRIVING);
-        return md.getDirection(doc);
+        return doc == null ? null : md.getDirection(doc);
     }
 
     /**

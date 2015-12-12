@@ -20,6 +20,7 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -310,6 +311,9 @@ public class MapsActivity extends FragmentActivity
 					progress.hide();
                 if(rectLine != null)
                     googleMap.addPolyline(rectLine);
+                else
+                    Toast.makeText(MapsActivity.this, R.string.warning_pathNotFound,
+                            Toast.LENGTH_SHORT).show();
             }
         }.execute();
     }

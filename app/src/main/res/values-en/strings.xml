@@ -18,4 +18,5 @@
     <string name="error_addressNotFound">Address not found</string>
     <string name="title_forecastDate">Forecast for</string>
     <string name="warning_needsConnection">Internet connection required</string>
+    <string name="warning_pathNotFound">Could not found a route</string>
 </resources>
