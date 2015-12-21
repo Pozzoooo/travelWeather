@@ -73,6 +73,17 @@
             android:contentDescription="@android:string/search_go"
             android:src="@android:drawable/ic_menu_search"
             android:onClick="onSearch"/>
+
+        <ImageButton
+            android:id="@+id/bMyLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="@dimen/margin_big"
+            android:elevation="@dimen/elevation_floatingButton"
+            android:onClick="onMyLocation"/>
     </RelativeLayout>
 
     <fragment

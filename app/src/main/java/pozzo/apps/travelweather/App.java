@@ -7,9 +7,10 @@ import com.splunk.mint.Mint;
  * TODO
  *  1x
  *	Clarificar de alguma forma as acoes do usuario, tipo arrastar o marcador talvez.
+ *  Criar tratamento para quando nao conseguir pegar a localizacao atual.
  *
  *  ?
- *  Realizar a separacao eraly, late...
+ *  Realizar a separacao early, late...
  *  A questao do horario de saida e chegada, como fica?
  *  No lugar de deixar no menu, talvez eu possa colocar como titulo, o hoje, amanha e tal...
  *

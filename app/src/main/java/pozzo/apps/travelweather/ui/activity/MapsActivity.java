@@ -107,12 +107,12 @@ public class MapsActivity extends FragmentActivity
 		final View view = findViewById(R.id.vgMain);
 		ViewTreeObserver observer = view.getViewTreeObserver();
 		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-			@Override
-			public void onGlobalLayout() {
-				fitCurrentRouteOnScreen();
-				view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-			}
-		});
+            @Override
+            public void onGlobalLayout() {
+                fitCurrentRouteOnScreen();
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 
 	@Override
@@ -153,11 +153,8 @@ public class MapsActivity extends FragmentActivity
 		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
 		clear();
-		if(startPosition == null) {
-			Location location = locationBusiness.getCurrentLocation(this);
-			if(location != null)
-				startPosition = new LatLng(location.getLatitude(), location.getLongitude());
-		}
+		if(startPosition == null)
+            setStartOnCurrentLocation();
 
 		setStartPosition(startPosition);
 		setFinishPosition(finishPosition);
@@ -173,7 +170,7 @@ public class MapsActivity extends FragmentActivity
 	}
 
 	/**
-     * @param startPosition Nova posicao inicial.
+     * @param startPosition Sets a ew start position.
      */
     private void setStartPosition(LatLng startPosition) {
         this.startPosition = startPosition;
@@ -455,6 +452,15 @@ public class MapsActivity extends FragmentActivity
 	}
 
     /**
+     * Defines the start position to the current user location.
+     */
+    private void setStartOnCurrentLocation() {
+        Location location = locationBusiness.getCurrentLocation(this);
+        if(location != null)
+            setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+    }
+
+    /**
      * Search button click event.
      */
     public void onSearch(View view) {
@@ -463,6 +469,14 @@ public class MapsActivity extends FragmentActivity
 		} else {
 			showTopBar();
         }
+    }
+
+    /**
+     * User wants to point to his location.
+     */
+    public void onMyLocation(View view) {
+        clear();
+        setStartOnCurrentLocation();
     }
 
 	/**
