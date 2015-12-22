@@ -7,12 +7,19 @@ import com.splunk.mint.Mint;
  * TODO
  *  1x
  *	Clarificar de alguma forma as acoes do usuario, tipo arrastar o marcador talvez.
- *  Criar tratamento para quando nao conseguir pegar a localizacao atual.
+ *  Criar tratamento para quando nao conseguir pegar a localizacao atual, talvez seja uma boa ateh
+ *      adicioar um spinner e ativar a requisicao de localizacao atravez de um callback, porem,
+ *      eh importante colocar um timeout (como faz mesmo?).
+ *  Busca na action bar, e a selecao de dia (hoje, amananha...) pode ir em uma spinner no estilo
+ *      navegacao.
+ *  Quando houver um erro na criacao da rota (no estilo reportado do celular do pai) fazer um clear
+ *      para garantir que nao eh a posicao inicial o problema.
+ *  A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas
+ *      previsoes.
  *
  *  ?
  *  Realizar a separacao early, late...
  *  A questao do horario de saida e chegada, como fica?
- *  No lugar de deixar no menu, talvez eu possa colocar como titulo, o hoje, amanha e tal...
  *
  *  2x
  *  Tratamento yahoo null com reenvio de cidade
@@ -21,8 +28,7 @@ import com.splunk.mint.Mint;
  *  Exibir ultima rota que estava sendo visualizada atraves do banco
  *  Notificar quando o tempo mudar apos ter agendado uma viagem
  *  Outra fonte para busca de previsao do tempo
- *  Menu a cada quantos km realiar a previsao
- *  Alterar previsao principal de hoje, amanha, depois etc
+ *  Menu a cada quantos km realizar a previsao
  *  Utilizar ExecutorService para requisicao de previsao
  *
  * Created by sarge on 10/19/15.
