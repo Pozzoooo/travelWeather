@@ -439,17 +439,22 @@ public class MapsActivity extends FragmentActivity
 
             @Override
 			protected Weather doInBackground(Void... params) {
-                if(!isFinishing())
-                    try {
-                        return forecastBusiness.from(location, MapsActivity.this);
-                    } catch (AddressNotFoundException e) {
-                        error = e;
-                    }
+                if(isFinishing())
+					return null;
+
+				try {
+					return forecastBusiness.from(location, MapsActivity.this);
+				} catch (AddressNotFoundException e) {
+					error = e;
+				}
                 return null;
 			}
 
             @Override
             protected void onPostExecute(Weather weather) {
+				if(isFinishing())
+					return;
+
                 if(weather != null) {
                     addMark(weather);
                 } else if(error instanceof AddressNotFoundException) {
