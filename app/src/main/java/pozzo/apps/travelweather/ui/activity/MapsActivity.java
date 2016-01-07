@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.splunk.mint.Mint;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,12 +108,12 @@ public class MapsActivity extends FragmentActivity
 		final View view = findViewById(R.id.vgMain);
 		ViewTreeObserver observer = view.getViewTreeObserver();
 		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                fitCurrentRouteOnScreen();
-                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+			@Override
+			public void onGlobalLayout() {
+				fitCurrentRouteOnScreen();
+				view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+			}
+		});
     }
 
 	@Override
@@ -156,8 +157,13 @@ public class MapsActivity extends FragmentActivity
 		if(startPosition == null)
             setStartOnCurrentLocation();
 
-		setStartPosition(startPosition);
-		setFinishPosition(finishPosition);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				setStartPosition(startPosition);
+				setFinishPosition(finishPosition);
+			}
+		}, 500);
     }
 
 	/**
@@ -203,7 +209,11 @@ public class MapsActivity extends FragmentActivity
      * Map will fit the given bounds.
      */
     private void pointMapTo(LatLngBounds latLng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null);
+		try {
+			mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null);
+		} catch(IllegalStateException e) {
+			Mint.logException(e);
+		}
     }
 
     /**
