@@ -55,13 +55,22 @@ public class AndroidUtil {
 
     /**
      * Redirect to any link.
+	 *
+	 * @return true if succed.
      */
-    public static void openUrl(String link, Context context) {
+    public static boolean openUrl(String link, Context context) {
         if(context == null)
-            return;
+            return false;
 
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        context.startActivity(browserIntent);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+
+		PackageManager manager = context.getPackageManager();
+		List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
+		if (infos.size() > 0) {
+			context.startActivity(intent);
+			return true;
+		}
+		return false;
     }
 
     /**
