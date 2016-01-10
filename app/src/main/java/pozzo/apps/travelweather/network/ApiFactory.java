@@ -1,12 +1,9 @@
 package pozzo.apps.travelweather.network;
 
 import pozzo.apps.travelweather.helper.GsonFactory;
-import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
-import retrofit.mime.TypedByteArray;
 
 /**
  * Creates ou APIs abstraction to communicate with server.
@@ -28,7 +25,6 @@ public class ApiFactory {
             yahooWeather = new RestAdapter.Builder()
                     .setEndpoint("https://query.yahooapis.com")
                     .setRequestInterceptor(new SendInterceptor())
-                    .setErrorHandler(new HandleError())
                     .setConverter(new GsonConverter(GsonFactory.getGson()))
                             .build()
                             .create(YahooWeather.class);
@@ -44,17 +40,6 @@ public class ApiFactory {
         public void intercept(RequestFacade request) {
             request.addHeader("Content-Type", "application/json");
             request.addHeader("Accept", "application/json");
-        }
-    }
-
-    public static class HandleError implements ErrorHandler {
-        @Override
-        public Throwable handleError(RetrofitError cause) {
-            if(cause.getCause() != null)
-                cause.getCause().printStackTrace();
-            System.out.println(
-                    new String(((TypedByteArray) cause.getResponse().getBody()).getBytes()));
-            return null;
         }
     }
 }

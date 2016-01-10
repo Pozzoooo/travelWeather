@@ -16,6 +16,7 @@ import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
 import pozzo.apps.travelweather.network.ApiFactory;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 
@@ -52,7 +53,13 @@ public class ForecastBusiness {
         //and u='c' - Serve para pegar temperatura em celsius
         String query = "select item from weather.forecast where woeid in " +
                 "(select woeid from geo.places(1) where text=\"" + address.getAddress() + "\") and u='c'";
-        Response response = ApiFactory.getInstance().getYahooWather().forecast(query);
+		Response response;
+		try {
+			response = ApiFactory.getInstance().getYahooWather().forecast(query);
+		} catch(RetrofitError | IllegalStateException e) {
+			Mint.logExceptionMessage("query", query, e);
+			return null;
+		}
         String result = new String(((TypedByteArray) response.getBody()).getBytes());
         try {
             JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
