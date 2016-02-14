@@ -80,7 +80,7 @@ public class ForecastBusiness {
             weather.setUrl(item.get("link").getAsString());
             return weather;
         } catch (ClassCastException e) {
-            Mint.logException(e);
+            Mint.logExceptionMessage("result", result, e);
             return null;
         }
     }
