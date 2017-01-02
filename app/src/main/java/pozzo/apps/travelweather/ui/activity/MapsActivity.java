@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -228,9 +229,12 @@ public class MapsActivity extends FragmentActivity
 
 		Forecast forecast = getForecastFor(weather);
         int icon = ForecastHelper.forecastIcon(forecast);
+		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(icon);
 
-        MarkerOptions markerOptions = new MarkerOptions().position(location)
-				.title(forecast.getText()).icon(BitmapDescriptorFactory.fromResource(icon));
+		MarkerOptions markerOptions = new MarkerOptions()
+				.position(location)
+				.title(forecast.getText())
+				.icon(bitmapDescriptor);
         Marker marker = mMap.addMarker(markerOptions);
         markerWeathers.put(marker, weather);
     }

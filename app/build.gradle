@@ -18,7 +18,7 @@ android {
 
     allprojects {
         afterEvaluate { project ->
-            def propsFile = rootProject.file('/home/sarge/dev/keystore.properties')
+            def propsFile = rootProject.file('/home/barrador/dev/keystore.properties')
             def configName = 'release'
 
             if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
