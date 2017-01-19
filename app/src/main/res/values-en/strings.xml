@@ -19,4 +19,5 @@
     <string name="title_forecastDate">Forecast for</string>
     <string name="warning_needsConnection">Internet connection required</string>
     <string name="warning_pathNotFound">Could not found a route</string>
+	<string name="warning_currentLocationNotFound">Not able to find your current location</string>
 </resources>

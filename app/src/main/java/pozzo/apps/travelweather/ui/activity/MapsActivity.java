@@ -475,8 +475,19 @@ public class MapsActivity extends FragmentActivity
      */
     private void setStartOnCurrentLocation() {
         Location location = locationBusiness.getCurrentLocation(this);
-        if(location != null)
-            setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+        if(location != null) {
+			setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+		} else {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this)
+					.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
+			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			builder.create().show();
+		}
     }
 
     /**

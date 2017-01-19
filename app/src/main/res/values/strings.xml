@@ -18,4 +18,5 @@
     <string name="title_forecastDate">Previsão para</string>
     <string name="warning_needsConnection">Você precisa estar conectado com a internet</string>
     <string name="warning_pathNotFound">Não conseguimos gerar uma rota</string>
+	<string name="warning_currentLocationNotFound">Não foi possivel determinar sua localização atual</string>
 </resources>
