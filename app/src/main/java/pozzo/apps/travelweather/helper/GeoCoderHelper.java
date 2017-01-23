@@ -36,7 +36,7 @@ public class GeoCoderHelper {
 			currentAddr.append(addr.getAddressLine(i));
 			currentAddr.append(", ");
 		}
-		currentAddr.delete(currentAddr.length()-2, currentAddr.length());
+		currentAddr.append(addr.getCountryName());
 
 		return currentAddr.toString();
 	}

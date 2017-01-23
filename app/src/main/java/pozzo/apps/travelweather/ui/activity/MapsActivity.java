@@ -39,6 +39,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
@@ -76,11 +81,17 @@ public class MapsActivity extends FragmentActivity
 	private EditText eSearch;
 	private View vgTopBar;
 
+	private ThreadPoolExecutor executor;
+	private Handler mainThread;
+
     {
         locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
 		geoCoderHelper = new GeoCoderHelper(this);
 		daySelection = -1;
+		executor = new ThreadPoolExecutor(
+				7, 20, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(7), new ThreadPoolExecutor.DiscardPolicy()
+		);
     }
 
     @Override
@@ -100,6 +111,7 @@ public class MapsActivity extends FragmentActivity
 		eSearch = (EditText) findViewById(R.id.eSearch);
 		eSearch.setOnEditorActionListener(onSearchGo);
 		vgTopBar = findViewById(R.id.vgTopBar);
+		mainThread = new Handler();
     }
 
     @Override
@@ -422,9 +434,8 @@ public class MapsActivity extends FragmentActivity
         if(directionPoint == null || directionPoint.isEmpty())
             return;
 
-        //Start jah possui
         LatLng lastForecast = directionPoint.get(0);
-        for(int i = 0 ; i < directionPoint.size() ; i++) {
+        for(int i = 1 ; i < directionPoint.size() - 1 ; i++) {
             LatLng latLng = directionPoint.get(i);
             if(i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
                     && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
@@ -438,36 +449,25 @@ public class MapsActivity extends FragmentActivity
      * Query and shows weather for the given location.
      */
 	private void queryAndShowWeatherFor(final LatLng location) {
-		new AsyncTask<Void, Void, Weather>() {
-            private Exception error;
-
-            @Override
-			protected Weather doInBackground(Void... params) {
-                if(isFinishing())
-					return null;
-
-				try {
-					return forecastBusiness.from(location, MapsActivity.this);
-				} catch (AddressNotFoundException e) {
-					error = e;
-				}
-                return null;
-			}
-
-            @Override
-            protected void onPostExecute(Weather weather) {
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
 				if(isFinishing())
 					return;
 
-                if(weather != null) {
-                    addMark(weather);
-                } else if(error instanceof AddressNotFoundException) {
-                    AndroidUtil.errorMessage(MapsActivity.this,
-                            getString(R.string.error_addressNotFound),
-                            R.string.warning, R.string.ok).create().show();
-                }
-            }
-        }.execute();
+				try {
+					final Weather weather = forecastBusiness.from(location, MapsActivity.this);
+					mainThread.post(new Runnable() {
+						@Override
+						public void run() {
+							addMark(weather);
+						}
+					});
+				} catch (AddressNotFoundException e) {
+					//Ignored...
+				}
+			}
+		});
 	}
 
     /**

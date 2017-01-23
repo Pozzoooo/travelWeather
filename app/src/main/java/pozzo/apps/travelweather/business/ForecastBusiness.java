@@ -45,20 +45,49 @@ public class ForecastBusiness {
         return from(address);
     }
 
+	public Weather from(Address address) {
+		int maxRetries = 5, i = 0;
+		String addressStr = address.getAddress();
+		if (addressStr == null)
+			return null;
+		do {
+			try {
+//				System.out.println("before discard: " + addressStr);
+				int firstCommaIdx = addressStr.indexOf(",");
+				addressStr = firstCommaIdx == -1 ? "" : addressStr.substring(firstCommaIdx + 1).trim();
+
+				if (!addressStr.contains(","))
+					return null;
+
+				Weather weather = fromInternal(addressStr);
+				if (weather == null)
+					return null;
+
+//				System.out.println("Worked with: " + addressStr);
+				weather.setAddress(address);
+				return weather;
+			} catch (Exception e) {
+				//ignored to retrie
+			}
+//			System.out.println("Failed with: " + addressStr);
+		} while (++i < maxRetries);
+		return null;
+	}
+
     /**
      * Forecast from given location.
      */
-    public Weather from(Address address) {
+    private Weather fromInternal(String address) throws Exception {
         //item = condition + forecast
         //and u='c' - Serve para pegar temperatura em celsius
         String query = "select item from weather.forecast where woeid in " +
-                "(select woeid from geo.places(1) where text=\"" + address.getAddress() + "\") and u='c'";
+                "(select woeid from geo.places(1) where text=\"" + address + "\") and u='c'";
 		Response response;
 		try {
 			response = ApiFactory.getInstance().getYahooWather().forecast(query);
 		} catch(RetrofitError | IllegalStateException e) {
 			Mint.logExceptionMessage("query", query, e);
-			return null;
+			throw e;
 		}
         String result = new String(((TypedByteArray) response.getBody()).getBytes());
         try {
@@ -75,13 +104,12 @@ public class ForecastBusiness {
                 return null;
 
             Weather weather = new Weather();
-            weather.setAddress(address);
             weather.setForecasts(forecasts);
             weather.setUrl(item.get("link").getAsString());
             return weather;
         } catch (ClassCastException e) {
             Mint.logExceptionMessage("result", result, e);
-            return null;
+            throw e;
         }
     }
 }
