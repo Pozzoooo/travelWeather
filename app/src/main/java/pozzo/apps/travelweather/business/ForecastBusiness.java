@@ -50,11 +50,9 @@ public class ForecastBusiness {
 		String addressStr = address.getAddress();
 		if (addressStr == null)
 			return null;
+		System.out.println("before discard: " + addressStr);
 		do {
 			try {
-//				System.out.println("before discard: " + addressStr);
-				int firstCommaIdx = addressStr.indexOf(",");
-				addressStr = firstCommaIdx == -1 ? "" : addressStr.substring(firstCommaIdx + 1).trim();
 
 				if (!addressStr.contains(","))
 					return null;
@@ -63,13 +61,15 @@ public class ForecastBusiness {
 				if (weather == null)
 					return null;
 
-//				System.out.println("Worked with: " + addressStr);
+				System.out.println("Worked with: " + addressStr);
 				weather.setAddress(address);
 				return weather;
 			} catch (Exception e) {
 				//ignored to retrie
 			}
-//			System.out.println("Failed with: " + addressStr);
+			System.out.println("Failed with: " + addressStr);
+			int firstCommaIdx = addressStr.indexOf(",");
+			addressStr = firstCommaIdx == -1 ? "" : addressStr.substring(firstCommaIdx + 1).trim();
 		} while (++i < maxRetries);
 		return null;
 	}
