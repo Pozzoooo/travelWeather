@@ -50,6 +50,6 @@ public class ForecastHelper {
     public static boolean isMinDistanceToForecast(LatLng from, LatLng to) {
         double distance = Math.abs(from.latitude - to.latitude)
                 + Math.abs(from.longitude - to.longitude);
-        return distance > 0.6;
+        return distance > 0.5;
     }
 }

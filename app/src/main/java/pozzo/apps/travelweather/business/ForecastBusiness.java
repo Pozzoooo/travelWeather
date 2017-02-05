@@ -53,7 +53,6 @@ public class ForecastBusiness {
 		System.out.println("before discard: " + addressStr);
 		do {
 			try {
-
 				if (!addressStr.contains(","))
 					return null;
 
@@ -82,6 +81,24 @@ public class ForecastBusiness {
         //and u='c' - Serve para pegar temperatura em celsius
         String query = "select item from weather.forecast where woeid in " +
                 "(select woeid from geo.places(1) where text=\"" + address + "\") and u='c'";
+		return requestYahooWeatherQuery(query, 1);
+    }
+
+	public Weather fromCoordinates(LatLng coordinates) {
+		String query = "select item from weather.forecast where woeid in " +
+				"(select woeid from geo.places where " +
+				"text=\"(" + coordinates.latitude + "," + coordinates.longitude + ")\") and u='c'";
+		Weather weather = requestYahooWeatherQuery(query, 5);
+		if (weather != null) {
+			Address address = new Address();
+			address.setLatitude(coordinates.latitude);
+			address.setLongitude(coordinates.longitude);
+			weather.setAddress(address);
+		}
+		return weather;
+	}
+
+	private Weather requestYahooWeatherQuery(String query, int maxRetries) {
 		Response response;
 		try {
 			response = ApiFactory.getInstance().getYahooWather().forecast(query);
@@ -89,27 +106,30 @@ public class ForecastBusiness {
 			Mint.logExceptionMessage("query", query, e);
 			throw e;
 		}
-        String result = new String(((TypedByteArray) response.getBody()).getBytes());
-        try {
-            JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
-            JsonObject channel = jsonResult
-                    .getAsJsonObject("query")
-                    .getAsJsonObject("results")
-                    .getAsJsonObject("channel");
-            JsonObject item = channel.getAsJsonObject("item");
-            JsonArray forecastArray = item.getAsJsonArray("forecast");
-            Gson gson = GsonFactory.getGson();
-            Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
-            if (forecasts == null || forecasts.length <= 0)
-                return null;
+		String result = new String(((TypedByteArray) response.getBody()).getBytes());
+		try {
+			JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
+			JsonObject channel = jsonResult
+					.getAsJsonObject("query")
+					.getAsJsonObject("results")
+					.getAsJsonObject("channel");
+			JsonObject item = channel.getAsJsonObject("item");
+			JsonArray forecastArray = item.getAsJsonArray("forecast");
+			Gson gson = GsonFactory.getGson();
+			Forecast[] forecasts = gson.fromJson(forecastArray, Forecast[].class);
+			if (forecasts == null || forecasts.length <= 0)
+				return null;
 
-            Weather weather = new Weather();
-            weather.setForecasts(forecasts);
-            weather.setUrl(item.get("link").getAsString());
-            return weather;
-        } catch (ClassCastException e) {
-            Mint.logExceptionMessage("result", result, e);
-            throw e;
-        }
-    }
+			Weather weather = new Weather();
+			weather.setForecasts(forecasts);
+			weather.setUrl(item.get("link").getAsString());
+			return weather;
+		} catch (ClassCastException e) {
+			if (maxRetries > 1)
+				return requestYahooWeatherQuery(query, --maxRetries);
+
+			Mint.logExceptionMessage("result", result, e);
+			throw e;
+		}
+	}
 }

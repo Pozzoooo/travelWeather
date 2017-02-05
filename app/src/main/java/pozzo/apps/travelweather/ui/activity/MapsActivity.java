@@ -233,7 +233,7 @@ public class MapsActivity extends FragmentActivity
      * Add 1 marker to the map related to the given Weather object.
      */
     private void addMark(Weather weather) {
-        if(weather == null)
+        if(weather == null || weather.getAddress() == null)
             return;
 
 		Address address = weather.getAddress();
@@ -456,14 +456,14 @@ public class MapsActivity extends FragmentActivity
 					return;
 
 				try {
-					final Weather weather = forecastBusiness.from(location, MapsActivity.this);
+					final Weather weather = forecastBusiness.fromCoordinates(location);
 					mainThread.post(new Runnable() {
 						@Override
 						public void run() {
 							addMark(weather);
 						}
 					});
-				} catch (AddressNotFoundException e) {
+				} catch (Exception e) {
 					//Ignored...
 				}
 			}
