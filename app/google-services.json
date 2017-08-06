@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "518837467092",
+    "firebase_url": "https://firm-scout-108815.firebaseio.com",
+    "project_id": "firm-scout-108815",
+    "storage_bucket": "firm-scout-108815.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518837467092:android:2523b9b9b7687e91",
+        "android_client_info": {
+          "package_name": "pozzo.apps.travelweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518837467092-jgrj9cu64qpji2n0v685viesc68mi53g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3VkgaCilXwuIMH0MJM0JJeAzeearbQZc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

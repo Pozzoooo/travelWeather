@@ -7,9 +7,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+		classpath 'com.google.gms:google-services:3.1.0'
+	}
 }
 
 allprojects {
@@ -18,7 +19,9 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://mint.splunk.com/gradle/" }
-    }
+		maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+		maven { url 'https://jitpack.io' }
+	}
 }
 
 task clean(type: Delete) {

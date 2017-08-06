@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.ui.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -40,15 +43,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
-import pozzo.apps.travelweather.exception.AddressNotFoundException;
 import pozzo.apps.travelweather.helper.ForecastHelper;
 import pozzo.apps.travelweather.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.model.Address;
@@ -64,6 +64,7 @@ import pozzo.apps.travelweather.util.AndroidUtil;
 public class MapsActivity extends FragmentActivity
 		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
 	private static final int ANIM_ROUTE_TIME = 1200;
+	private static final int REQ_PERMISSION = 0x1;
 
 	private int daySelection;
 	private int lineColor;
@@ -168,7 +169,7 @@ public class MapsActivity extends FragmentActivity
 
 		clear();
 		if(startPosition == null)
-            setStartOnCurrentLocation();
+            setStartOnCurrentLocation(false);
 
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -473,24 +474,41 @@ public class MapsActivity extends FragmentActivity
     /**
      * Defines the start position to the current user location.
      */
-    private void setStartOnCurrentLocation() {
-        Location location = locationBusiness.getCurrentLocation(this);
-        if(location != null) {
-			setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-		} else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-					.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
-			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			builder.create().show();
+	void setStartOnCurrentLocation(boolean hasRequestedPermission) {
+		try {
+			Location location = locationBusiness.getCurrentLocation(this);
+			if (location != null) {
+				setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				builder.create().show();
+			}
+		} catch (SecurityException e) {
+			if (!hasRequestedPermission)
+				ActivityCompat.requestPermissions(this, new String[] {
+						Manifest.permission.ACCESS_FINE_LOCATION,
+						Manifest.permission.ACCESS_COARSE_LOCATION
+				}, REQ_PERMISSION);
 		}
     }
 
-    /**
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode == REQ_PERMISSION) {
+			setStartOnCurrentLocation(true);
+		} else {
+			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
+	}
+
+	/**
      * Search button click event.
      */
     public void onSearch(View view) {
@@ -506,7 +524,7 @@ public class MapsActivity extends FragmentActivity
      */
     public void onMyLocation(View view) {
         clear();
-        setStartOnCurrentLocation();
+        setStartOnCurrentLocation(false);
     }
 
 	/**

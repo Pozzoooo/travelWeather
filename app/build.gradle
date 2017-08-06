@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 23
     buildToolsVersion '25.0.2'
+	useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "pozzo.apps.travelweather"
         minSdkVersion 16
-        targetSdkVersion 21
+        targetSdkVersion 23
         versionCode 4
         versionName "1.0.3"
     }
@@ -19,7 +21,7 @@ android {
 
     allprojects {
         afterEvaluate { project ->
-            def propsFile = rootProject.file('/home/barrador/dev/keystore.properties')
+            def propsFile = rootProject.file("/home/xalien/dev/keystore.properties")
             def configName = 'release'
 
             if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
@@ -49,6 +51,7 @@ android {
         }
         debug {
             debuggable true
+			signingConfig signingConfigs.release
         }
     }
 
@@ -61,8 +64,8 @@ dependencies {
     //What tests?
     testCompile 'junit:junit:4.12'
     //Google
-    compile 'com.android.support:appcompat-v7:21.2.1'
-    compile 'com.google.android.gms:play-services:7.8.0'
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.google.android.gms:play-services:9.0.0'
     //Web requests
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     //Persistence

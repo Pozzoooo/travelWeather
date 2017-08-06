@@ -26,6 +26,7 @@ import retrofit.mime.TypedByteArray;
  * Created by sarge on 10/19/15.
  */
 public class ForecastBusiness {
+	private static final int MAX_RETRIES = 5;
 
     /**
      * Forecast from given location.
@@ -46,7 +47,7 @@ public class ForecastBusiness {
     }
 
 	public Weather from(Address address) {
-		int maxRetries = 5, i = 0;
+		int i = 0;
 		String addressStr = address.getAddress();
 		if (addressStr == null)
 			return null;
@@ -69,7 +70,7 @@ public class ForecastBusiness {
 			System.out.println("Failed with: " + addressStr);
 			int firstCommaIdx = addressStr.indexOf(",");
 			addressStr = firstCommaIdx == -1 ? "" : addressStr.substring(firstCommaIdx + 1).trim();
-		} while (++i < maxRetries);
+		} while (++i < MAX_RETRIES);
 		return null;
 	}
 
@@ -88,7 +89,7 @@ public class ForecastBusiness {
 		String query = "select item from weather.forecast where woeid in " +
 				"(select woeid from geo.places where " +
 				"text=\"(" + coordinates.latitude + "," + coordinates.longitude + ")\") and u='c'";
-		Weather weather = requestYahooWeatherQuery(query, 5);
+		Weather weather = requestYahooWeatherQuery(query, MAX_RETRIES);
 		if (weather != null) {
 			Address address = new Address();
 			address.setLatitude(coordinates.latitude);
