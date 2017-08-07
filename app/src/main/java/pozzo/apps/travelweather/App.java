@@ -16,18 +16,15 @@ import com.splunk.mint.Mint;
  *      para garantir que nao eh a posicao inicial o problema.
  *  A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas
  *      previsoes.
- *  Current location is over drawing Google logo
  *  Why sometimes the route button shows and some times it does not?
- *  I need a clear way to show the menu
  *  Initial tutorial?
- *  New permission requests
+ *  Remove http legacy
  *
  *  ?
  *  Realizar a separacao early, late...
  *  A questao do horario de saida e chegada, como fica?
  *
  *  2x
- *  Tratamento yahoo null com reenvio de cidade
  *  Persistir dados
  *  Agendar uma viagem
  *  Exibir ultima rota que estava sendo visualizada atraves do banco

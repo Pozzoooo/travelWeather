@@ -3,17 +3,18 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
     buildToolsVersion '25.0.2'
 	useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "pozzo.apps.travelweather"
-        minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 4
-        versionName "1.0.3"
-    }
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 5
+        versionName "1.0.4"
+		multiDexEnabled true
+	}
 
     signingConfigs {
         release
@@ -52,6 +53,8 @@ android {
         debug {
             debuggable true
 			signingConfig signingConfigs.release
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -61,18 +64,17 @@ android {
 }
 
 dependencies {
-    //What tests?
-    testCompile 'junit:junit:4.12'
     //Google
-    compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.google.android.gms:play-services:9.0.0'
+	compile 'com.android.support:design:26.0.0-alpha1'
     //Web requests
-    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
     //Persistence
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     //Mint
     compile "com.splunk.mint:mint:4.4.0"
 
+	testCompile 'junit:junit:4.12'
 	//Kotlin
 	testCompile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

@@ -1,5 +1,6 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
@@ -30,7 +31,7 @@
                 android:id="@+id/eSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="50dp"
                 android:layout_marginRight="70dp"
                 android:layout_marginTop="@dimen/margin_bigger"
                 android:inputType="text"
@@ -58,7 +59,8 @@
             android:paddingTop="@dimen/margin_bigger"
             android:paddingBottom="@dimen/margin_bigger"
             android:paddingRight="@dimen/margin_bigger"
-            android:background="@null"
+			android:elevation="@dimen/elevation_floatingButton"
+			android:background="@color/colorAccent"
             android:src="@drawable/ic_drawer"
             android:onClick="onMenu"/>
 
@@ -68,22 +70,22 @@
             android:layout_height="@dimen/button_size"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/margin_big"
             android:elevation="@dimen/elevation_floatingButton"
             android:contentDescription="@android:string/search_go"
             android:src="@android:drawable/ic_menu_search"
+			android:background="@color/colorAccent"
             android:onClick="onSearch"/>
 
-        <ImageButton
-            android:id="@+id/bMyLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_mylocation"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="@dimen/margin_big"
-            android:elevation="@dimen/elevation_floatingButton"
-            android:onClick="onMyLocation"/>
+		<android.support.design.widget.FloatingActionButton
+			android:id="@+id/bMyLocation"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|end"
+			android:layout_alignParentRight="true"
+			android:layout_alignParentBottom="true"
+			android:layout_margin="@dimen/margin_big"
+			android:onClick="onMyLocation"
+			android:src="@android:drawable/ic_menu_mylocation"/>
     </RelativeLayout>
 
     <fragment

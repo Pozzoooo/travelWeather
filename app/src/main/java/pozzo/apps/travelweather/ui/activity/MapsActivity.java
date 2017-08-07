@@ -109,7 +109,7 @@ public class MapsActivity extends FragmentActivity
 				getSupportFragmentManager().findFragmentById(R.id.navigationDrawer);
 		navigationDrawer.setOnDaySelectionChanged(this);
 
-		eSearch = (EditText) findViewById(R.id.eSearch);
+		eSearch = findViewById(R.id.eSearch);
 		eSearch.setOnEditorActionListener(onSearchGo);
 		vgTopBar = findViewById(R.id.vgTopBar);
 		mainThread = new Handler();
@@ -169,7 +169,7 @@ public class MapsActivity extends FragmentActivity
 
 		clear();
 		if(startPosition == null)
-            setStartOnCurrentLocation(false);
+            focusOnCurrentLocation();
 
 		new Handler().postDelayed(new Runnable() {
 			@Override
@@ -311,7 +311,7 @@ public class MapsActivity extends FragmentActivity
                     return null;
 
 				if(lineColor <= 0)
-					lineColor = getResources().getColor(R.color.colorAccent);
+					lineColor = getResources().getColor(R.color.route);
                 PolylineOptions rectLine = new PolylineOptions().width(7).color(lineColor);
                 for(int i = 0 ; i < directionPoint.size() ; i++) {
                     LatLng latLng = directionPoint.get(i);
@@ -471,14 +471,11 @@ public class MapsActivity extends FragmentActivity
 		});
 	}
 
-    /**
-     * Defines the start position to the current user location.
-     */
-	void setStartOnCurrentLocation(boolean hasRequestedPermission) {
+	private LatLng getCurrentLocation(boolean hasRequestedPermission) {
 		try {
 			Location location = locationBusiness.getCurrentLocation(this);
 			if (location != null) {
-				setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+				return new LatLng(location.getLatitude(), location.getLongitude());
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this)
 						.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
@@ -492,10 +489,28 @@ public class MapsActivity extends FragmentActivity
 			}
 		} catch (SecurityException e) {
 			if (!hasRequestedPermission)
-				ActivityCompat.requestPermissions(this, new String[] {
+				ActivityCompat.requestPermissions(this, new String[]{
 						Manifest.permission.ACCESS_FINE_LOCATION,
 						Manifest.permission.ACCESS_COARSE_LOCATION
 				}, REQ_PERMISSION);
+		}
+		return null;
+	}
+
+	private void focusOnCurrentLocation() {
+		LatLng location = getCurrentLocation(false);
+		if (location != null) {
+			pointMapTo(location);
+		}
+	}
+
+    /**
+     * Defines the start position to the current user location.
+     */
+	private void setStartOnCurrentLocation(boolean hasRequestedPermission) {
+		LatLng location = getCurrentLocation(hasRequestedPermission);
+		if (location != null) {
+			setStartPosition(location);
 		}
     }
 
