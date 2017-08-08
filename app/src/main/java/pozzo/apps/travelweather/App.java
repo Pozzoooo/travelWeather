@@ -19,6 +19,7 @@ import com.splunk.mint.Mint;
  *  Why sometimes the route button shows and some times it does not?
  *  Initial tutorial?
  *  Remove http legacy
+ *  Refactor this shity code
  *
  *  ?
  *  Realizar a separacao early, late...

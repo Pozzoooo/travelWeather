@@ -12,7 +12,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 5
-        versionName "1.0.4"
+        versionName "1.0.5-SNAPSHOT"
 		multiDexEnabled true
 	}
 

@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -185,7 +187,7 @@ public class MapsActivity extends FragmentActivity
 	 */
 	private DrawerLayout getDrawerLayout() {
 		if(drawerLayout == null)
-			drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+			drawerLayout = findViewById(R.id.drawerLayout);
 		return drawerLayout;
 	}
 
@@ -476,6 +478,8 @@ public class MapsActivity extends FragmentActivity
 			Location location = locationBusiness.getCurrentLocation(this);
 			if (location != null) {
 				return new LatLng(location.getLatitude(), location.getLongitude());
+			} else if (!hasRequestedPermission) {
+				currentLocation();
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this)
 						.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
@@ -495,6 +499,34 @@ public class MapsActivity extends FragmentActivity
 				}, REQ_PERMISSION);
 		}
 		return null;
+	}
+
+	@SuppressWarnings("MissingPermission")
+	private void currentLocation() {
+		final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+		final ProgressDialog progressDialog = new ProgressDialog(MapsActivity.this);
+		progressDialog.setIndeterminate(true);
+		progressDialog.setCancelable(true);
+		progressDialog.show();
+
+		LocationListener locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				setStartOnCurrentLocation(true);
+				locationManager.removeUpdates(this);
+				progressDialog.cancel();
+			}
+
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+			public void onProviderEnabled(String provider) {}
+
+			public void onProviderDisabled(String provider) {
+				progressDialog.cancel();
+			}
+		};
+
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 
 	private void focusOnCurrentLocation() {
