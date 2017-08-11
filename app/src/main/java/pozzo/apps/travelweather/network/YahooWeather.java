@@ -1,9 +1,9 @@
 package pozzo.apps.travelweather.network;
 
-import retrofit.client.Response;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Query;
 
 /**
  * Apenas o tempo atual
@@ -21,6 +21,7 @@ import retrofit.http.Query;
  * Created by soldier on 10/5/15.
  */
 public interface YahooWeather {
+	@Headers({"Content-Type: application/json", "Accept: application/json"})
 	@GET("/v1/public/yql?format=json&env=store://datatables.org/alltableswithkeys")
-	Response forecast(@Query("q") String q);
+	Response<String> forecast(@Query("q") String q);
 }

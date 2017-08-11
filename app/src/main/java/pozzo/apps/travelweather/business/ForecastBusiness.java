@@ -16,9 +16,7 @@ import pozzo.apps.travelweather.model.Address;
 import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
 import pozzo.apps.travelweather.network.ApiFactory;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+import retrofit2.Response;
 
 /**
  * Forecast business logic.
@@ -100,15 +98,16 @@ public class ForecastBusiness {
 	}
 
 	private Weather requestYahooWeatherQuery(String query, int maxRetries) {
-		Response response;
+		Response<String> response;
 		try {
 			response = ApiFactory.getInstance().getYahooWather().forecast(query);
-		} catch(RetrofitError | IllegalStateException e) {
+		} catch(RuntimeException e) {
 			Mint.logExceptionMessage("query", query, e);
 			throw e;
 		}
-		String result = new String(((TypedByteArray) response.getBody()).getBytes());
+		String result = response.body();
 		try {
+			//// TODO: 11/08/17 extrair isso para um objeto de verdade 
 			JsonObject jsonResult = new JsonParser().parse(result).getAsJsonObject();
 			JsonObject channel = jsonResult
 					.getAsJsonObject("query")

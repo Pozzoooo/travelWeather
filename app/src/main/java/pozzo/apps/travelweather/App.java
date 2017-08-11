@@ -7,9 +7,6 @@ import com.splunk.mint.Mint;
  * TODO
  *  1x
  *	Clarificar de alguma forma as acoes do usuario, tipo arrastar o marcador talvez.
- *  Criar tratamento para quando nao conseguir pegar a localizacao atual, talvez seja uma boa ateh
- *      adicioar um spinner e ativar a requisicao de localizacao atravez de um callback, porem,
- *      eh importante colocar um timeout (como faz mesmo?).
  *  Busca na action bar, e a selecao de dia (hoje, amananha...) pode ir em uma spinner no estilo
  *      navegacao.
  *  Quando houver um erro na criacao da rota (no estilo reportado do celular do pai) fazer um clear
@@ -20,6 +17,7 @@ import com.splunk.mint.Mint;
  *  Initial tutorial?
  *  Remove http legacy
  *  Refactor this shity code
+ *  Try to implement mvvm
  *
  *  ?
  *  Realizar a separacao early, late...

@@ -48,6 +48,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import pozzo.apps.tools.AndroidUtil;
+import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.business.ForecastBusiness;
 import pozzo.apps.travelweather.business.LocationBusiness;
@@ -58,7 +60,6 @@ import pozzo.apps.travelweather.model.Forecast;
 import pozzo.apps.travelweather.model.Weather;
 import pozzo.apps.travelweather.ui.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.ui.fragment.SideMenuFragment;
-import pozzo.apps.travelweather.util.AndroidUtil;
 
 /**
  * Atividade para exibir o mapa.
@@ -372,7 +373,7 @@ public class MapsActivity extends FragmentActivity
 	 * @return true if seems to be connection available.
 	 */
     private boolean checkNetworkAndWarn() {
-        boolean isConnected = AndroidUtil.isNetworkAvailable(this);
+        boolean isConnected = NetworkUtil.isNetworkAvailable(this);
         if(!isConnected) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this)
 					.setTitle(R.string.warning).setMessage(R.string.warning_needsConnection);

@@ -16,7 +16,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://mint.splunk.com/gradle/" }
 		maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }

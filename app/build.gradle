@@ -68,11 +68,14 @@ dependencies {
     compile 'com.google.android.gms:play-services:9.0.0'
 	compile 'com.android.support:design:26.0.0-alpha1'
     //Web requests
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
-    //Persistence
+	compile 'com.squareup.retrofit2:retrofit:2.3.0'
+	compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+	//Persistence
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     //Mint
     compile "com.splunk.mint:mint:4.4.0"
+	//Pozzo
+	compile 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
 
 	testCompile 'junit:junit:4.12'
 	//Kotlin

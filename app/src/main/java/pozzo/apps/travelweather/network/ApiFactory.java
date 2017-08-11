@@ -1,9 +1,8 @@
 package pozzo.apps.travelweather.network;
 
 import pozzo.apps.travelweather.helper.GsonFactory;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Creates ou APIs abstraction to communicate with server.
@@ -22,24 +21,12 @@ public class ApiFactory {
 
     public YahooWeather getYahooWather() {
         if(yahooWeather == null) {
-            yahooWeather = new RestAdapter.Builder()
-                    .setEndpoint("https://query.yahooapis.com")
-                    .setRequestInterceptor(new SendInterceptor())
-                    .setConverter(new GsonConverter(GsonFactory.getGson()))
-                            .build()
-                            .create(YahooWeather.class);
+            yahooWeather = new Retrofit.Builder()
+                    .baseUrl("https://query.yahooapis.com")
+                    .addConverterFactory(GsonConverterFactory.create(GsonFactory.getGson()))
+					.build()
+					.create(YahooWeather.class);
         }
         return yahooWeather;
-    }
-
-    /**
-     * General handling before sending a request.
-     */
-    private static class SendInterceptor implements RequestInterceptor {
-        @Override
-        public void intercept(RequestFacade request) {
-            request.addHeader("Content-Type", "application/json");
-            request.addHeader("Accept", "application/json");
-        }
     }
 }
