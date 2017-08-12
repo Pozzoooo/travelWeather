@@ -76,8 +76,8 @@ dependencies {
     compile "com.splunk.mint:mint:4.4.0"
 	//Pozzo
 	compile 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
+	//Kotlin
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
 
 	testCompile 'junit:junit:4.12'
-	//Kotlin
-	testCompile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

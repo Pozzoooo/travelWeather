@@ -6,6 +6,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This will represent the weather for a location in a period of time.
@@ -43,6 +44,10 @@ public class Weather extends BaseModel {
 
     public void setForecasts(Forecast[] forecasts) {
         this.forecasts = forecasts;
+    }
+
+    public void setForecasts(List<Forecast> forecasts) {
+        this.forecasts = forecasts.toArray(new Forecast[0]);
     }
 
     public String getUrl() {

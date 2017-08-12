@@ -460,7 +460,7 @@ public class MapsActivity extends FragmentActivity
 					return;
 
 				try {
-					final Weather weather = forecastBusiness.fromCoordinates(location);
+					final Weather weather = forecastBusiness.from(location);
 					mainThread.post(new Runnable() {
 						@Override
 						public void run() {
