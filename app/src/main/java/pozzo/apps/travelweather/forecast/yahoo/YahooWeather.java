@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.network;
+package pozzo.apps.travelweather.forecast.yahoo;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

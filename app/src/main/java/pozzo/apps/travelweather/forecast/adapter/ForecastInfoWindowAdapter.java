@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.ui.adapter;
+package pozzo.apps.travelweather.forecast.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -32,7 +32,7 @@ public class ForecastInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 	@Override
 	public View getInfoContents(Marker marker) {
 		View contentView = inflater.inflate(R.layout.adapter_forecast, null);
-		TextView lTitle = (TextView) contentView.findViewById(R.id.lTitle);
+		TextView lTitle = contentView.findViewById(R.id.lTitle);
 		lTitle.setText(marker.getTitle());
 		return contentView;
 	}

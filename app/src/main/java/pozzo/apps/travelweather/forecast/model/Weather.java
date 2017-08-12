@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.model;
+package pozzo.apps.travelweather.forecast.model;
 
 import android.provider.BaseColumns;
 
@@ -7,6 +7,9 @@ import com.activeandroid.annotation.Table;
 
 import java.util.Arrays;
 import java.util.List;
+
+import pozzo.apps.travelweather.map.model.Address;
+import pozzo.apps.travelweather.BaseModel;
 
 /**
  * This will represent the weather for a location in a period of time.

@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.model;
+package pozzo.apps.travelweather.map.model;
 
 import android.provider.BaseColumns;
 
@@ -6,6 +6,8 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 import java.util.Date;
+
+import pozzo.apps.travelweather.BaseModel;
 
 /**
  * Created by soldier on 10/4/15.

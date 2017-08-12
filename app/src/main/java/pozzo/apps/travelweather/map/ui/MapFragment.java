@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.ui.fragment;
+package pozzo.apps.travelweather.map.ui;
 
 import com.google.android.gms.maps.SupportMapFragment;
 

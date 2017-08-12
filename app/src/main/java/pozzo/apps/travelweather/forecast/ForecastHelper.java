@@ -1,11 +1,11 @@
-package pozzo.apps.travelweather.helper;
+package pozzo.apps.travelweather.forecast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Locale;
 
 import pozzo.apps.travelweather.R;
-import pozzo.apps.travelweather.model.Forecast;
+import pozzo.apps.travelweather.forecast.model.Forecast;
 
 /**
  * To help us on reusability, as I am not sure exactly where to place it =/.

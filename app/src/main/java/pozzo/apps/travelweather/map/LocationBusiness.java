@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.business;
+package pozzo.apps.travelweather.map;
 
 import android.content.Context;
 import android.location.Criteria;
@@ -13,7 +13,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
-import pozzo.apps.travelweather.helper.GMapV2Direction;
+import pozzo.apps.travelweather.map.helper.GMapV2Direction;
 
 /**
  * Controla regra de negocio de localizacao.

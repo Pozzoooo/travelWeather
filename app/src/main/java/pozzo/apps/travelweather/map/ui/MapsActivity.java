@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.ui.activity;
+package pozzo.apps.travelweather.map.ui;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -51,15 +51,14 @@ import java.util.concurrent.TimeUnit;
 import pozzo.apps.tools.AndroidUtil;
 import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
-import pozzo.apps.travelweather.business.ForecastBusiness;
-import pozzo.apps.travelweather.business.LocationBusiness;
-import pozzo.apps.travelweather.helper.ForecastHelper;
-import pozzo.apps.travelweather.helper.GeoCoderHelper;
-import pozzo.apps.travelweather.model.Address;
-import pozzo.apps.travelweather.model.Forecast;
-import pozzo.apps.travelweather.model.Weather;
-import pozzo.apps.travelweather.ui.adapter.ForecastInfoWindowAdapter;
-import pozzo.apps.travelweather.ui.fragment.SideMenuFragment;
+import pozzo.apps.travelweather.forecast.ForecastBusiness;
+import pozzo.apps.travelweather.map.LocationBusiness;
+import pozzo.apps.travelweather.forecast.ForecastHelper;
+import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
+import pozzo.apps.travelweather.map.model.Address;
+import pozzo.apps.travelweather.forecast.model.Forecast;
+import pozzo.apps.travelweather.forecast.model.Weather;
+import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 
 /**
  * Atividade para exibir o mapa.

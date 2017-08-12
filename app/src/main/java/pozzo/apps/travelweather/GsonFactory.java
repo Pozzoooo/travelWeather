@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.helper;
+package pozzo.apps.travelweather;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

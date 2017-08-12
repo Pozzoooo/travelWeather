@@ -1,9 +1,11 @@
-package pozzo.apps.travelweather.model;
+package pozzo.apps.travelweather.map.model;
 
 import android.provider.BaseColumns;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+
+import pozzo.apps.travelweather.BaseModel;
 
 /**
  * Represent a single point in map.

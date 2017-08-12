@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.exception;
+package pozzo.apps.travelweather.map.exception;
 
 /**
  * Should be thrown when an address cant be found.

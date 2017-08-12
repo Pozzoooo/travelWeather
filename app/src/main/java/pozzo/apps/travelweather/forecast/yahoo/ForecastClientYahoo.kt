@@ -1,15 +1,15 @@
-package pozzo.apps.travelweather.business
+package pozzo.apps.travelweather.forecast.yahoo
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.splunk.mint.Mint
 import okhttp3.ResponseBody
-import pozzo.apps.travelweather.helper.GsonFactory
-import pozzo.apps.travelweather.model.Address
-import pozzo.apps.travelweather.model.Forecast
-import pozzo.apps.travelweather.model.Weather
-import pozzo.apps.travelweather.network.ApiFactory
+import pozzo.apps.travelweather.forecast.ForecastClient
+import pozzo.apps.travelweather.GsonFactory
+import pozzo.apps.travelweather.map.model.Address
+import pozzo.apps.travelweather.forecast.model.Forecast
+import pozzo.apps.travelweather.forecast.model.Weather
 import retrofit2.Response
 import java.lang.ClassCastException
 import java.lang.RuntimeException

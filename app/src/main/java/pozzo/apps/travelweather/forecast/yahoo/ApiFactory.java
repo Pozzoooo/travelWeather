@@ -1,6 +1,6 @@
-package pozzo.apps.travelweather.network;
+package pozzo.apps.travelweather.forecast.yahoo;
 
-import pozzo.apps.travelweather.helper.GsonFactory;
+import pozzo.apps.travelweather.GsonFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

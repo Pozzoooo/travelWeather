@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
-            android:name="pozzo.apps.travelweather.ui.fragment.MapFragment"
+            android:name="pozzo.apps.travelweather.map.ui.MapFragment"
             tools:context=".MapsActivity" />
 
         <FrameLayout
@@ -93,6 +93,6 @@
         android:layout_width="@dimen/width_navigationDrawer"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="pozzo.apps.travelweather.ui.fragment.SideMenuFragment"
+        android:name="pozzo.apps.travelweather.map.ui.SideMenuFragment"
         tools:layout="@layout/fragment_side_menu"/>
 </android.support.v4.widget.DrawerLayout>

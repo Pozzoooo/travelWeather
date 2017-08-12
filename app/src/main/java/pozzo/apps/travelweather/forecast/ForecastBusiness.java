@@ -1,9 +1,10 @@
-package pozzo.apps.travelweather.business;
+package pozzo.apps.travelweather.forecast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import pozzo.apps.travelweather.model.Address;
-import pozzo.apps.travelweather.model.Weather;
+import pozzo.apps.travelweather.forecast.yahoo.ForecastClientYahoo;
+import pozzo.apps.travelweather.map.model.Address;
+import pozzo.apps.travelweather.forecast.model.Weather;
 
 /**
  * Forecast business logic.

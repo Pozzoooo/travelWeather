@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.model;
+package pozzo.apps.travelweather;
 
 import com.activeandroid.Model;
 
