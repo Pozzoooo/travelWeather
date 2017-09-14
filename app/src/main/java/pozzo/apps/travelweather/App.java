@@ -18,6 +18,7 @@ import com.splunk.mint.Mint;
  *  Remove http legacy
  *  Refactor this shity code
  *  Try to implement mvvm
+ *  remove support library
  *
  *  ?
  *  Realizar a separacao early, late...

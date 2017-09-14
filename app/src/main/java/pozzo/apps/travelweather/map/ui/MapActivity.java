@@ -1,12 +1,15 @@
 package pozzo.apps.travelweather.map.ui;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.arch.lifecycle.LifecycleActivity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,8 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
@@ -51,20 +53,21 @@ import java.util.concurrent.TimeUnit;
 import pozzo.apps.tools.AndroidUtil;
 import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
+import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
 import pozzo.apps.travelweather.forecast.ForecastBusiness;
-import pozzo.apps.travelweather.map.LocationBusiness;
 import pozzo.apps.travelweather.forecast.ForecastHelper;
-import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
-import pozzo.apps.travelweather.map.model.Address;
+import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
-import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
+import pozzo.apps.travelweather.location.LocationBusiness;
+import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
+import pozzo.apps.travelweather.map.model.Address;
 
 /**
  * Atividade para exibir o mapa.
  */
-public class MapsActivity extends FragmentActivity
-		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
+public class MapActivity extends LifecycleActivity
+		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged, MapView {
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;
 
@@ -87,6 +90,8 @@ public class MapsActivity extends FragmentActivity
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
 
+	private MapViewModel viewModel;
+
     {
         locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
@@ -100,10 +105,13 @@ public class MapsActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+		ActivityMapsBinding contentView = DataBindingUtil.setContentView(this, R.layout.activity_maps);
+		viewModel = ViewModelProviders.of(this).get(MapViewModel.class);
+		contentView.setModelView(viewModel);
+
 		restoreInstanceState(savedInstanceState);
 
-        SupportMapFragment mapFragment = (SupportMapFragment)
+		SupportMapFragment mapFragment = (SupportMapFragment)
 				getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -115,7 +123,24 @@ public class MapsActivity extends FragmentActivity
 		eSearch.setOnEditorActionListener(onSearchGo);
 		vgTopBar = findViewById(R.id.vgTopBar);
 		mainThread = new Handler();
+
+		observeData();
     }
+
+    private void observeData() {
+		viewModel.getStartPosition().observe(this, new Observer<LatLng>() {
+			@Override
+			public void onChanged(@Nullable LatLng latLng) {
+				setStartPosition(latLng);
+			}
+		});
+		viewModel.getFinishPosition().observe(this, new Observer<LatLng>() {
+			@Override
+			public void onChanged(@Nullable LatLng latLng) {
+				setFinishPosition(latLng);
+			}
+		});
+	}
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -151,11 +176,16 @@ public class MapsActivity extends FragmentActivity
 	public void onBackPressed() {
         boolean shouldQuit = !hideTopBar();
         if(finishPosition != null) {
-            clear();
+            clearSelection();
             setFinishPosition(null);
             setStartPosition(startPosition);
             shouldQuit &= false;
-        }
+        } else if(startPosition != null) {
+			clearSelection();
+			setStartPosition(null);
+			shouldQuit &= false;
+		}
+
         if(shouldQuit)
 		    super.onBackPressed();
 	}
@@ -169,7 +199,7 @@ public class MapsActivity extends FragmentActivity
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
 		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
-		clear();
+		clearSelection();
 		if(startPosition == null)
             focusOnCurrentLocation();
 
@@ -276,7 +306,7 @@ public class MapsActivity extends FragmentActivity
     /**
      * Clear anything drawn on map.
      */
-    private void clear() {
+    public void clearSelection() {
         mMap.clear();
         markerWeathers = new HashMap<>();
     }
@@ -293,7 +323,7 @@ public class MapsActivity extends FragmentActivity
 
 			@Override
 			protected void onPreExecute() {
-				progressDialog = new ProgressDialog(MapsActivity.this);
+				progressDialog = new ProgressDialog(MapActivity.this);
 				progressDialog.setIndeterminate(true);
 				//Soh mostramos se demorar consideravelmente
 				new Handler().postDelayed(new Runnable() {
@@ -338,7 +368,7 @@ public class MapsActivity extends FragmentActivity
                 if(rectLine != null)
                     googleMap.addPolyline(rectLine);
                 else
-                    Toast.makeText(MapsActivity.this, R.string.warning_pathNotFound,
+                    Toast.makeText(MapActivity.this, R.string.warning_pathNotFound,
                             Toast.LENGTH_SHORT).show();
             }
         }.execute();
@@ -358,8 +388,8 @@ public class MapsActivity extends FragmentActivity
                 setStartPosition(latLng);
             } else {
                 if(finishPosition != null) {
-                    LatLng startPosition = MapsActivity.this.startPosition;
-                    clear();//Make sure there is no garbage around
+                    LatLng startPosition = MapActivity.this.startPosition;
+                    clearSelection();//Make sure there is no garbage around
                     setStartPosition(startPosition);
                 }
                 setFinishPosition(latLng);
@@ -396,12 +426,12 @@ public class MapsActivity extends FragmentActivity
         @Override
         public void onMapLongClick(LatLng latLng) {
 			hideTopBar();
-            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
             builder.setMessage(R.string.removeAllMarkers);
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    clear();
+                    clearSelection();
                     setStartPosition(null);
                     setFinishPosition(null);
                 }
@@ -426,7 +456,7 @@ public class MapsActivity extends FragmentActivity
 			//Link is not redirecting corretly
 
             Weather weather = markerWeathers.get(marker);
-            AndroidUtil.openUrl(weather.getUrl(), MapsActivity.this);
+            AndroidUtil.openUrl(weather.getUrl(), MapActivity.this);
         }
     };
 
@@ -473,46 +503,18 @@ public class MapsActivity extends FragmentActivity
 		});
 	}
 
-	private LatLng getCurrentLocation(boolean hasRequestedPermission) {
-		try {
-			Location location = locationBusiness.getCurrentLocation(this);
-			if (location != null) {
-				return new LatLng(location.getLatitude(), location.getLongitude());
-			} else if (!hasRequestedPermission) {
-				currentLocation();
-			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this)
-						.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
-				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-				builder.create().show();
-			}
-		} catch (SecurityException e) {
-			if (!hasRequestedPermission)
-				ActivityCompat.requestPermissions(this, new String[]{
-						Manifest.permission.ACCESS_FINE_LOCATION,
-						Manifest.permission.ACCESS_COARSE_LOCATION
-				}, REQ_PERMISSION);
-		}
-		return null;
-	}
-
 	@SuppressWarnings("MissingPermission")
 	private void currentLocation() {
 		final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		final ProgressDialog progressDialog = new ProgressDialog(MapsActivity.this);
+		final ProgressDialog progressDialog = new ProgressDialog(MapActivity.this);
 		progressDialog.setIndeterminate(true);
 		progressDialog.setCancelable(true);
 		progressDialog.show();
 
 		LocationListener locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
-				setStartOnCurrentLocation(true);
+				setStartOnCurrentLocation();
 				locationManager.removeUpdates(this);
 				progressDialog.cancel();
 			}
@@ -530,7 +532,7 @@ public class MapsActivity extends FragmentActivity
 	}
 
 	private void focusOnCurrentLocation() {
-		LatLng location = getCurrentLocation(false);
+		LatLng location = viewModel.getCurrentLocation();
 		if (location != null) {
 			pointMapTo(location);
 		}
@@ -539,8 +541,8 @@ public class MapsActivity extends FragmentActivity
     /**
      * Defines the start position to the current user location.
      */
-	private void setStartOnCurrentLocation(boolean hasRequestedPermission) {
-		LatLng location = getCurrentLocation(hasRequestedPermission);
+	private void setStartOnCurrentLocation() {
+		LatLng location = viewModel.getCurrentLocation();
 		if (location != null) {
 			setStartPosition(location);
 		}
@@ -549,7 +551,7 @@ public class MapsActivity extends FragmentActivity
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == REQ_PERMISSION) {
-			setStartOnCurrentLocation(true);
+			setStartOnCurrentLocation();
 		} else {
 			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		}
@@ -570,8 +572,8 @@ public class MapsActivity extends FragmentActivity
      * User wants to point to his location.
      */
     public void onMyLocation(View view) {
-        clear();
-        setStartOnCurrentLocation(false);
+        clearSelection();
+        setStartOnCurrentLocation();
     }
 
 	/**
@@ -630,7 +632,7 @@ public class MapsActivity extends FragmentActivity
 				LatLng location = geoCoderHelper.getPositionFromFirst(address);
 				placeMarkerClick.onMapClick(location);
 			} catch (IOException e) {
-				AndroidUtil.errorMessage(MapsActivity.this,
+				AndroidUtil.errorMessage(MapActivity.this,
 						getString(R.string.error_addressNotFound), R.string.warning, R.string.ok);
 				e.printStackTrace();
 			}

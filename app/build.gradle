@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 26
@@ -61,13 +62,21 @@ android {
 	sourceSets {
 		test.java.srcDirs += 'src/test/kotlin'
 	}
+
+	dataBinding {
+		enabled = true
+	}
 }
 
 dependencies {
     //Google
     compile 'com.google.android.gms:play-services:9.0.0'
 	compile 'com.android.support:design:26.0.0-alpha1'
-    //Web requests
+	compile "android.arch.lifecycle:runtime:1.0.0-alpha5"
+	compile "android.arch.lifecycle:extensions:1.0.0-alpha5"
+	kapt "android.arch.lifecycle:compiler:1.0.0-alpha5"
+	kapt "com.android.databinding:compiler:2.3.2"
+	//Web requests
 	compile 'com.squareup.retrofit2:retrofit:2.3.0'
 	compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 	//Persistence

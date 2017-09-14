@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map;
+package pozzo.apps.travelweather.location;
 
 import android.content.Context;
 import android.location.Criteria;

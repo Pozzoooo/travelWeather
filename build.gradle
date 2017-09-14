@@ -20,6 +20,7 @@ allprojects {
         maven { url "https://mint.splunk.com/gradle/" }
 		maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
 		maven { url 'https://jitpack.io' }
+		maven { url 'https://maven.google.com' }
 	}
 }
 

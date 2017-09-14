@@ -22,7 +22,7 @@
             android:value="1" />
 
         <activity
-            android:name=".map.ui.MapsActivity"
+            android:name=".map.ui.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/appName"
             android:windowSoftInputMode="adjustResize" >
