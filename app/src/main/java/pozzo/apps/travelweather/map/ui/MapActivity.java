@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.splunk.mint.Mint;
 
 import java.io.IOException;
@@ -96,6 +97,7 @@ public class MapActivity extends LifecycleActivity
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
 	private Observer locationObserver;
+	private FirebaseAnalytics mFirebaseAnalytics;
 
 	private MapViewModel viewModel;
 
@@ -132,6 +134,7 @@ public class MapActivity extends LifecycleActivity
 		mainThread = new Handler();
 		progressDialog = new ProgressDialog(MapActivity.this);
 		progressDialog.setIndeterminate(true);
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		observeData();
     }
@@ -174,7 +177,7 @@ public class MapActivity extends LifecycleActivity
 				public void run() {
 					removeLocationObserver();
 
-					if (locationObserver == null) {
+					if (locationObserver != null) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
 								.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
 						builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -190,6 +193,11 @@ public class MapActivity extends LifecycleActivity
 
 			liveLocation.observe(this, locationObserver);
 		}
+
+		Bundle bundle = new Bundle();
+		bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab");
+		bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation");
+		mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 	}
 
 	private void removeLocationObserver() {

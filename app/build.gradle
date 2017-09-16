@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -70,10 +69,12 @@ android {
 
 dependencies {
     //Google
-    compile 'com.google.android.gms:play-services:9.0.0'
 	compile 'com.android.support:design:26.0.0-alpha1'
 	compile "android.arch.lifecycle:runtime:1.0.0-alpha5"
 	compile "android.arch.lifecycle:extensions:1.0.0-alpha5"
+	compile 'com.google.firebase:firebase-core:11.2.2'
+	compile 'com.google.android.gms:play-services-maps:11.2.2'
+	compile 'com.google.android.gms:play-services-location:11.2.2'
 	kapt "android.arch.lifecycle:compiler:1.0.0-alpha5"
 	kapt "com.android.databinding:compiler:2.3.2"
 	//Web requests
@@ -90,3 +91,5 @@ dependencies {
 
 	testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.google.gms.google-services'
