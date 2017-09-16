@@ -89,7 +89,7 @@
 				android:layout_alignParentRight="true"
 				android:layout_alignParentBottom="true"
 				android:layout_margin="@dimen/margin_big"
-				android:onClick="@{()->modelView.currentLocationFabClick()}"
+				android:onClick="currentLocationFabClick"
 				android:src="@android:drawable/ic_menu_mylocation"/>
 		</RelativeLayout>
 

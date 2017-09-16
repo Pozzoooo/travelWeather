@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.map.ui;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LifecycleActivity;
@@ -8,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
@@ -19,6 +21,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
@@ -60,6 +64,7 @@ import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
 import pozzo.apps.travelweather.location.LocationBusiness;
+import pozzo.apps.travelweather.location.LocationLiveData;
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.map.model.Address;
 
@@ -86,9 +91,11 @@ public class MapActivity extends LifecycleActivity
 	private GoogleMap mMap;
 	private EditText eSearch;
 	private View vgTopBar;
+	private ProgressDialog progressDialog;
 
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
+	private Observer locationObserver;
 
 	private MapViewModel viewModel;
 
@@ -123,6 +130,8 @@ public class MapActivity extends LifecycleActivity
 		eSearch.setOnEditorActionListener(onSearchGo);
 		vgTopBar = findViewById(R.id.vgTopBar);
 		mainThread = new Handler();
+		progressDialog = new ProgressDialog(MapActivity.this);
+		progressDialog.setIndeterminate(true);
 
 		observeData();
     }
@@ -140,6 +149,55 @@ public class MapActivity extends LifecycleActivity
 				setFinishPosition(latLng);
 			}
 		});
+	}
+
+	public void currentLocationFabClick(View view) {
+		int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+		if (PackageManager.PERMISSION_GRANTED != permissionCheck) {
+			ActivityCompat.requestPermissions(this, new String[]{
+					Manifest.permission.ACCESS_FINE_LOCATION,
+					Manifest.permission.ACCESS_COARSE_LOCATION
+			}, REQ_PERMISSION);
+		} else {
+			clearSelection();
+			showProgress();
+			final LocationLiveData liveLocation = viewModel.getLiveLocation();
+			locationObserver = new Observer<Location>() {
+				@Override
+				public void onChanged(@Nullable Location location) {
+					setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+					removeLocationObserver();
+				}
+			};
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					removeLocationObserver();
+
+					if (locationObserver == null) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
+								.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
+						builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+							}
+						});
+						builder.create().show();
+					}
+				}
+			}, 30000);
+
+			liveLocation.observe(this, locationObserver);
+		}
+	}
+
+	private void removeLocationObserver() {
+		if (locationObserver != null) {
+			viewModel.getLiveLocation().removeObserver(locationObserver);
+			hideProgress();
+			locationObserver = null;
+		}
 	}
 
     @Override
@@ -319,20 +377,10 @@ public class MapActivity extends LifecycleActivity
             return;
 
         new AsyncTask<Void, Void, PolylineOptions>() {
-			private ProgressDialog progressDialog;
 
 			@Override
 			protected void onPreExecute() {
-				progressDialog = new ProgressDialog(MapActivity.this);
-				progressDialog.setIndeterminate(true);
-				//Soh mostramos se demorar consideravelmente
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						if (progressDialog != null)
-							progressDialog.show();
-					}
-				}, ANIM_ROUTE_TIME);
+				showProgress();
 			}
 
             @Override
@@ -361,10 +409,7 @@ public class MapActivity extends LifecycleActivity
 
             @Override
             protected void onPostExecute(PolylineOptions rectLine) {
-				ProgressDialog progress = progressDialog;
-				progressDialog = null;
-				if(progress.isShowing())
-					progress.hide();
+				hideProgress();
                 if(rectLine != null)
                     googleMap.addPolyline(rectLine);
                 else
@@ -373,6 +418,14 @@ public class MapActivity extends LifecycleActivity
             }
         }.execute();
     }
+
+    private void showProgress() {
+		progressDialog.show();
+	}
+
+	private void hideProgress() {
+		progressDialog.hide();
+	}
 
     /**
      * User seems to be willing to do something, let's help him!

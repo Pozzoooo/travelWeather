@@ -26,9 +26,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getCurrentLocation(): LatLng? {
-        val location = locationBusiness.getCurrentLocation(getApplication())
-        if (location != null) {
-            return LatLng(location.latitude, location.longitude)
+        try {
+            val location = locationBusiness.getCurrentLocation(getApplication())
+            if (location != null) {
+                return LatLng(location.latitude, location.longitude)
+            }
+        } catch (e: SecurityException) {
+
         }
 
         return null
