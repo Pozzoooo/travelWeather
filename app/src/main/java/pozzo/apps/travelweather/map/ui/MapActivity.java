@@ -13,8 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +91,7 @@ public class MapActivity extends LifecycleActivity
 	private EditText eSearch;
 	private View vgTopBar;
 	private ProgressDialog progressDialog;
+	private boolean isShowingProgress;
 
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
@@ -134,6 +133,7 @@ public class MapActivity extends LifecycleActivity
 		mainThread = new Handler();
 		progressDialog = new ProgressDialog(MapActivity.this);
 		progressDialog.setIndeterminate(true);
+		isShowingProgress = false;
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		observeData();
@@ -163,35 +163,40 @@ public class MapActivity extends LifecycleActivity
 			}, REQ_PERMISSION);
 		} else {
 			clearSelection();
-			showProgress();
-			final LocationLiveData liveLocation = viewModel.getLiveLocation();
-			locationObserver = new Observer<Location>() {
-				@Override
-				public void onChanged(@Nullable Location location) {
-					setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-					removeLocationObserver();
-				}
-			};
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					removeLocationObserver();
-
-					if (locationObserver != null) {
-						AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
-								.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
-						builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-							}
-						});
-						builder.create().show();
+			LatLng currentLocation = viewModel.getCurrentLocation();
+			if (currentLocation != null) {
+				setStartPosition(currentLocation);
+			} else {
+				showProgress();
+				final LocationLiveData liveLocation = viewModel.getLiveLocation();
+				locationObserver = new Observer<Location>() {
+					@Override
+					public void onChanged(@Nullable Location location) {
+						setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+						removeLocationObserver();
 					}
-				}
-			}, 30000);
+				};
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						removeLocationObserver();
 
-			liveLocation.observe(this, locationObserver);
+						if (locationObserver != null) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
+									.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
+							builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+								}
+							});
+							builder.create().show();
+						}
+					}
+				}, 30000);
+
+				liveLocation.observe(this, locationObserver);
+			}
 		}
 
 		Bundle bundle = new Bundle();
@@ -428,10 +433,18 @@ public class MapActivity extends LifecycleActivity
     }
 
     private void showProgress() {
-		progressDialog.show();
+		isShowingProgress = true;
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (isShowingProgress)
+					progressDialog.show();
+			}
+		}, 700);
 	}
 
 	private void hideProgress() {
+		isShowingProgress = false;
 		progressDialog.hide();
 	}
 
@@ -562,34 +575,6 @@ public class MapActivity extends LifecycleActivity
 				}
 			}
 		});
-	}
-
-	@SuppressWarnings("MissingPermission")
-	private void currentLocation() {
-		final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		final ProgressDialog progressDialog = new ProgressDialog(MapActivity.this);
-		progressDialog.setIndeterminate(true);
-		progressDialog.setCancelable(true);
-		progressDialog.show();
-
-		LocationListener locationListener = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				setStartOnCurrentLocation();
-				locationManager.removeUpdates(this);
-				progressDialog.cancel();
-			}
-
-			public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-			public void onProviderEnabled(String provider) {}
-
-			public void onProviderDisabled(String provider) {
-				progressDialog.cancel();
-			}
-		};
-
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 
 	private void focusOnCurrentLocation() {
