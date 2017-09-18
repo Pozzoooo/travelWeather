@@ -71,7 +71,7 @@ import pozzo.apps.travelweather.map.model.Address;
  * Atividade para exibir o mapa.
  */
 public class MapActivity extends LifecycleActivity
-		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged, MapView {
+		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;
 
