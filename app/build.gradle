@@ -11,8 +11,8 @@ android {
     applicationId "pozzo.apps.travelweather"
     minSdkVersion 21
     targetSdkVersion 26
-    versionCode 6
-    versionName "1.0.7-SNAPSHOT"
+    versionCode 7
+    versionName "1.0.7"
     multiDexEnabled true
   }
 
