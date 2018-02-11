@@ -78,13 +78,13 @@ public class MapActivity extends AppCompatActivity
 	private int daySelection;
 	private int lineColor;
 
-    private LocationBusiness locationBusiness;
-    private ForecastBusiness forecastBusiness;
+	private LocationBusiness locationBusiness;
+	private ForecastBusiness forecastBusiness;
 	private GeoCoderHelper geoCoderHelper;
 
-    private LatLng startPosition;
-    private LatLng finishPosition;
-    private HashMap<Marker, Weather> markerWeathers;
+	private LatLng startPosition;
+	private LatLng finishPosition;
+	private HashMap<Marker, Weather> markerWeathers;
 
 	private DrawerLayout drawerLayout;
 	private GoogleMap mMap;
@@ -315,12 +315,14 @@ public class MapActivity extends AppCompatActivity
 		}
 	}
 
-    /**
-     * Map will be centered on given point.
-     */
-    private void pointMapTo(LatLng latLng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
-    }
+	/**
+	 * Map will be centered on given point.
+	 */
+	private void pointMapTo(LatLng latLng) {
+		if (mMap != null) {
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
+		}
+	}
 
     /**
      * Map will fit the given bounds.
@@ -374,13 +376,15 @@ public class MapActivity extends AppCompatActivity
 					.include(startPosition).include(finishPosition).build());
     }
 
-    /**
-     * Clear anything drawn on map.
-     */
-    public void clearSelection() {
-        mMap.clear();
-        markerWeathers = new HashMap<>();
-    }
+	/**
+	 * Clear anything drawn on map.
+	 */
+	public void clearSelection() {
+		if (mMap != null) {
+			mMap.clear();
+		}
+		markerWeathers = new HashMap<>();
+	}
 
     /**
      * Update route.
