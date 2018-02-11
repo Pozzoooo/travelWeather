@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.map.ui;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -23,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -70,7 +70,7 @@ import pozzo.apps.travelweather.map.model.Address;
 /**
  * Atividade para exibir o mapa.
  */
-public class MapActivity extends LifecycleActivity
+public class MapActivity extends AppCompatActivity
 		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;

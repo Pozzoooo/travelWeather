@@ -3,93 +3,93 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '25.0.2'
-	useLibrary 'org.apache.http.legacy'
+  compileSdkVersion 26
+  buildToolsVersion '26.0.2'
+  useLibrary 'org.apache.http.legacy'
 
-    defaultConfig {
-        applicationId "pozzo.apps.travelweather"
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 6
-        versionName "1.0.7-SNAPSHOT"
-		multiDexEnabled true
-	}
+  defaultConfig {
+    applicationId "pozzo.apps.travelweather"
+    minSdkVersion 21
+    targetSdkVersion 26
+    versionCode 6
+    versionName "1.0.7-SNAPSHOT"
+    multiDexEnabled true
+  }
 
-    signingConfigs {
-        release
+  signingConfigs {
+    release
+  }
+
+  allprojects {
+    afterEvaluate { project ->
+      def propsFile = rootProject.file("../../keystore/keystore.properties")
+      def configName = 'release'
+
+      if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        android.signingConfigs[configName].storeFile = file(props['storeFile'])
+        android.signingConfigs[configName].storePassword = props['storePassword']
+        android.signingConfigs[configName].keyAlias = props['keyAlias']
+        android.signingConfigs[configName].keyPassword = props['keyPassword']
+      }
     }
+  }
 
-    allprojects {
-        afterEvaluate { project ->
-            def propsFile = rootProject.file("/home/xalien/dev/keystore.properties")
-            def configName = 'release'
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
 
-            if (propsFile.exists() && android.signingConfigs.hasProperty(configName)) {
-                def props = new Properties()
-                props.load(new FileInputStream(propsFile))
-                android.signingConfigs[configName].storeFile = file(props['storeFile'])
-                android.signingConfigs[configName].storePassword = props['storePassword']
-                android.signingConfigs[configName].keyAlias = props['keyAlias']
-                android.signingConfigs[configName].keyPassword = props['keyPassword']
-            }
-        }
+  buildTypes {
+    release {
+      debuggable false
+      signingConfig signingConfigs.release
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
+      + '-' + android.defaultConfig.versionCode);
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+    debug {
+      debuggable true
+      signingConfig signingConfigs.release
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
+  }
 
-    buildTypes {
-        release {
-            debuggable false
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
-                    + '-' + android.defaultConfig.versionCode);
-        }
-        debug {
-            debuggable true
-			signingConfig signingConfigs.release
-			minifyEnabled false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  sourceSets {
+    test.java.srcDirs += 'src/test/kotlin'
+  }
 
-	sourceSets {
-		test.java.srcDirs += 'src/test/kotlin'
-	}
-
-	dataBinding {
-		enabled = true
-	}
+  dataBinding {
+    enabled = true
+  }
 }
 
 dependencies {
-    //Google
-	compile 'com.android.support:design:26.0.0-alpha1'
-	compile "android.arch.lifecycle:runtime:1.0.0-alpha5"
-	compile "android.arch.lifecycle:extensions:1.0.0-alpha5"
-	compile 'com.google.firebase:firebase-core:11.2.2'
-	compile 'com.google.android.gms:play-services-maps:11.2.2'
-	compile 'com.google.android.gms:play-services-location:11.2.2'
-	kapt "android.arch.lifecycle:compiler:1.0.0-alpha5"
-	kapt "com.android.databinding:compiler:2.3.2"
-	//Web requests
-	compile 'com.squareup.retrofit2:retrofit:2.3.0'
-	compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-	//Persistence
-    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    //Mint
-    compile "com.splunk.mint:mint:4.4.0"
-	//Pozzo
-	compile 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
-	//Kotlin
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
+  //Google
+  compile 'com.android.support:design:26.1.0'
+  compile "android.arch.lifecycle:runtime:1.1.0"
+  compile "android.arch.lifecycle:extensions:1.1.0"
+  compile 'com.google.firebase:firebase-core:11.8.0'
+  compile 'com.google.android.gms:play-services-maps:11.8.0'
+  compile 'com.google.android.gms:play-services-location:11.8.0'
+  kapt "android.arch.lifecycle:compiler:1.1.0"
+  kapt "com.android.databinding:compiler:3.0.1"
+  //Web requests
+  compile 'com.squareup.retrofit2:retrofit:2.3.0'
+  compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+  //Persistence
+  compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+  //Mint
+  compile "com.splunk.mint:mint:5.0.0"
+  //Pozzo
+  compile 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
+  //Kotlin
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
 
-	testCompile 'junit:junit:4.12'
+  testCompile 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'

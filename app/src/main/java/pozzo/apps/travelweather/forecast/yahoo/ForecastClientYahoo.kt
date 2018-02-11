@@ -57,7 +57,7 @@ class ForecastClientYahoo : ForecastClient {
             response = ApiFactory.getInstance().yahooWather.forecast(query).execute()
         } catch (e: RuntimeException) {
             e.printStackTrace()
-            Mint.logExceptionMessage("query", query, e)
+            Mint.logException("query", query, e)
             throw e
         }
 
@@ -68,7 +68,7 @@ class ForecastClientYahoo : ForecastClient {
             if (maxRetries > 1)
                 return requestWeather(query, maxRetries-1)
 
-            Mint.logExceptionMessage("result", result, e)
+            Mint.logException("result", result, e)
             throw e
         }
     }
