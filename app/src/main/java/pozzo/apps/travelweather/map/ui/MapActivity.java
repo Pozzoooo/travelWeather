@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -24,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -315,7 +313,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	 * Map will be centered on given point.
 	 */
 	private void pointMapTo(LatLng latLng) {
-		if (mMap != null) {
+		if (mMap != null && latLng != null) {
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
 		}
 	}
@@ -589,21 +587,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	}
 
 	private void focusOnCurrentLocation() {
-		LatLng location = viewModel.getCurrentLocation();
-		if (location != null) {
-			pointMapTo(location);
-		}
+		pointMapTo(viewModel.getCurrentLocation());
 	}
-
-    /**
-     * Defines the start position to the current user location.
-     */
-	private void setStartOnCurrentLocation() {
-		LatLng location = viewModel.getCurrentLocation();
-		if (location != null) {
-			setStartPosition(location);
-		}
-    }
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -615,23 +600,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	}
 
 	/**
+	 * Defines the start position to the current user location.
+	 */
+	private void setStartOnCurrentLocation() {
+		setStartPosition(viewModel.getCurrentLocation());
+	}
+
+	/**
      * Search button click event.
      */
-    public void onSearch(View view) {
-        if(vgTopBar.getAlpha() == 1.f) {
+    public void toggleSearch(View view) {
+        if(isSearchOpen()) {
 			hideTopBar();
 		} else {
 			showTopBar();
         }
     }
 
-    /**
-     * User wants to point to his location.
-     */
-    public void onMyLocation(View view) {
-        clearSelection();
-        setStartOnCurrentLocation();
-    }
+    private boolean isSearchOpen() {
+    	return vgTopBar.getAlpha() == 1.f;
+	}
 
 	/**
 	 * Hide app top bar.
@@ -639,13 +627,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * @return true if hidden, false if already hidden.
 	 */
 	private boolean hideTopBar() {
-		if(vgTopBar.getAlpha() != 0.f) {
-            vgTopBar.animate().alpha(0.f);
-            eSearch.setVisibility(View.INVISIBLE);
-            hideKeyboardForced(eSearch);
-            return true;
-        }
-        return false;
+		if(isSearchOpen())
+			return false;
+
+		vgTopBar.animate().alpha(0.f);
+		eSearch.setVisibility(View.INVISIBLE);
+		AndroidUtil.hideKeyboard(this, eSearch);
+		return true;
 	}
 
 	/**
@@ -655,18 +643,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		vgTopBar.animate().alpha(1.f);
         eSearch.setVisibility(View.VISIBLE);
         eSearch.requestFocus();
-        showKeyboardForced();
+        AndroidUtil.showKeyboard(this, eSearch);
 	}
-
-    private void showKeyboardForced() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-
-    private void hideKeyboardForced(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 
 	/**
 	 * User wants to open side menu.
@@ -681,21 +659,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private TextView.OnEditorActionListener onSearchGo = new TextView.OnEditorActionListener() {
 		@Override
 		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			String address = v.getText().toString();
-			if(event == null || !(event.getAction() == KeyEvent.ACTION_DOWN) || address.isEmpty())
+			if(event == null || !(event.getAction() == KeyEvent.ACTION_DOWN))
 				return false;
 
-			try {
-				LatLng location = geoCoderHelper.getPositionFromFirst(address);
-				placeMarkerClick.onMapClick(location);
-			} catch (IOException e) {
-				AndroidUtil.errorMessage(MapActivity.this,
-						getString(R.string.error_addressNotFound), R.string.warning, R.string.ok);
-				e.printStackTrace();
-			}
+			searchAddress(v.getText().toString());
 			return true;
 		}
 	};
+
+	private void searchAddress(String search) {
+		try {
+			LatLng location = geoCoderHelper.getPositionFromFirst(search);
+			placeMarkerClick.onMapClick(location);
+		} catch (IOException e) {
+			AndroidUtil.errorMessage(MapActivity.this,
+					getString(R.string.error_addressNotFound), R.string.warning, R.string.ok);
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Update all forecast icons on map.

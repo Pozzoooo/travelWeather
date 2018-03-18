@@ -95,6 +95,9 @@ public class GeoCoderHelper {
 	 * @return
 	 */
 	public LatLng getPositionFromFirst(String address) throws IOException {
+		if (address.isEmpty())
+			return null;
+
 		List<Address> addresses = getSimilarAddresses(address);
 		if(addresses == null || addresses.size() == 0)
 			return null;
