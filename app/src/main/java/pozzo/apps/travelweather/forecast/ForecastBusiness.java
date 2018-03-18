@@ -8,11 +8,9 @@ import pozzo.apps.travelweather.forecast.model.Weather;
 
 /**
  * Forecast business logic.
- *
- * Created by sarge on 10/19/15.
  */
 public class ForecastBusiness {
-	private final int MAX_RETRIES = 3;
+	public static final int MAX_RETRIES = 3;
 
 	private ForecastClient forecastClient = new ForecastClientYahoo();
 
@@ -37,7 +35,7 @@ public class ForecastBusiness {
 				weather.setAddress(address);
 				return weather;
 			} catch (Exception e) {
-				//ignored to retrie
+				//ignored to retry
 			}
 			int firstCommaIdx = addressStr.indexOf(",");
 			addressStr = firstCommaIdx == -1 ? "" : addressStr.substring(firstCommaIdx + 1).trim();

@@ -1,36 +1,22 @@
 package pozzo.apps.travelweather.forecast.model;
 
-import android.provider.BaseColumns;
-
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
 import java.util.Arrays;
 import java.util.List;
 
 import pozzo.apps.travelweather.map.model.Address;
-import pozzo.apps.travelweather.BaseModel;
 
 /**
  * This will represent the weather for a location in a period of time.
- *
- * Created by sarge on 10/25/15.
  */
-@Table(name = "weather", id = BaseColumns._ID)
-public class Weather extends BaseModel {
+public class Weather {
     public interface Col {
         String ADDRESS = "address";
         String FORECASTS = "forecasts";
         String URL = "url";
     }
 
-    @Column(name = Col.ADDRESS)
     private Address address;
-
-    @Column(name = Col.FORECASTS, onDelete = Column.ForeignKeyAction.CASCADE)
     private Forecast[] forecasts;
-
-    @Column(name = Col.URL)
     private String url;
 
     public Address getAddress() {

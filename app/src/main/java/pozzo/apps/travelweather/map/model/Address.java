@@ -1,32 +1,17 @@
 package pozzo.apps.travelweather.map.model;
 
-import android.provider.BaseColumns;
-
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-import pozzo.apps.travelweather.BaseModel;
-
 /**
  * Represent a single point in map.
- *
- * Created by soldier on 10/4/15.
  */
-@Table(name = "address", id = BaseColumns._ID)
-public class Address extends BaseModel {
+public class Address {
     public interface Col {
         String ADDRESS = "address";
         String LATITUDE = "latitude";
         String LONGITUDE = "longitude";
     }
 
-    @Column(name = Col.ADDRESS)
     private String address;
-
-    @Column(name = Col.LATITUDE)
     private double latitude;
-
-    @Column(name = Col.LONGITUDE)
     private double longitude;
 
     public String getAddress() {

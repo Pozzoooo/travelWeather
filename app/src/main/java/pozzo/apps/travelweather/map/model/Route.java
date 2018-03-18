@@ -1,19 +1,8 @@
 package pozzo.apps.travelweather.map.model;
 
-import android.provider.BaseColumns;
-
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
 import java.util.Date;
 
-import pozzo.apps.travelweather.BaseModel;
-
-/**
- * Created by soldier on 10/4/15.
- */
-@Table(name = "route", id = BaseColumns._ID)
-public class Route extends BaseModel {
+public class Route {
     public interface Col {
         String START = "start";
         String FINISH = "finish";
@@ -21,16 +10,9 @@ public class Route extends BaseModel {
         String FINISH_TIME = "finishTime";
     }
 
-    @Column(name = Col.START)
     private Address start;
-
-    @Column(name = Col.FINISH)
     private Address finish;
-
-    @Column(name = Col.START_TIME)
     private Date startTime;
-
-    @Column(name = Col.FINISH_TIME)
     private Date finishTime;
 
     public Address getStart() {

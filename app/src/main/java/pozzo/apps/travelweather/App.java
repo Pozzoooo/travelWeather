@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather;
 
-import com.activeandroid.app.Application;
+import android.app.Application;
+
 import com.splunk.mint.Mint;
 
 /**

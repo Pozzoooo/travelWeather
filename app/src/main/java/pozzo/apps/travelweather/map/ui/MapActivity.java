@@ -82,7 +82,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	private LatLng startPosition;
 	private LatLng finishPosition;
-	private HashMap<Marker, Weather> markerWeathers;
+	private HashMap<Marker, Weather> markerWeathers = new HashMap<>();
 
 	private DrawerLayout drawerLayout;
 	private GoogleMap mMap;
@@ -390,7 +390,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		if (mMap != null) {
 			mMap.clear();
 		}
-		markerWeathers = new HashMap<>();
+		markerWeathers.clear();
 	}
 
     /**
@@ -701,13 +701,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	 * Update all forecast icons on map.
 	 */
 	private void updateForecastsIcons() {
-		if(markerWeathers == null || markerWeathers.size() <= 0)
+		if(markerWeathers.isEmpty())
 			return;
 
 		HashMap<Marker, Weather> markerWeathers = this.markerWeathers;
 		this.markerWeathers = new HashMap<>();
 		for(Map.Entry<Marker, Weather> it : markerWeathers.entrySet()) {
-			it.getKey().remove();
 			addMark(it.getValue());
 		}
 	}

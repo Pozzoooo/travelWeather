@@ -7,8 +7,6 @@ import java.lang.reflect.Modifier;
 
 /**
  * Configure and center ao Gson instance.
- *
- * Created by sarge on 10/25/15.
  */
 public class GsonFactory {
     private static Gson gson;

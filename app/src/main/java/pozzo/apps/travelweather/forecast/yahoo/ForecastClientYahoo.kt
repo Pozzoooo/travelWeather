@@ -5,22 +5,20 @@ import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.splunk.mint.Mint
 import okhttp3.ResponseBody
-import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.GsonFactory
-import pozzo.apps.travelweather.map.model.Address
+import pozzo.apps.travelweather.forecast.ForecastBusiness
+import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
+import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
 import java.lang.ClassCastException
 import java.lang.RuntimeException
 
 /**
  * Yahoo forecast api client.
- *
- * @since 12/08/17.
  */
 class ForecastClientYahoo : ForecastClient {
-    private val MAX_RETRIES = 3
 
     /**
      * Forecast from given location.
@@ -48,7 +46,7 @@ class ForecastClientYahoo : ForecastClient {
     }
 
     private fun requestWeather(query: String) : Weather? {
-        return requestWeather(query, MAX_RETRIES)
+        return requestWeather(query, ForecastBusiness.MAX_RETRIES)
     }
 
     private fun requestWeather(query: String, maxRetries: Int): Weather? {

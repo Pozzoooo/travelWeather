@@ -1,17 +1,6 @@
 package pozzo.apps.travelweather.forecast.model;
 
-import android.provider.BaseColumns;
-
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
-import pozzo.apps.travelweather.BaseModel;
-
-/**
- * Created by soldier on 10/4/15.
- */
-@Table(name = "forecast", id = BaseColumns._ID)
-public class Forecast extends BaseModel {
+public class Forecast {
     public interface Col {
         String DATE = "date";
         String TEXT = "text";
@@ -19,16 +8,9 @@ public class Forecast extends BaseModel {
         String LOW = "low";
     }
 
-    @Column(name = Col.DATE)
     private String date;
-
-    @Column(name = Col.TEXT)
     private String text;
-
-    @Column(name = Col.HIGH)
     private int high;
-
-    @Column(name = Col.LOW)
     private int low;
 
     public String getDate() {

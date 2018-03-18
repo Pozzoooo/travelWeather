@@ -9,8 +9,6 @@ import pozzo.apps.travelweather.forecast.model.Forecast;
 
 /**
  * To help us on reusability, as I am not sure exactly where to place it =/.
- *
- * Created by sarge on 10/25/15.
  */
 public class ForecastHelper {
     private static final String SUN = "sun";

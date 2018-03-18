@@ -6,8 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Creates ou APIs abstraction to communicate with server.
- *
- * Created by ghost on 06/09/15.
  */
 public class ApiFactory {
     private static final ApiFactory instance = new ApiFactory();

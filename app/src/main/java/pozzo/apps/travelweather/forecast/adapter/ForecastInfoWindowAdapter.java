@@ -12,8 +12,6 @@ import pozzo.apps.travelweather.R;
 
 /**
  * Create every single InfoWindow to show on maps.
- *
- * Created by sarge on 11/2/15.
  */
 public class ForecastInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 	private Context context;

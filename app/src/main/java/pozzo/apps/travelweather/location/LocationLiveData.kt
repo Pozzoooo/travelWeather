@@ -8,9 +8,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.annotation.MainThread
 
-/**
- * @since 14/09/17.
- */
 class LocationLiveData private constructor(context: Context) : LiveData<Location>() {
     private val locationManager: LocationManager
 
