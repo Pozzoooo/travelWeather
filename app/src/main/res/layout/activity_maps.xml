@@ -3,7 +3,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 	<data>
 		<variable name="modelView"
-				  type="pozzo.apps.travelweather.map.ui.MapViewModel"/>
+				  type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
 	</data>
 
 	<android.support.v4.widget.DrawerLayout

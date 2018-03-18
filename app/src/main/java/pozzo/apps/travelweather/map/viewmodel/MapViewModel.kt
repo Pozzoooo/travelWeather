@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map.ui
+package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.MutableLiveData
@@ -7,9 +7,6 @@ import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 
-/**
- * @since 13/08/17.
- */
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness: LocationBusiness = LocationBusiness()
 

@@ -7,7 +7,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -15,7 +14,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -66,16 +64,16 @@ import pozzo.apps.travelweather.location.LocationBusiness;
 import pozzo.apps.travelweather.location.LocationLiveData;
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.map.model.Address;
+import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
+import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
 
 /**
  * Atividade para exibir o mapa.
  */
-public class MapActivity extends AppCompatActivity
-		implements OnMapReadyCallback, SideMenuFragment.OnDaySelectionChanged {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;
 
-	private int daySelection;
 	private int lineColor;
 
 	private LocationBusiness locationBusiness;
@@ -99,12 +97,12 @@ public class MapActivity extends AppCompatActivity
 	private FirebaseAnalytics mFirebaseAnalytics;
 
 	private MapViewModel viewModel;
+	private PreferencesViewModel preferencesViewModel;
 
     {
         locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
 		geoCoderHelper = new GeoCoderHelper(this);
-		daySelection = -1;
 		executor = new ThreadPoolExecutor(
 				7, 20, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(7), new ThreadPoolExecutor.DiscardPolicy()
 		);
@@ -115,6 +113,7 @@ public class MapActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 		ActivityMapsBinding contentView = DataBindingUtil.setContentView(this, R.layout.activity_maps);
 		viewModel = ViewModelProviders.of(this).get(MapViewModel.class);
+		preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel.class);
 		contentView.setModelView(viewModel);
 
 		restoreInstanceState(savedInstanceState);
@@ -122,10 +121,7 @@ public class MapActivity extends AppCompatActivity
 		SupportMapFragment mapFragment = (SupportMapFragment)
 				getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-		SideMenuFragment navigationDrawer = (SideMenuFragment)
-				getSupportFragmentManager().findFragmentById(R.id.navigationDrawer);
-		navigationDrawer.setOnDaySelectionChanged(this);
+        observeDaySelectionChange();
 
 		eSearch = findViewById(R.id.eSearch);
 		eSearch.setOnEditorActionListener(onSearchGo);
@@ -361,10 +357,21 @@ public class MapActivity extends AppCompatActivity
 	 * @return Forecast that should be shown to the user from given weather.
 	 */
 	private Forecast getForecastFor(Weather weather) {
-		int dayIndex = getDaySelection();
+		int dayId = preferencesViewModel.getSelectedDay().getValue();
+		int dayIndex = fromDayIdToIndex(dayId);
 		Forecast[] forecasts = weather.getForecasts();
 		dayIndex = forecasts.length > dayIndex ? dayIndex : forecasts.length-1;
 		return forecasts[dayIndex];
+	}
+
+	private int fromDayIdToIndex(int dayId) {
+		int[] days = new int[]{ R.id.rToday, R.id.rTomorow, R.id.rAfterTomorow };
+		for(int i=0; i<days.length; ++i) {
+			if (days[i] == dayId) {
+				return i;
+			}
+		}
+		return 0;
 	}
 
     /**
@@ -705,28 +712,13 @@ public class MapActivity extends AppCompatActivity
 		}
 	}
 
-	@Override
-	public void daySelectionChanged(int selectedDay) {
-		setDaySelection(selectedDay);
-		updateForecastsIcons();
-	}
-
-	/**
-	 * Forced definition of day selection, it will not update on disk.
-	 */
-	private void setDaySelection(int daySelection) {
-		this.daySelection = daySelection;
-	}
-
-	/**
-	 * A selecao do dia.
-	 */
-	private int getDaySelection() {
-		if(daySelection < 0) {
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-			daySelection = preferences.getInt("selectedDay", 0);
-		}
-		return daySelection;
+	public void observeDaySelectionChange() {
+		preferencesViewModel.getSelectedDay().observe(this, new Observer<Integer>() {
+			@Override
+			public void onChanged(@Nullable Integer integer) {
+				updateForecastsIcons();
+			}
+		});
 	}
 
     public void onClearSearch(View view) {
