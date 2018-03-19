@@ -36,7 +36,7 @@ class SideMenuFragment : Fragment() {
      */
     private fun setupView(contentView: View) {
         viewModel.selectedDay.observe(this, Observer { selectedDate ->
-            val selectedRadio = contentView.findViewById<RadioButton>(selectedDate ?: R.id.rToday)
+            val selectedRadio = contentView.findViewById<RadioButton>(selectedDate!!.resourceId)
             selectedRadio.isChecked = true
         })
 

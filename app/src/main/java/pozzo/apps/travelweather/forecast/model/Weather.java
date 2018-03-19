@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.forecast.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,12 +11,6 @@ import pozzo.apps.travelweather.map.model.Address;
  * This will represent the weather for a location in a period of time.
  */
 public class Weather {
-    public interface Col {
-        String ADDRESS = "address";
-        String FORECASTS = "forecasts";
-        String URL = "url";
-    }
-
     private Address address;
     private Forecast[] forecasts;
     private String url;
@@ -27,7 +23,11 @@ public class Weather {
         this.address = address;
     }
 
-    public Forecast[] getForecasts() {
+	public Forecast getForecast(Day day) {
+		return getForecasts()[day.getForecastIndex()];
+	}
+
+	public Forecast[] getForecasts() {
         return forecasts;
     }
 
@@ -46,6 +46,10 @@ public class Weather {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public LatLng getLatLng() {
+    	return new LatLng(address.getLatitude(), address.getLongitude());
+	}
 
     @Override
     public boolean equals(Object o) {

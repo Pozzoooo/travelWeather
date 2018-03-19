@@ -31,8 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -56,12 +54,12 @@ import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
 import pozzo.apps.travelweather.forecast.ForecastBusiness;
 import pozzo.apps.travelweather.forecast.ForecastHelper;
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
+import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
 import pozzo.apps.travelweather.location.LocationBusiness;
 import pozzo.apps.travelweather.location.LocationLiveData;
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
-import pozzo.apps.travelweather.map.model.Address;
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
 
@@ -152,9 +150,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				setFinishPosition(latLng);
 			}
 		});
-		preferencesViewModel.getSelectedDay().observe(this, new Observer<Integer>() {
+		preferencesViewModel.getSelectedDay().observe(this, new Observer<Day>() {
 			@Override
-			public void onChanged(@Nullable Integer integer) {
+			public void onChanged(@Nullable Day day) {
 				updateForecastsIcons();
 			}
 		});
@@ -378,41 +376,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(weather == null || weather.getAddress() == null)
             return;
 
-		Address address = weather.getAddress();
-		LatLng location = new LatLng(address.getLatitude(), address.getLongitude());
-
-		Forecast forecast = getForecastFor(weather);
-        int icon = ForecastHelper.forecastIcon(forecast);
-		BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(icon);
+        Day selectedDay = preferencesViewModel.getSelectedDay().getValue();
+		Forecast forecast = weather.getForecast(selectedDay);
 
 		MarkerOptions markerOptions = new MarkerOptions()
-				.position(location)
+				.position(weather.getLatLng())
 				.title(forecast.getText())
-				.icon(bitmapDescriptor);
+				.icon(forecast.getIcon());
         Marker marker = mMap.addMarker(markerOptions);
         markerWeathers.put(marker, weather);
     }
-
-	/**
-	 * @return Forecast that should be shown to the user from given weather.
-	 */
-	private Forecast getForecastFor(Weather weather) {
-		int dayId = preferencesViewModel.getSelectedDay().getValue();
-		int dayIndex = fromDayIdToIndex(dayId);
-		Forecast[] forecasts = weather.getForecasts();
-		dayIndex = forecasts.length > dayIndex ? dayIndex : forecasts.length-1;
-		return forecasts[dayIndex];
-	}
-
-	private int fromDayIdToIndex(int dayId) {
-		int[] days = new int[]{ R.id.rToday, R.id.rTomorow, R.id.rAfterTomorow };
-		for(int i=0; i<days.length; ++i) {
-			if (days[i] == dayId) {
-				return i;
-			}
-		}
-		return 0;
-	}
 
     /**
      * Should try to fit entire route on screen.
@@ -719,6 +692,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		HashMap<Marker, Weather> markerWeathers = this.markerWeathers;
 		this.markerWeathers = new HashMap<>();
 		for(Map.Entry<Marker, Weather> it : markerWeathers.entrySet()) {
+			it.getKey().remove();
 			addMark(it.getValue());
 		}
 	}

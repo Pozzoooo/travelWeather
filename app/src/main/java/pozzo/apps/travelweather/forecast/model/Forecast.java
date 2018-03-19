@@ -1,13 +1,11 @@
 package pozzo.apps.travelweather.forecast.model;
 
-public class Forecast {
-    public interface Col {
-        String DATE = "date";
-        String TEXT = "text";
-        String HIGH = "high";
-        String LOW = "low";
-    }
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
+import pozzo.apps.travelweather.forecast.ForecastHelper;
+
+public class Forecast {
     private String date;
     private String text;
     private int high;
@@ -44,6 +42,11 @@ public class Forecast {
     public void setLow(int low) {
         this.low = low;
     }
+
+    public BitmapDescriptor getIcon() {
+		int icon = ForecastHelper.forecastIcon(this);
+		return BitmapDescriptorFactory.fromResource(icon);
+	}
 
     /*
     Exemplo de retorno do Yahoo
