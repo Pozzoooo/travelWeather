@@ -85,7 +85,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private EditText eSearch;
 	private View vgTopBar;
 	private ProgressDialog progressDialog;
-	private boolean isShowingProgress;
 
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
@@ -112,7 +111,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		setupMapFragment();
 
 		mainThread = new Handler();
-		isShowingProgress = false;
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		vgTopBar = findViewById(R.id.vgTopBar);
@@ -150,12 +148,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				setFinishPosition(latLng);
 			}
 		});
+		viewModel.isShowingProgress().observe(this, new Observer<Boolean>() {
+			@Override
+			public void onChanged(Boolean isShowingProgress) {
+				if (isShowingProgress) {
+					showProgressDelayed();
+				} else {
+					progressDialog.hide();
+				}
+			}
+		});
 		preferencesViewModel.getSelectedDay().observe(this, new Observer<Day>() {
 			@Override
 			public void onChanged(@Nullable Day day) {
 				updateForecastsIcons();
 			}
 		});
+	}
+
+	/**
+	 * Given a few delay, so we avoid showing the loading dialog in case of a quick process
+	 */
+	private void showProgressDelayed() {
+		mainThread.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (viewModel.isShowingProgress().getValue()) {
+					progressDialog.show();
+				}
+			}
+		}, 700);
 	}
 
 	public void currentLocationFabClick(View view) {
@@ -194,7 +216,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	}
 
 	private void requestLiveLocation() {
-		showProgress();
+		viewModel.showProgress();
 		final LocationLiveData liveLocation = viewModel.getLiveLocation();
 		locationObserver = new Observer<Location>() {
 			@Override
@@ -219,7 +241,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private void removeLocationObserver() {
 		if (locationObserver != null) {
 			viewModel.getLiveLocation().removeObserver(locationObserver);
-			hideProgress();
+			viewModel.hideProgress();
 			locationObserver = null;
 		}
 	}
@@ -306,7 +328,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 		clearSelection();
 
-		new Handler().postDelayed(new Runnable() {
+		mainThread.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				setStartPosition(startPosition);
@@ -413,11 +435,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if(startPosition == null || finishPosition == null)
             return;
 
+        //Acho que essa async task aqui vai dar para ser movida quase toda para a view model, sera q nao?
         new AsyncTask<Void, Void, PolylineOptions>() {
 
 			@Override
 			protected void onPreExecute() {
-				showProgress();
+				viewModel.showProgress();
 			}
 
             @Override
@@ -446,7 +469,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(PolylineOptions rectLine) {
-				hideProgress();
+				viewModel.hideProgress();
                 if(rectLine != null)
                     googleMap.addPolyline(rectLine);
                 else
@@ -455,22 +478,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }.execute();
     }
-
-    private void showProgress() {
-		isShowingProgress = true;
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (isShowingProgress)
-					progressDialog.show();
-			}
-		}, 700);
-	}
-
-	private void hideProgress() {
-		isShowingProgress = false;
-		progressDialog.hide();
-	}
 
     /**
      * User seems to be willing to do something, let's help him!

@@ -10,8 +10,13 @@ import pozzo.apps.travelweather.location.LocationLiveData
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness: LocationBusiness = LocationBusiness()
 
-    var startPosition: MutableLiveData<LatLng?> = MutableLiveData()
-    var finishPosition: MutableLiveData<LatLng?> = MutableLiveData()
+    val startPosition = MutableLiveData<LatLng?>()
+    val finishPosition = MutableLiveData<LatLng?>()
+    val isShowingProgress = MutableLiveData<Boolean>()
+
+    init {
+        isShowingProgress.value = false
+    }
 
     fun currentLocationFabClick() {
         finishPosition.postValue(null)
@@ -33,5 +38,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
 
         return null
+    }
+
+    //todo remove it when refacted enough
+    fun showProgress() {
+        isShowingProgress.value = true
+    }
+    fun hideProgress() {
+        isShowingProgress.value = false
     }
 }
