@@ -91,7 +91,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	private ThreadPoolExecutor executor;
 	private Handler mainThread;
-	private Observer locationObserver;
+	private Observer<Location> locationObserver;
 	private FirebaseAnalytics mFirebaseAnalytics;
 
 	private MapViewModel viewModel;
@@ -109,29 +109,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupDataBind();
+		restoreInstanceState(savedInstanceState);
+		setupMapFragment();
+
+		mainThread = new Handler();
+		isShowingProgress = false;
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+		vgTopBar = findViewById(R.id.vgTopBar);
+		eSearch = findViewById(R.id.eSearch);
+		eSearch.setOnEditorActionListener(onSearchGo);
+		progressDialog = new ProgressDialog(MapActivity.this);
+		progressDialog.setIndeterminate(true);
+
+		observeData();
+    }
+
+    private void setupDataBind() {
 		ActivityMapsBinding contentView = DataBindingUtil.setContentView(this, R.layout.activity_maps);
 		viewModel = ViewModelProviders.of(this).get(MapViewModel.class);
 		preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel.class);
 		contentView.setModelView(viewModel);
+	}
 
-		restoreInstanceState(savedInstanceState);
-
+	private void setupMapFragment() {
 		SupportMapFragment mapFragment = (SupportMapFragment)
 				getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        observeDaySelectionChange();
-
-		eSearch = findViewById(R.id.eSearch);
-		eSearch.setOnEditorActionListener(onSearchGo);
-		vgTopBar = findViewById(R.id.vgTopBar);
-		mainThread = new Handler();
-		progressDialog = new ProgressDialog(MapActivity.this);
-		progressDialog.setIndeterminate(true);
-		isShowingProgress = false;
-		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
-		observeData();
-    }
+		mapFragment.getMapAsync(this);
+	}
 
     private void observeData() {
 		viewModel.getStartPosition().observe(this, new Observer<LatLng>() {
@@ -146,57 +152,70 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				setFinishPosition(latLng);
 			}
 		});
+		preferencesViewModel.getSelectedDay().observe(this, new Observer<Integer>() {
+			@Override
+			public void onChanged(@Nullable Integer integer) {
+				updateForecastsIcons();
+			}
+		});
 	}
 
 	public void currentLocationFabClick(View view) {
-		int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-		if (PackageManager.PERMISSION_GRANTED != permissionCheck) {
-			ActivityCompat.requestPermissions(this, new String[]{
-					Manifest.permission.ACCESS_FINE_LOCATION,
-					Manifest.permission.ACCESS_COARSE_LOCATION
-			}, REQ_PERMISSION);
-		} else {
-			clearSelection();
-			LatLng currentLocation = viewModel.getCurrentLocation();
-			if (currentLocation != null) {
-				setStartPosition(currentLocation);
-			} else {
-				showProgress();
-				final LocationLiveData liveLocation = viewModel.getLiveLocation();
-				locationObserver = new Observer<Location>() {
-					@Override
-					public void onChanged(@Nullable Location location) {
-						setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-						removeLocationObserver();
-					}
-				};
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						removeLocationObserver();
+		setCurrentLocationAsStartPositionRequestingPermission();
+		sendFirebaseFabEvent();
+	}
 
-						if (locationObserver != null) {
-							AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
-									.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
-							builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.dismiss();
-								}
-							});
-							builder.create().show();
-						}
-					}
-				}, 30000);
-
-				liveLocation.observe(this, locationObserver);
-			}
-		}
-
+	private void sendFirebaseFabEvent() {
 		Bundle bundle = new Bundle();
 		bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab");
 		bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation");
 		mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+	}
+
+	public void setCurrentLocationAsStartPositionRequestingPermission() {
+		boolean hasPermission = ContextCompat.checkSelfPermission(
+				this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+		if (hasPermission) {
+			setCurrentLocationAsStartPosition();
+		} else {
+			ActivityCompat.requestPermissions(this, new String[]{
+					Manifest.permission.ACCESS_FINE_LOCATION,
+					Manifest.permission.ACCESS_COARSE_LOCATION
+			}, REQ_PERMISSION);
+		}
+	}
+
+	public void setCurrentLocationAsStartPosition() {
+		clearSelection();
+		LatLng currentLocation = viewModel.getCurrentLocation();
+		if (currentLocation != null) {
+			setStartPosition(currentLocation);
+		} else {
+			requestLiveLocation();
+		}
+	}
+
+	private void requestLiveLocation() {
+		showProgress();
+		final LocationLiveData liveLocation = viewModel.getLiveLocation();
+		locationObserver = new Observer<Location>() {
+			@Override
+			public void onChanged(Location location) {
+				setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+				removeLocationObserver();
+			}
+		};
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (locationObserver != null) {
+					removeLocationObserver();
+					showCantFindLocationDialog();
+				}
+			}
+		}, 30000);
+
+		liveLocation.observe(this, locationObserver);
 	}
 
 	private void removeLocationObserver() {
@@ -207,10 +226,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		}
 	}
 
+	private void showCantFindLocationDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
+				.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.show();
+	}
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+		observeLayoutToUpdate();
+    }
 
+    private void observeLayoutToUpdate() {
 		final View view = findViewById(R.id.vgMain);
 		ViewTreeObserver observer = view.getViewTreeObserver();
 		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -220,7 +254,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 			}
 		});
-    }
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -241,18 +275,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	public void onBackPressed() {
         boolean shouldQuit = !hideTopBar();
         if(finishPosition != null) {
-            clearSelection();
-            setFinishPosition(null);
-            setStartPosition(startPosition);
+			removeFinishPosition();
             shouldQuit &= false;
         } else if(startPosition != null) {
-			clearSelection();
-			setStartPosition(null);
+			removeStartPosition();
 			shouldQuit &= false;
 		}
 
         if(shouldQuit)
 		    super.onBackPressed();
+	}
+
+	private void removeFinishPosition() {
+		clearSelection();
+		setFinishPosition(null);
+		setStartPosition(startPosition);
+	}
+
+	private void removeStartPosition() {
+		clearSelection();
+		setStartPosition(null);
 	}
 
 	@Override
@@ -265,14 +307,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
 		clearSelection();
-		if(startPosition == null)
-            focusOnCurrentLocation();
 
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				setStartPosition(startPosition);
 				setFinishPosition(finishPosition);
+				if(startPosition == null)
+					setCurrentLocationAsStartPositionRequestingPermission();
 			}
 		}, 500);
     }
@@ -586,24 +628,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		});
 	}
 
-	private void focusOnCurrentLocation() {
-		pointMapTo(viewModel.getCurrentLocation());
-	}
-
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == REQ_PERMISSION) {
-			setStartOnCurrentLocation();
+			setCurrentLocationAsStartPosition();
 		} else {
 			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		}
-	}
-
-	/**
-	 * Defines the start position to the current user location.
-	 */
-	private void setStartOnCurrentLocation() {
-		setStartPosition(viewModel.getCurrentLocation());
 	}
 
 	/**
@@ -690,15 +721,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		for(Map.Entry<Marker, Weather> it : markerWeathers.entrySet()) {
 			addMark(it.getValue());
 		}
-	}
-
-	public void observeDaySelectionChange() {
-		preferencesViewModel.getSelectedDay().observe(this, new Observer<Integer>() {
-			@Override
-			public void onChanged(@Nullable Integer integer) {
-				updateForecastsIcons();
-			}
-		});
 	}
 
     public void onClearSearch(View view) {
