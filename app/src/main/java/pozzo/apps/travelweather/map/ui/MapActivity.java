@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -40,8 +39,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.splunk.mint.Mint;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -52,12 +51,10 @@ import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
 import pozzo.apps.travelweather.forecast.ForecastBusiness;
-import pozzo.apps.travelweather.forecast.ForecastHelper;
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
-import pozzo.apps.travelweather.location.LocationBusiness;
 import pozzo.apps.travelweather.location.LocationLiveData;
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
@@ -72,7 +69,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	private int lineColor;
 
-	private LocationBusiness locationBusiness;
 	private ForecastBusiness forecastBusiness;
 	private GeoCoderHelper geoCoderHelper;
 
@@ -95,7 +91,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private PreferencesViewModel preferencesViewModel;
 
     {
-        locationBusiness = new LocationBusiness();
         forecastBusiness = new ForecastBusiness();
 		geoCoderHelper = new GeoCoderHelper(this);
 		executor = new ThreadPoolExecutor(
@@ -139,13 +134,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		viewModel.getStartPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				setStartPosition(latLng);
+				if(startPosition != null) {
+					queryAndShowWeatherFor(startPosition);
+					pointMapTo(startPosition);
+				}
 			}
 		});
 		viewModel.getFinishPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				setFinishPosition(latLng);
+				if(finishPosition != null) {
+					queryAndShowWeatherFor(finishPosition);
+					fitCurrentRouteOnScreen();
+					viewModel.updateRoute();
+				}
 			}
 		});
 		viewModel.isShowingProgress().observe(this, new Observer<Boolean>() {
@@ -162,6 +164,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			@Override
 			public void onChanged(@Nullable Day day) {
 				updateForecastsIcons();
+			}
+		});
+		viewModel.getDirectionLine().observe(this, new Observer<PolylineOptions>() {
+			@Override
+			public void onChanged(PolylineOptions rectLine) {
+				if(mMap == null)
+					return;
+
+				if(rectLine != null)
+					mMap.addPolyline(rectLine);
+				else
+					Toast.makeText(MapActivity.this, R.string.warning_pathNotFound,
+							Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		viewModel.getWeatherPoints().observe(this, new Observer<List<LatLng>>() {
+			@Override
+			public void onChanged(List<LatLng> latLngs) {
+				for (LatLng it : latLngs) {
+					queryAndShowWeatherFor(it);
+				}
 			}
 		});
 	}
@@ -353,10 +377,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      */
     private void setStartPosition(LatLng startPosition) {
         this.startPosition = startPosition;
-        if(startPosition != null) {
-            queryAndShowWeatherFor(startPosition);
-            pointMapTo(startPosition);
-        }
+        viewModel.setStartPosition(startPosition);
     }
 
 	/**
@@ -364,11 +385,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	 */
 	private void setFinishPosition(LatLng finishPosition) {
 		this.finishPosition = finishPosition;
-		if(finishPosition != null) {
-			queryAndShowWeatherFor(finishPosition);
-			fitCurrentRouteOnScreen();
-			updateRoute(mMap);
-		}
+		viewModel.setFinishPosition(finishPosition);
 	}
 
 	/**
@@ -427,57 +444,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		}
 		markerWeathers.clear();
 	}
-
-    /**
-     * Update route.
-     */
-    private void updateRoute(final GoogleMap googleMap) {
-        if(startPosition == null || finishPosition == null)
-            return;
-
-        //Acho que essa async task aqui vai dar para ser movida quase toda para a view model, sera q nao?
-        new AsyncTask<Void, Void, PolylineOptions>() {
-
-			@Override
-			protected void onPreExecute() {
-				viewModel.showProgress();
-			}
-
-            @Override
-            protected PolylineOptions doInBackground(Void... params) {
-                final ArrayList<LatLng> directionPoint =
-                        locationBusiness.getDirections(startPosition, finishPosition);
-                if(directionPoint == null || directionPoint.isEmpty())
-                    return null;
-
-				if(lineColor <= 0)
-					lineColor = getResources().getColor(R.color.route);
-                PolylineOptions rectLine = new PolylineOptions().width(7).color(lineColor);
-                for(int i = 0 ; i < directionPoint.size() ; i++) {
-                    LatLng latLng = directionPoint.get(i);
-                    rectLine.add(latLng);
-                }
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        weatherOverDirection(directionPoint);
-                    }
-                }.start();
-                return rectLine;
-            }
-
-            @Override
-            protected void onPostExecute(PolylineOptions rectLine) {
-				viewModel.hideProgress();
-                if(rectLine != null)
-                    googleMap.addPolyline(rectLine);
-                else
-                    Toast.makeText(MapActivity.this, R.string.warning_pathNotFound,
-                            Toast.LENGTH_SHORT).show();
-            }
-        }.execute();
-    }
 
     /**
      * User seems to be willing to do something, let's help him!
@@ -564,24 +530,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             AndroidUtil.openUrl(weather.getUrl(), MapActivity.this);
         }
     };
-
-    /**
-     * Request forecast for all over the route.
-     */
-    private void weatherOverDirection(ArrayList<LatLng> directionPoint) {
-        if(directionPoint == null || directionPoint.isEmpty())
-            return;
-
-        LatLng lastForecast = directionPoint.get(0);
-        for(int i = 1 ; i < directionPoint.size() - 1 ; i++) {
-            LatLng latLng = directionPoint.get(i);
-            if(i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-                    && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
-                queryAndShowWeatherFor(latLng);
-                lastForecast = latLng;
-            }
-        }
-    }
 
     /**
      * Query and shows weather for the given location.
