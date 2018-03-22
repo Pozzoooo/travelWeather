@@ -6,20 +6,29 @@ import android.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.travelweather.core.BaseViewModel
+import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
+import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import java.util.concurrent.Executors
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness: LocationBusiness = LocationBusiness()
+    private val forecastBusiness: ForecastBusiness = ForecastBusiness()
+
+
+//    executor = ThreadPoolExecutor(
+//    7, 20, 1, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>(7), ThreadPoolExecutor.DiscardPolicy()
+//    )
     private val routeExecutor = Executors.newSingleThreadExecutor()
+    private val addWeatherExecutor = Executors.newSingleThreadExecutor()
 
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
     val isShowingProgress = MutableLiveData<Boolean>()
     val directionLine = MutableLiveData<PolylineOptions>()
-    val weatherPoints = MutableLiveData<List<LatLng>>()
+    val weathers = MutableLiveData<List<Weather>>()
 
     init {
         isShowingProgress.value = false
@@ -27,7 +36,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun currentLocationFabClick() {
         finishPosition.postValue(null)
-        startPosition.postValue(getCurrentLocation())
+        setStartPosition(getCurrentLocation())
     }
 
     fun getLiveLocation(): LocationLiveData {
@@ -57,24 +66,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             val direction = locationBusiness.getDirections(startPosition.value, finishPosition.value)
             if (direction?.isEmpty() == false) {
                 setDirectionLine(direction)
-                setDirectionWeatherPoints(direction)
+                addWeathers(filterDirectionToWeatherPoints(direction))
             }
             hideProgress()
         })
-    }
-
-    private fun setDirectionWeatherPoints(direction: List<LatLng>) {
-        val filteredPoints = ArrayList<LatLng>()
-        var lastForecast = direction.get(0)
-        for (i in 1 until direction.size - 1) {
-            val latLng = direction.get(i)
-            if (i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-                    && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
-                lastForecast = latLng
-                filteredPoints.add(latLng)
-            }
-        }
-        weatherPoints.postValue(filteredPoints)
     }
 
     private fun setDirectionLine(direction: List<LatLng>) {
@@ -85,12 +80,48 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.directionLine.postValue(rectLine)
     }
 
+    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
+        val filteredPoints = ArrayList<LatLng>()
+        var lastForecast = direction.get(0)
+        for (i in 1 until direction.size - 1) {
+            val latLng = direction.get(i)
+            if (i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
+                    && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
+                lastForecast = latLng
+                filteredPoints.add(latLng)
+            }
+        }
+        return filteredPoints
+    }
+
+    private fun addWeathers(weatherPoints: List<LatLng>) {
+        addWeatherExecutor.execute({
+            val newWeathers = requestWeathersFor(weatherPoints)
+            val currentWeathers = this.weathers.value
+            if (currentWeathers?.isEmpty() == false)
+                newWeathers.addAll(currentWeathers)
+            this.weathers.postValue(newWeathers)
+        })
+    }
+
+    private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
+        val weathers = ArrayList<Weather>()
+        weatherPoints.forEach {
+            weathers.add(forecastBusiness.from(it))
+        }
+        return weathers
+    }
+
     fun setFinishPosition(finishPosition: LatLng?) {
         this.finishPosition.postValue(finishPosition)
+        if (finishPosition != null)
+            addWeathers(listOf(finishPosition))
     }
 
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
+        if (startPosition != null)
+            addWeathers(listOf(startPosition))
     }
 
     //todo remove it when refacted enough

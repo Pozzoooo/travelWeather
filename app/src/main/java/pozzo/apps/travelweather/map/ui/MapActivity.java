@@ -42,15 +42,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import pozzo.apps.tools.AndroidUtil;
 import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
-import pozzo.apps.travelweather.forecast.ForecastBusiness;
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
@@ -67,9 +63,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;
 
-	private int lineColor;
-
-	private ForecastBusiness forecastBusiness;
 	private GeoCoderHelper geoCoderHelper;
 
 	private LatLng startPosition;
@@ -82,7 +75,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private View vgTopBar;
 	private ProgressDialog progressDialog;
 
-	private ThreadPoolExecutor executor;
 	private Handler mainThread;
 	private Observer<Location> locationObserver;
 	private FirebaseAnalytics mFirebaseAnalytics;
@@ -91,11 +83,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private PreferencesViewModel preferencesViewModel;
 
     {
-        forecastBusiness = new ForecastBusiness();
 		geoCoderHelper = new GeoCoderHelper(this);
-		executor = new ThreadPoolExecutor(
-				7, 20, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(7), new ThreadPoolExecutor.DiscardPolicy()
-		);
     }
 
     @Override
@@ -135,7 +123,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
 				if(startPosition != null) {
-					queryAndShowWeatherFor(startPosition);
 					pointMapTo(startPosition);
 				}
 			}
@@ -144,7 +131,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
 				if(finishPosition != null) {
-					queryAndShowWeatherFor(finishPosition);
 					fitCurrentRouteOnScreen();
 					viewModel.updateRoute();
 				}
@@ -154,7 +140,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			@Override
 			public void onChanged(Boolean isShowingProgress) {
 				if (isShowingProgress) {
-					showProgressDelayed();
+					mainThread.postDelayed(showProgress, 700);
 				} else {
 					progressDialog.hide();
 				}
@@ -179,30 +165,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 							Toast.LENGTH_SHORT).show();
 			}
 		});
-
-		viewModel.getWeatherPoints().observe(this, new Observer<List<LatLng>>() {
+		viewModel.getWeathers().observe(this, new Observer<List<Weather>>() {
 			@Override
-			public void onChanged(List<LatLng> latLngs) {
-				for (LatLng it : latLngs) {
-					queryAndShowWeatherFor(it);
+			public void onChanged(List<Weather> weathers) {
+				for (Weather it : weathers) {
+					addMark(it);
 				}
 			}
 		});
 	}
 
-	/**
-	 * Given a few delay, so we avoid showing the loading dialog in case of a quick process
-	 */
-	private void showProgressDelayed() {
-		mainThread.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (viewModel.isShowingProgress().getValue()) {
-					progressDialog.show();
-				}
+	private Runnable showProgress = new Runnable() {
+		@Override
+		public void run() {
+			if (viewModel.isShowingProgress().getValue()) {
+				progressDialog.show();
 			}
-		}, 700);
-	}
+		}
+	};
 
 	public void currentLocationFabClick(View view) {
 		setCurrentLocationAsStartPositionRequestingPermission();
@@ -530,31 +510,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             AndroidUtil.openUrl(weather.getUrl(), MapActivity.this);
         }
     };
-
-    /**
-     * Query and shows weather for the given location.
-     */
-	private void queryAndShowWeatherFor(final LatLng location) {
-		executor.execute(new Runnable() {
-			@Override
-			public void run() {
-				if(isFinishing())
-					return;
-
-				try {
-					final Weather weather = forecastBusiness.from(location);
-					mainThread.post(new Runnable() {
-						@Override
-						public void run() {
-							addMark(weather);
-						}
-					});
-				} catch (Exception e) {
-					//Ignored...
-				}
-			}
-		});
-	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
