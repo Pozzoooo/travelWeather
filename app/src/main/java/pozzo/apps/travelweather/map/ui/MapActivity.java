@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 
 import pozzo.apps.tools.AndroidUtil;
-import pozzo.apps.tools.NetworkUtil;
 import pozzo.apps.travelweather.R;
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
@@ -57,7 +56,7 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
 
 /**
- * Atividade para exibir o mapa.
+ * A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
  */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 	private static final int ANIM_ROUTE_TIME = 1200;
@@ -95,6 +94,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		mainThread = new Handler();
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+		drawerLayout = findViewById(R.id.drawerLayout);
 		vgTopBar = findViewById(R.id.vgTopBar);
 		eSearch = findViewById(R.id.eSearch);
 		eSearch.setOnEditorActionListener(onSearchGo);
@@ -121,21 +121,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		viewModel.getStartPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				if(startPosition != null) {
+				startPosition = latLng;
+				if(latLng != null) {
 					pointMapTo(startPosition);
 				} else {
-					clearSelection();
+					clearMap();
 				}
 			}
 		});
 		viewModel.getFinishPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				if(finishPosition != null) {
+				finishPosition = latLng;
+				clearMap();
+				if(latLng != null) {
 					fitCurrentRouteOnScreen();
 					viewModel.updateRoute();
 				} else {
-					clearSelection();
 					setStartPosition(startPosition);
 				}
 			}
@@ -193,6 +195,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 					finish();
 			}
 		});
+		viewModel.isConnected().observe(this, new Observer<Boolean>() {
+			@Override
+			public void onChanged(@Nullable Boolean aBoolean) {
+				if (!aBoolean)
+					showNoConnectionError();
+			}
+		});
 	}
 
 	private Runnable showProgress = new Runnable() {
@@ -230,7 +239,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	}
 
 	public void setCurrentLocationAsStartPosition() {
-		clearSelection();
+		clearMap();
 		LatLng currentLocation = viewModel.getCurrentLocation();
 		if (currentLocation != null) {
 			setStartPosition(currentLocation);
@@ -319,7 +328,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	@Override
 	public void onBackPressed() {
-		viewModel.backFlow();
+		viewModel.back();
 	}
 
 	@Override
@@ -331,7 +340,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
 		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
-		clearSelection();
+		clearMap();
 
 		mainThread.postDelayed(new Runnable() {
 			@Override
@@ -343,15 +352,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			}
 		}, 500);
     }
-
-	/**
-	 * Drawer lazy loaded.
-	 */
-	private DrawerLayout getDrawerLayout() {
-		if(drawerLayout == null)
-			drawerLayout = findViewById(R.id.drawerLayout);
-		return drawerLayout;
-	}
 
 	/**
      * @param startPosition Sets a ew start position.
@@ -382,6 +382,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Map will fit the given bounds.
      */
     private void pointMapTo(LatLngBounds latLng) {
+    	if (latLng == null)
+    		return;
+
 		try {
 			mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null);
 		} catch(IllegalStateException e) {
@@ -411,15 +414,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Should try to fit entire route on screen.
      */
     private void fitCurrentRouteOnScreen() {
-		if(startPosition != null && finishPosition != null)
-			pointMapTo(LatLngBounds.builder()
-					.include(startPosition).include(finishPosition).build());
+		pointMapTo(viewModel.getRouteBounds());
     }
 
 	/**
 	 * Clear anything drawn on map.
 	 */
-	public void clearSelection() {
+	public void clearMap() {
 		if (mMap != null) {
 			mMap.clear();
 		}
@@ -432,42 +433,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap.OnMapClickListener placeMarkerClick = new GoogleMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
-			hideTopBar();
-            if(!checkNetworkAndWarn())
-                return;
-
-            if(startPosition == null) {
-                setStartPosition(latLng);
-            } else {
-                if(finishPosition != null) {
-                    LatLng startPosition = MapActivity.this.startPosition;
-                    clearSelection();//Make sure there is no garbage around
-                    setStartPosition(startPosition);
-                }
-                setFinishPosition(latLng);
-            }
+        	viewModel.addPoint(latLng);
         }
     };
 
-	/**
-	 * Checks network state and warn user if there is no connection.
-	 * @return true if seems to be connection available.
-	 */
-    private boolean checkNetworkAndWarn() {
-        boolean isConnected = NetworkUtil.isNetworkAvailable(this);
-        if(!isConnected) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this)
-					.setTitle(R.string.warning).setMessage(R.string.warning_needsConnection);
-			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-			builder.create().show();
-        }
-
-        return isConnected;
+    private void showNoConnectionError() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+				.setTitle(R.string.warning).setMessage(R.string.warning_needsConnection);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		builder.show();
     }
 
     /**
@@ -483,7 +462,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    clearSelection();
+                    clearMap();
                     setStartPosition(null);
                     setFinishPosition(null);
                 }
@@ -565,7 +544,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	 * User wants to open side menu.
 	 */
 	public void onMenu(View view) {
-		getDrawerLayout().openDrawer(GravityCompat.START);
+		drawerLayout.openDrawer(GravityCompat.START);
 	}
 
 	/**

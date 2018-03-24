@@ -4,7 +4,9 @@ import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import android.graphics.Color
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
@@ -31,6 +33,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
+    val isConnected = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
@@ -129,9 +132,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             addWeathers(listOf(startPosition))
     }
 
-    fun backFlow() {
+    fun back() {
         when {
-            isShowingTopBar.value == true -> isShowingTopBar.postValue(false)
+            isShowingTopBar.value == true -> hideTopBar()
             finishPosition.value != null -> setFinishPosition(null)
             startPosition.value != null -> setStartPosition(null)
             else -> shouldFinish.postValue(true)
@@ -140,6 +143,41 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun displayTopBar() {
         isShowingTopBar.postValue(true)
+    }
+
+    fun hideTopBar() {
+        isShowingTopBar.postValue(false)
+    }
+
+    fun getRouteBounds() : LatLngBounds? {
+        return if (isFullRouteSelected()) {
+            LatLngBounds.builder()
+                    .include(startPosition.value)
+                    .include(finishPosition.value).build()
+        } else {
+            null
+        }
+    }
+
+    fun isFullRouteSelected() : Boolean = startPosition.value != null && finishPosition.value != null
+
+    fun addPoint(latLng: LatLng) {
+        //todo what about create a polymorphsm on something like "currentSelection", so at least 1 if is avoided
+        hideTopBar()
+        if (!checkConnection())
+            return
+
+        if (startPosition.value == null) {
+            setStartPosition(latLng)
+        } else {
+            setFinishPosition(latLng)
+        }
+    }
+
+    private fun checkConnection() : Boolean {
+        val isConnected = NetworkUtil.isNetworkAvailable(getApplication())
+        this.isConnected.postValue(isConnected)
+        return isConnected
     }
 
     //todo remove it when refacted enough
