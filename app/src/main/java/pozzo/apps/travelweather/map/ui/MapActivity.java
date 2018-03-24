@@ -62,8 +62,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1;
 
-	private LatLng startPosition;
-	private LatLng finishPosition;
+	//todo maybe I can create an improved abstraction of this map
 	private HashMap<Marker, Weather> mapMarkerToWeather = new HashMap<>();
 
 	private DrawerLayout drawerLayout;
@@ -115,24 +114,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		viewModel.getStartPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				startPosition = latLng;
 				if(latLng != null) {
-					pointMapTo(startPosition);
+					pointMapTo(latLng);
 				} else {
-					clearMap();
+					clearMapOverlay();
 				}
 			}
 		});
 		viewModel.getFinishPosition().observe(this, new Observer<LatLng>() {
 			@Override
 			public void onChanged(@Nullable LatLng latLng) {
-				finishPosition = latLng;
-				clearMap();
+				clearMapOverlay();
 				if(latLng != null) {
 					fitCurrentRouteOnScreen();
 					viewModel.updateRoute();
 				} else {
-					setStartPosition(startPosition);
+					viewModel.setStartPosition(viewModel.getStartPosition().getValue());
 				}
 			}
 		});
@@ -240,10 +237,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	}
 
 	public void setCurrentLocationAsStartPosition() {
-		clearMap();
+		clearMapOverlay();
 		LatLng currentLocation = viewModel.getCurrentLocation();
 		if (currentLocation != null) {
-			setStartPosition(currentLocation);
+			viewModel.setStartPosition(currentLocation);
 		} else {
 			requestLiveLocation();
 		}
@@ -255,7 +252,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		locationObserver = new Observer<Location>() {
 			@Override
 			public void onChanged(Location location) {
-				setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+				viewModel.setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
 				removeLocationObserver();
 			}
 		};
@@ -312,8 +309,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putParcelable("startPosition", startPosition);
-		outState.putParcelable("finishPosition", finishPosition);
+		outState.putParcelable("startPosition", viewModel.getStartPosition().getValue());
+		outState.putParcelable("finishPosition", viewModel.getFinishPosition().getValue());
 
 		super.onSaveInstanceState(outState);
 	}
@@ -322,8 +319,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		if(savedInstanceState != null) {
-			startPosition = savedInstanceState.getParcelable("startPosition");
-			finishPosition = savedInstanceState.getParcelable("finishPosition");
+			viewModel.setStartPosition((LatLng) savedInstanceState.getParcelable("startPosition"));
+			viewModel.setFinishPosition((LatLng)savedInstanceState.getParcelable("finishPosition"));
 		}
 	}
 
@@ -341,34 +338,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(onInfoWindowClick);
 		mMap.setInfoWindowAdapter(new ForecastInfoWindowAdapter(this));
 
-		clearMap();
+		clearMapOverlay();
 
 		mainThread.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				setStartPosition(startPosition);
-				setFinishPosition(finishPosition);
-				if(startPosition == null)
+				if(viewModel.getStartPosition().getValue() == null)
 					setCurrentLocationAsStartPositionRequestingPermission();
 			}
 		}, 500);
     }
-
-	/**
-     * @param startPosition Sets a ew start position.
-     */
-    private void setStartPosition(LatLng startPosition) {
-        this.startPosition = startPosition;
-        viewModel.setStartPosition(startPosition);
-    }
-
-	/**
-	 * Sets the new finish point, or clear it.
-	 */
-	private void setFinishPosition(LatLng finishPosition) {
-		this.finishPosition = finishPosition;
-		viewModel.setFinishPosition(finishPosition);
-	}
 
 	/**
 	 * Map will be centered on given point.
@@ -377,6 +356,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		if (mMap != null && latLng != null) {
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
 		}
+	}
+
+	/**
+	 * Should try to fit entire route on screen.
+	 */
+	private void fitCurrentRouteOnScreen() {
+		pointMapTo(viewModel.getRouteBounds());
 	}
 
     /**
@@ -411,17 +397,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapMarkerToWeather.put(marker, weather);
     }
 
-    /**
-     * Should try to fit entire route on screen.
-     */
-    private void fitCurrentRouteOnScreen() {
-		pointMapTo(viewModel.getRouteBounds());
-    }
-
-	/**
-	 * Clear anything drawn on map.
-	 */
-	public void clearMap() {
+	public void clearMapOverlay() {
 		if (mMap != null) {
 			mMap.clear();
 		}
@@ -440,15 +416,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void showErrorDialog(Error error) {
 		new AlertDialog.Builder(this)
-				.setTitle(R.string.warning)
-				.setMessage(error.getMessageId())
-				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						viewModel.dismissError();
-						dialog.dismiss();
-					}
-				}).show();
+			.setTitle(R.string.warning)
+			.setMessage(error.getMessageId())
+			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					viewModel.dismissError();
+					dialog.dismiss();
+				}
+			}).show();
     }
 
     private void showActionRequest(final ActionRequest actionRequest) {

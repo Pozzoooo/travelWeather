@@ -65,8 +65,7 @@ class ForecastClientYahoo : ForecastClient {
         } catch (e: ClassCastException) {
             if (maxRetries > 1)
                 return requestWeather(query, maxRetries-1)
-
-            Mint.logException("result", result, e)
+            Mint.logEvent("Json null")
             throw e
         }
     }

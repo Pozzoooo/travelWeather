@@ -6,6 +6,7 @@ import android.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import com.splunk.mint.Mint
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
@@ -19,6 +20,9 @@ import pozzo.apps.travelweather.map.helper.GeoCoderHelper
 import java.io.IOException
 import java.util.concurrent.Executors
 
+/**
+ * todo is my package strategy good?
+ */
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
@@ -121,7 +125,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
         val weathers = ArrayList<Weather>()
         weatherPoints.forEach {
-            weathers.add(forecastBusiness.from(it))
+            try {
+                weathers.add(forecastBusiness.from(it))
+            } catch (e: ClassCastException) {
+                //Business don't want't to send us this forecast
+                //This one is known server issue and won't be logged
+                //todo improve it for a more specific exception
+            } catch (e: Exception) {
+                Mint.logException(e)
+            }
         }
         return weathers
     }
