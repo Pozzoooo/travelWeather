@@ -44,6 +44,7 @@ import java.util.Map;
 
 import pozzo.apps.tools.AndroidUtil;
 import pozzo.apps.travelweather.R;
+import pozzo.apps.travelweather.core.Error;
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding;
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Day;
@@ -58,7 +59,7 @@ import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
  */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 	private static final int ANIM_ROUTE_TIME = 1200;
-	private static final int REQ_PERMISSION = 0x1;
+	private static final int REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1;
 
 	private LatLng startPosition;
 	private LatLng finishPosition;
@@ -187,11 +188,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 					finish();
 			}
 		});
-		viewModel.getErrorMessage().observe(this, new Observer<String>() {
+		viewModel.getError().observe(this, new Observer<Error>() {
 			@Override
-			public void onChanged(@Nullable String erroMessage) {
-				if (erroMessage != null)
-					showErrorDialog(erroMessage);
+			public void onChanged(@Nullable Error error) {
+				if (error != null)
+					showErrorDialog(error);
 			}
 		});
 	}
@@ -226,7 +227,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			ActivityCompat.requestPermissions(this, new String[]{
 					Manifest.permission.ACCESS_FINE_LOCATION,
 					Manifest.permission.ACCESS_COARSE_LOCATION
-			}, REQ_PERMISSION);
+			}, REQ_PERMISSION_FOR_CURRENT_LOCATION);
 		}
 	}
 
@@ -429,9 +430,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
-    private void showErrorDialog(String errorMessage) {
+    private void showErrorDialog(Error error) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.warning).setMessage(errorMessage);
+				.setTitle(R.string.warning).setMessage(error.getMessageId());
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -477,8 +478,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             new GoogleMap.OnInfoWindowClickListener() {
         @Override
         public void onInfoWindowClick(Marker marker) {
-			//Link is not redirecting corretly
-
             Weather weather = mapMarkerToWeather.get(marker);
             AndroidUtil.openUrl(weather.getUrl(), MapActivity.this);
         }
@@ -486,7 +485,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (requestCode == REQ_PERMISSION) {
+		if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
 			setCurrentLocationAsStartPosition();
 		} else {
 			super.onRequestPermissionsResult(requestCode, permissions, grantResults);

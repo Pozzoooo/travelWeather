@@ -7,8 +7,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.tools.NetworkUtil
-import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.core.BaseViewModel
+import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -35,7 +35,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val finishPosition = MutableLiveData<LatLng?>()
     val directionLine = MutableLiveData<PolylineOptions>()
     val weathers = MutableLiveData<List<Weather>>()
-    val errorMessage = MutableLiveData<String>()
+    val error = MutableLiveData<Error>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
@@ -165,7 +165,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         //todo what about create a polymorphsm on something like "currentSelection", so at least 1 if is avoided
         hideTopBar()
         if (!checkConnection()) {
-            errorMessage.postValue(getString(R.string.warning_needsConnection))
+            error.postValue(Error.NO_CONNECTION)
         } else if (startPosition.value == null) {
             setStartPosition(latLng)
         } else {
@@ -180,18 +180,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             val location = geoCoderHelper.getPositionFromFirst(string)
             addPoint(location)
         } catch (e: IOException) {
-            errorMessage.postValue(getString(R.string.error_addressNotFound))
+            error.postValue(Error.ADDRESS_NOT_FOUND)
         }
     }
 
     fun dismissError() {
-        errorMessage.value = null
+        error.value = null
     }
-
-    /*
-     * todo maybe there is a better place for it
-     */
-    private fun getString(id: Int) : String = getApplication<Application>().getString(id)
 
     //todo remove it when refacted enough
     fun showProgress() {
