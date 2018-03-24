@@ -51,6 +51,7 @@ import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
 import pozzo.apps.travelweather.location.LocationLiveData;
+import pozzo.apps.travelweather.map.ActionRequest;
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
 
@@ -193,6 +194,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			public void onChanged(@Nullable Error error) {
 				if (error != null)
 					showErrorDialog(error);
+			}
+		});
+		viewModel.getActionRequest().observe(this, new Observer<ActionRequest>() {
+			@Override
+			public void onChanged(@Nullable ActionRequest actionRequest) {
+				if (actionRequest != null)
+					showActionRequest(actionRequest);
 			}
 		});
 	}
@@ -431,17 +439,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     };
 
     private void showErrorDialog(Error error) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.warning).setMessage(error.getMessageId());
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				viewModel.dismissError();
-				dialog.dismiss();
-			}
-		});
-		builder.show();
+		new AlertDialog.Builder(this)
+				.setTitle(R.string.warning)
+				.setMessage(error.getMessageId())
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						viewModel.dismissError();
+						dialog.dismiss();
+					}
+				}).show();
     }
+
+    private void showActionRequest(final ActionRequest actionRequest) {
+		new AlertDialog.Builder(this)
+			.setMessage(actionRequest.getMessageId())
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					viewModel.actionRequestAccepted(actionRequest);
+				}
+			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			}).show();
+	}
 
     /**
      * Popup to clear all markers.
@@ -450,24 +474,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             new GoogleMap.OnMapLongClickListener() {
         @Override
         public void onMapLongClick(LatLng latLng) {
-			hideTopBar();
-            AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-            builder.setMessage(R.string.removeAllMarkers);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    clearMap();
-                    setStartPosition(null);
-                    setFinishPosition(null);
-                }
-            });
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
+			viewModel.requestClear();
         }
     };
 

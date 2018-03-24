@@ -14,6 +14,7 @@ import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
+import pozzo.apps.travelweather.map.ActionRequest
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -36,6 +37,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val directionLine = MutableLiveData<PolylineOptions>()
     val weathers = MutableLiveData<List<Weather>>()
     val error = MutableLiveData<Error>()
+    val actionRequest = MutableLiveData<ActionRequest>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
@@ -186,6 +188,22 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun dismissError() {
         error.value = null
+    }
+
+    fun requestClear() {
+        hideTopBar()
+        actionRequest.postValue(ActionRequest.CLEAR)
+    }
+
+    fun actionRequestAccepted(actionRequest: ActionRequest) {
+        this.actionRequest.value = null
+        //todo solve it with pollymorphsm?
+        when(actionRequest) {
+            ActionRequest.CLEAR -> {
+                setStartPosition(null)
+                setFinishPosition(null)
+            }
+        }
     }
 
     //todo remove it when refacted enough
