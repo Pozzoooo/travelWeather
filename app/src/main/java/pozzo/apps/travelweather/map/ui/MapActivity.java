@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.splunk.mint.Mint;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,6 @@ import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
 import pozzo.apps.travelweather.location.LocationLiveData;
-import pozzo.apps.travelweather.map.helper.GeoCoderHelper;
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
 
@@ -62,11 +60,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private static final int ANIM_ROUTE_TIME = 1200;
 	private static final int REQ_PERMISSION = 0x1;
 
-	private GeoCoderHelper geoCoderHelper;
-
 	private LatLng startPosition;
 	private LatLng finishPosition;
-	private HashMap<Marker, Weather> markerWeathers = new HashMap<>();
+	private HashMap<Marker, Weather> mapMarkerToWeather = new HashMap<>();
 
 	private DrawerLayout drawerLayout;
 	private GoogleMap mMap;
@@ -80,10 +76,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	private MapViewModel viewModel;
 	private PreferencesViewModel preferencesViewModel;
-
-    {
-		geoCoderHelper = new GeoCoderHelper(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +147,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		preferencesViewModel.getSelectedDay().observe(this, new Observer<Day>() {
 			@Override
 			public void onChanged(@Nullable Day day) {
-				updateForecastsIcons();
+				refreshMarkers();
 			}
 		});
 		viewModel.getDirectionLine().observe(this, new Observer<PolylineOptions>() {
@@ -195,11 +187,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 					finish();
 			}
 		});
-		viewModel.isConnected().observe(this, new Observer<Boolean>() {
+		viewModel.getErrorMessage().observe(this, new Observer<String>() {
 			@Override
-			public void onChanged(@Nullable Boolean aBoolean) {
-				if (!aBoolean)
-					showNoConnectionError();
+			public void onChanged(@Nullable String erroMessage) {
+				if (erroMessage != null)
+					showErrorDialog(erroMessage);
 			}
 		});
 	}
@@ -407,7 +399,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				.title(forecast.getText())
 				.icon(forecast.getIcon());
         Marker marker = mMap.addMarker(markerOptions);
-        markerWeathers.put(marker, weather);
+        mapMarkerToWeather.put(marker, weather);
     }
 
     /**
@@ -424,7 +416,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		if (mMap != null) {
 			mMap.clear();
 		}
-		markerWeathers.clear();
+		mapMarkerToWeather.clear();
 	}
 
     /**
@@ -437,12 +429,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     };
 
-    private void showNoConnectionError() {
+    private void showErrorDialog(String errorMessage) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this)
-				.setTitle(R.string.warning).setMessage(R.string.warning_needsConnection);
+				.setTitle(R.string.warning).setMessage(errorMessage);
 		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				viewModel.dismissError();
 				dialog.dismiss();
 			}
 		});
@@ -486,7 +479,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         public void onInfoWindowClick(Marker marker) {
 			//Link is not redirecting corretly
 
-            Weather weather = markerWeathers.get(marker);
+            Weather weather = mapMarkerToWeather.get(marker);
             AndroidUtil.openUrl(weather.getUrl(), MapActivity.this);
         }
     };
@@ -556,31 +549,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			if(event == null || !(event.getAction() == KeyEvent.ACTION_DOWN))
 				return false;
 
-			searchAddress(v.getText().toString());
+			viewModel.searchAddress(v.getText().toString());
 			return true;
 		}
 	};
 
-	private void searchAddress(String search) {
-		try {
-			LatLng location = geoCoderHelper.getPositionFromFirst(search);
-			placeMarkerClick.onMapClick(location);
-		} catch (IOException e) {
-			AndroidUtil.errorMessage(MapActivity.this,
-					getString(R.string.error_addressNotFound), R.string.warning, R.string.ok);
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Update all forecast icons on map.
-	 */
-	private void updateForecastsIcons() {
-		if(markerWeathers.isEmpty())
+	private void refreshMarkers() {
+		if(mapMarkerToWeather.isEmpty())
 			return;
 
-		HashMap<Marker, Weather> markerWeathers = this.markerWeathers;
-		this.markerWeathers = new HashMap<>();
+		HashMap<Marker, Weather> markerWeathers = this.mapMarkerToWeather;
+		this.mapMarkerToWeather = new HashMap<>();
 		for(Map.Entry<Marker, Weather> it : markerWeathers.entrySet()) {
 			it.getKey().remove();
 			addMark(it.getValue());

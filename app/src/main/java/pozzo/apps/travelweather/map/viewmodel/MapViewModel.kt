@@ -7,20 +7,25 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.tools.NetworkUtil
+import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
+import pozzo.apps.travelweather.map.helper.GeoCoderHelper
+import java.io.IOException
 import java.util.concurrent.Executors
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
-    private val locationBusiness: LocationBusiness = LocationBusiness()
-    private val forecastBusiness: ForecastBusiness = ForecastBusiness()
+    private val locationBusiness = LocationBusiness()
+    private val forecastBusiness = ForecastBusiness()
+    private val geoCoderHelper = GeoCoderHelper(application)
 
 
-//    executor = ThreadPoolExecutor(
+//    todo should I create a bigger pool of threads or leave it small?
+//      executor = ThreadPoolExecutor(
 //    7, 20, 1, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>(7), ThreadPoolExecutor.DiscardPolicy()
 //    )
     private val routeExecutor = Executors.newSingleThreadExecutor()
@@ -30,15 +35,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val finishPosition = MutableLiveData<LatLng?>()
     val directionLine = MutableLiveData<PolylineOptions>()
     val weathers = MutableLiveData<List<Weather>>()
+    val errorMessage = MutableLiveData<String>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
-    val isConnected = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
         isShowingProgress.value = false
-        shouldFinish.value = false
         isShowingTopBar.value = false
     }
 
@@ -164,21 +168,34 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun addPoint(latLng: LatLng) {
         //todo what about create a polymorphsm on something like "currentSelection", so at least 1 if is avoided
         hideTopBar()
-        if (!checkConnection())
-            return
-
-        if (startPosition.value == null) {
+        if (!checkConnection()) {
+            errorMessage.postValue(getString(R.string.warning_needsConnection))
+        } else if (startPosition.value == null) {
             setStartPosition(latLng)
         } else {
             setFinishPosition(latLng)
         }
     }
 
-    private fun checkConnection() : Boolean {
-        val isConnected = NetworkUtil.isNetworkAvailable(getApplication())
-        this.isConnected.postValue(isConnected)
-        return isConnected
+    private fun checkConnection() : Boolean = NetworkUtil.isNetworkAvailable(getApplication())
+
+    fun searchAddress(string: String) {
+        try {
+            val location = geoCoderHelper.getPositionFromFirst(string)
+            addPoint(location)
+        } catch (e: IOException) {
+            errorMessage.postValue(getString(R.string.error_addressNotFound))
+        }
     }
+
+    fun dismissError() {
+        errorMessage.value = null
+    }
+
+    /*
+     * todo maybe there is a better place for it
+     */
+    private fun getString(id: Int) : String = getApplication<Application>().getString(id)
 
     //todo remove it when refacted enough
     fun showProgress() {
