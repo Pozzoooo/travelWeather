@@ -7,6 +7,7 @@ import com.splunk.mint.Mint;
 /**
  * TODO
  *  1x
+ *  Fade in ao mostrar os marks, eh possivel?
  *	Clarificar de alguma forma as acoes do usuario, tipo arrastar o marcador talvez.
  *  Busca na action bar, e a selecao de dia (hoje, amananha...) pode ir em uma spinner no estilo
  *      navegacao.

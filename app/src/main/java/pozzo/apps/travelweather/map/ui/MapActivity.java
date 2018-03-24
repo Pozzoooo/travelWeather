@@ -90,7 +90,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupDataBind();
-		restoreInstanceState(savedInstanceState);
 		setupMapFragment();
 
 		mainThread = new Handler();
@@ -288,7 +287,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		super.onSaveInstanceState(outState);
 	}
 
-	private void restoreInstanceState(Bundle savedInstanceState) {
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
 		if(savedInstanceState != null) {
 			startPosition = savedInstanceState.getParcelable("startPosition");
 			finishPosition = savedInstanceState.getParcelable("finishPosition");
