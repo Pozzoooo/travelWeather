@@ -497,35 +497,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * Search button click event.
      */
     public void toggleSearch(View view) {
-        if(isSearchOpen()) {
-			hideTopBar();
-		} else {
-			showTopBar();
-        }
+        viewModel.toggleTopBar();
     }
 
-    private boolean isSearchOpen() {
-    	return vgTopBar.getAlpha() == 1.f;
-	}
-
-	/**
-	 * Hide app top bar.
-     *
-     * @return true if hidden, false if already hidden.
-	 */
-	private boolean hideTopBar() {
-		if(isSearchOpen())
-			return false;
-
+	private void hideTopBar() {
 		vgTopBar.animate().alpha(0.f);
 		eSearch.setVisibility(View.INVISIBLE);
 		AndroidUtil.hideKeyboard(this, eSearch);
-		return true;
 	}
 
-	/**
-	 * Show app top bar.
-	 */
 	private void showTopBar() {
 		vgTopBar.animate().alpha(1.f);
         eSearch.setVisibility(View.VISIBLE);
@@ -545,11 +525,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	 */
 	private TextView.OnEditorActionListener onSearchGo = new TextView.OnEditorActionListener() {
 		@Override
-		public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
 			if(event == null || !(event.getAction() == KeyEvent.ACTION_DOWN))
 				return false;
 
-			viewModel.searchAddress(v.getText().toString());
+			viewModel.searchAddress(textView.getText().toString());
 			return true;
 		}
 	};

@@ -145,13 +145,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun displayTopBar() {
-        isShowingTopBar.postValue(true)
-    }
-
-    fun hideTopBar() {
-        isShowingTopBar.postValue(false)
-    }
+    fun toggleTopBar() = if (isShowingTopBar.value != true) displayTopBar() else hideTopBar()
+    fun displayTopBar() = isShowingTopBar.postValue(true)
+    fun hideTopBar() = isShowingTopBar.postValue(false)
 
     fun getRouteBounds() : LatLngBounds? {
         return if (isFullRouteSelected()) {
