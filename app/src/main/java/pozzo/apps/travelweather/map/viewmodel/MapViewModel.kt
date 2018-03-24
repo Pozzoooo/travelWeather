@@ -26,12 +26,17 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
-    val isShowingProgress = MutableLiveData<Boolean>()
     val directionLine = MutableLiveData<PolylineOptions>()
     val weathers = MutableLiveData<List<Weather>>()
 
+    val isShowingProgress = MutableLiveData<Boolean>()
+    val isShowingTopBar = MutableLiveData<Boolean>()
+    val shouldFinish = MutableLiveData<Boolean>()
+
     init {
         isShowingProgress.value = false
+        shouldFinish.value = false
+        isShowingTopBar.value = false
     }
 
     fun currentLocationFabClick() {
@@ -122,6 +127,19 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.startPosition.postValue(startPosition)
         if (startPosition != null)
             addWeathers(listOf(startPosition))
+    }
+
+    fun backFlow() {
+        when {
+            isShowingTopBar.value == true -> isShowingTopBar.postValue(false)
+            finishPosition.value != null -> setFinishPosition(null)
+            startPosition.value != null -> setStartPosition(null)
+            else -> shouldFinish.postValue(true)
+        }
+    }
+
+    fun displayTopBar() {
+        isShowingTopBar.postValue(true)
     }
 
     //todo remove it when refacted enough

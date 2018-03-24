@@ -123,6 +123,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 			public void onChanged(@Nullable LatLng latLng) {
 				if(startPosition != null) {
 					pointMapTo(startPosition);
+				} else {
+					clearSelection();
 				}
 			}
 		});
@@ -132,6 +134,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				if(finishPosition != null) {
 					fitCurrentRouteOnScreen();
 					viewModel.updateRoute();
+				} else {
+					clearSelection();
+					setStartPosition(startPosition);
 				}
 			}
 		});
@@ -170,6 +175,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 				for (Weather it : weathers) {
 					addMark(it);
 				}
+			}
+		});
+		viewModel.isShowingTopBar().observe(this, new Observer<Boolean>() {
+			@Override
+			public void onChanged(Boolean aBoolean) {
+				if (aBoolean)
+					showTopBar();
+				else
+					hideTopBar();
+			}
+		});
+		viewModel.getShouldFinish().observe(this, new Observer<Boolean>() {
+			@Override
+			public void onChanged(Boolean aBoolean) {
+				if (aBoolean)
+					finish();
 			}
 		});
 	}
@@ -264,10 +285,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		observeLayoutToUpdate();
+		fitToScreenWhenLayoutIsReady();
     }
 
-    private void observeLayoutToUpdate() {
+    private void fitToScreenWhenLayoutIsReady() {
 		final View view = findViewById(R.id.vgMain);
 		ViewTreeObserver observer = view.getViewTreeObserver();
 		observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -298,28 +319,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 	@Override
 	public void onBackPressed() {
-        boolean shouldQuit = !hideTopBar();
-        if(finishPosition != null) {
-			removeFinishPosition();
-            shouldQuit &= false;
-        } else if(startPosition != null) {
-			removeStartPosition();
-			shouldQuit &= false;
-		}
-
-        if(shouldQuit)
-		    super.onBackPressed();
-	}
-
-	private void removeFinishPosition() {
-		clearSelection();
-		setFinishPosition(null);
-		setStartPosition(startPosition);
-	}
-
-	private void removeStartPosition() {
-		clearSelection();
-		setStartPosition(null);
+		viewModel.backFlow();
 	}
 
 	@Override
