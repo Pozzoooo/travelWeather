@@ -1,8 +1,12 @@
 package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
+import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.graphics.Color
+import android.location.Location
+import android.os.Handler
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
@@ -28,6 +32,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
 
+    private var locationObserver: Observer<Location>? = null
+
 
 //    todo should I create a bigger pool of threads or leave it small?
 //      executor = ThreadPoolExecutor(
@@ -35,6 +41,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 //    )
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
+    private val mainThreadHandler = Handler()
 
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
@@ -57,8 +64,28 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         setStartPosition(getCurrentLocation())
     }
 
-    fun getLiveLocation(): LocationLiveData {
-        return LocationLiveData.get(getApplication())
+    fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
+        showProgress()
+        val locationLiveData = LocationLiveData[getApplication()]
+
+        mainThreadHandler.postDelayed({
+            val locationObserver = this.locationObserver
+            if (locationObserver != null) {
+                hideProgress()
+                locationLiveData.removeObserver(locationObserver)
+                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
+            }
+        }, 30000)
+
+        val locationObserver = Observer<Location> { location ->
+            hideProgress()
+            locationObserver = null
+            if (location != null)
+                setStartPosition(LatLng(location.latitude, location.longitude))
+        }
+
+        this.locationObserver = locationObserver
+        locationLiveData.observe(lifecycleOwner, locationObserver)
     }
 
     fun getCurrentLocation(): LatLng? {
@@ -218,11 +245,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    //todo remove it when refacted enough
-    fun showProgress() {
+    private fun showProgress() {
         isShowingProgress.postValue(true)
     }
-    fun hideProgress() {
+    private fun hideProgress() {
         isShowingProgress.postValue(false)
     }
 }

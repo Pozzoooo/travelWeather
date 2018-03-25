@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -50,7 +49,6 @@ import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter;
 import pozzo.apps.travelweather.forecast.model.Day;
 import pozzo.apps.travelweather.forecast.model.Forecast;
 import pozzo.apps.travelweather.forecast.model.Weather;
-import pozzo.apps.travelweather.location.LocationLiveData;
 import pozzo.apps.travelweather.map.ActionRequest;
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel;
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel;
@@ -72,7 +70,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 	private ProgressDialog progressDialog;
 
 	private Handler mainThread;
-	private Observer<Location> locationObserver;
 	private FirebaseAnalytics mFirebaseAnalytics;
 
 	private MapViewModel viewModel;
@@ -242,51 +239,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 		if (currentLocation != null) {
 			viewModel.setStartPosition(currentLocation);
 		} else {
-			requestLiveLocation();
+			viewModel.updateCurrentLocation(this);
 		}
-	}
-
-	private void requestLiveLocation() {
-		viewModel.showProgress();
-		final LocationLiveData liveLocation = viewModel.getLiveLocation();
-		locationObserver = new Observer<Location>() {
-			@Override
-			public void onChanged(Location location) {
-				viewModel.setStartPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-				removeLocationObserver();
-			}
-		};
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (locationObserver != null) {
-					removeLocationObserver();
-					showCantFindLocationDialog();
-				}
-			}
-		}, 30000);
-
-		liveLocation.observe(this, locationObserver);
-	}
-
-	private void removeLocationObserver() {
-		if (locationObserver != null) {
-			viewModel.getLiveLocation().removeObserver(locationObserver);
-			viewModel.hideProgress();
-			locationObserver = null;
-		}
-	}
-
-	private void showCantFindLocationDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this)
-				.setTitle(R.string.warning).setMessage(R.string.warning_currentLocationNotFound);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		builder.show();
 	}
 
     @Override
