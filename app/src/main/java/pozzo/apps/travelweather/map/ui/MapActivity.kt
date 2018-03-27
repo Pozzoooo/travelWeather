@@ -42,7 +42,7 @@ import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
 /**
- * A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
+ * todo A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
  */
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -64,25 +64,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         if (viewModel.isShowingProgress.value == true) {
             progressDialog.show()
         }
-    }
-
-    /**
-     * User seems to be willing to do something, let's help him!
-     */
-    private val placeMarkerClick = GoogleMap.OnMapClickListener { latLng -> viewModel.addPoint(latLng) }
-
-    /**
-     * Popup to clear all markers.
-     */
-    private val clearMarkerLongClick = GoogleMap.OnMapLongClickListener { viewModel.requestClear() }
-
-    /**
-     * Click on popup.
-     */
-    private val onInfoWindowClick = GoogleMap.OnInfoWindowClickListener { marker ->
-        val weather = mapMarkerToWeather[marker]
-        if (weather != null)
-            AndroidUtil.openUrl(weather.url, this@MapActivity)
     }
 
     /**
@@ -155,7 +136,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@Observer
 
             if (rectLine != null)
-                mMap!!.addPolyline(rectLine)
+                mMap?.addPolyline(rectLine)
             else
                 Toast.makeText(this@MapActivity, R.string.warning_pathNotFound,
                         Toast.LENGTH_SHORT).show()
@@ -248,9 +229,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        googleMap.setOnMapClickListener(placeMarkerClick)
-        googleMap.setOnMapLongClickListener(clearMarkerLongClick)
-        googleMap.setOnInfoWindowClickListener(onInfoWindowClick)
+        googleMap.setOnMapClickListener({ latLng -> viewModel.addPoint(latLng) })
+        googleMap.setOnMapLongClickListener({ viewModel.requestClear() })
+        googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
         googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(this))
 
         clearMapOverlay()
@@ -261,43 +242,32 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }, 500)
     }
 
-    /**
-     * Map will be centered on given point.
-     */
-    private fun pointMapTo(latLng: LatLng?) {
-        if (mMap != null && latLng != null) {
-            mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f))
-        }
+    private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
+        val weather = mapMarkerToWeather[marker]
+        val url = if (weather?.url == null) "" else weather.url
+        AndroidUtil.openUrl(url, this@MapActivity)
     }
 
-    /**
-     * Should try to fit entire route on screen.
-     */
+    private fun pointMapTo(center: LatLng?) {
+        if (center != null) mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))
+    }
+
     private fun fitCurrentRouteOnScreen() {
         pointMapTo(viewModel.getRouteBounds())
     }
 
-    /**
-     * Map will fit the given bounds.
-     */
     private fun pointMapTo(latLng: LatLngBounds?) {
-        if (latLng == null)
-            return
+        if (latLng == null) return
 
         try {
-            mMap!!.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
+            mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
         } catch (e: IllegalStateException) {
             Mint.logException(e)
         }
-
     }
 
-    /**
-     * Add 1 marker to the map related to the given Weather object.
-     */
     private fun addMark(weather: Weather?) {
-        if (weather == null || weather.address == null)
-            return
+        if (weather?.address == null) return
 
         val selectedDay = preferencesViewModel.selectedDay.value
         val forecast = weather.getForecast(selectedDay)
@@ -306,30 +276,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(weather.latLng)
                 .title(forecast.text)
                 .icon(forecast.icon)
-        val marker = mMap!!.addMarker(markerOptions)
-        mapMarkerToWeather.put(marker, weather)
+        val marker = mMap?.addMarker(markerOptions)
+        if (marker != null) mapMarkerToWeather.put(marker, weather)
     }
 
     fun clearMapOverlay() {
-        if (mMap != null) {
-            mMap!!.clear()
-        }
+        mMap?.clear()
         mapMarkerToWeather.clear()
     }
 
-    private fun showErrorDialog(error: Error?) {
+    private fun showErrorDialog(error: Error) {
         AlertDialog.Builder(this)
                 .setTitle(R.string.warning)
-                .setMessage(error!!.messageId)
-                .setPositiveButton(R.string.ok) { dialog, which ->
+                .setMessage(error.messageId)
+                .setPositiveButton(R.string.ok) { dialog, _ ->
                     viewModel.dismissError()
                     dialog.dismiss()
                 }.show()
     }
 
-    private fun showActionRequest(actionRequest: ActionRequest?) {
+    private fun showActionRequest(actionRequest: ActionRequest) {
         AlertDialog.Builder(this)
-                .setMessage(actionRequest!!.messageId)
+                .setMessage(actionRequest.messageId)
                 .setPositiveButton(R.string.yes) { dialog, which -> viewModel.actionRequestAccepted(actionRequest) }.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }.show()
     }
 
