@@ -6,10 +6,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.graphics.Color
 import android.location.Location
+import android.os.Bundle
 import android.os.Handler
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.splunk.mint.Mint
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.core.BaseViewModel
@@ -31,6 +33,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
+    private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(application)
 
     private var locationObserver: Observer<Location>? = null
 
@@ -248,7 +251,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun showProgress() {
         isShowingProgress.postValue(true)
     }
+
     private fun hideProgress() {
         isShowingProgress.postValue(false)
+    }
+
+    fun sendFirebaseFabEvent() {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
     }
 }

@@ -29,7 +29,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
@@ -57,7 +56,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var progressDialog: ProgressDialog
 
     private lateinit var mainThread: Handler
-    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
@@ -104,7 +102,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         setupMapFragment()
 
         mainThread = Handler()
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         drawerLayout = findViewById(R.id.drawerLayout)
         vgTopBar = findViewById(R.id.vgTopBar)
@@ -190,14 +187,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun currentLocationFabClick(view: View) {
         setCurrentLocationAsStartPositionRequestingPermission()
-        sendFirebaseFabEvent()
-    }
-
-    private fun sendFirebaseFabEvent() {
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+        viewModel.sendFirebaseFabEvent()
     }
 
     fun setCurrentLocationAsStartPositionRequestingPermission() {
