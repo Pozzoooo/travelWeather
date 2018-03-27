@@ -238,7 +238,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun actionRequestAccepted(actionRequest: ActionRequest) {
-        this.actionRequest.value = null
         //todo solve it with pollymorphsm?
         when(actionRequest) {
             ActionRequest.CLEAR -> {
@@ -246,6 +245,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 setFinishPosition(null)
             }
         }
+    }
+
+    fun actionRequestDismissed() {
+        this.actionRequest.value = null
     }
 
     private fun showProgress() {

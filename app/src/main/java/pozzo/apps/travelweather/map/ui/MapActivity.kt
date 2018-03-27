@@ -45,12 +45,16 @@ import java.util.*
  * todo A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
  */
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+    companion object {
+        private val ANIM_ROUTE_TIME = 1200
+        private val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
+    }
 
     //todo maybe I can create an improved abstraction of this map
     private var mapMarkerToWeather = HashMap<Marker, Weather>()
 
+    private var map: GoogleMap? = null
     private lateinit var drawerLayout: DrawerLayout
-    private var mMap: GoogleMap? = null
     private lateinit var eSearch: EditText
     private lateinit var vgTopBar: View
     private lateinit var progressDialog: ProgressDialog
@@ -60,38 +64,30 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
 
-    private val showProgress = Runnable {
-        if (viewModel.isShowingProgress.value == true) {
-            progressDialog.show()
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        this.mainThread = Handler()
+        setupDataBind()
+        setupMapFragment()
+        setupView()
+        observeData()
     }
 
-    /**
-     * User wants to find his address.
-     */
+    private fun setupView() {
+        drawerLayout = findViewById(R.id.drawerLayout)
+        vgTopBar = findViewById(R.id.vgTopBar)
+        eSearch = findViewById(R.id.eSearch)
+        eSearch.setOnEditorActionListener(onSearchGo)
+        progressDialog = ProgressDialog(this)
+        progressDialog.isIndeterminate = true
+    }
+
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
         if (event == null || event.action != KeyEvent.ACTION_DOWN)
             return@OnEditorActionListener false
 
         viewModel.searchAddress(textView.text.toString())
         true
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupDataBind()
-        setupMapFragment()
-
-        mainThread = Handler()
-
-        drawerLayout = findViewById(R.id.drawerLayout)
-        vgTopBar = findViewById(R.id.vgTopBar)
-        eSearch = findViewById(R.id.eSearch)
-        eSearch.setOnEditorActionListener(onSearchGo)
-        progressDialog = ProgressDialog(this@MapActivity)
-        progressDialog.isIndeterminate = true
-
-        observeData()
     }
 
     private fun setupDataBind() {
@@ -125,18 +121,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         })
         viewModel.isShowingProgress.observe(this, Observer { isShowingProgress ->
             if (isShowingProgress == true) {
-                mainThread.postDelayed(showProgress, 700)
+                mainThread.postDelayed(triggerCheckedShowProgress, 700)
             } else {
                 progressDialog.hide()
             }
         })
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
         viewModel.directionLine.observe(this, Observer { rectLine ->
-            if (mMap == null)
+            if (map == null)
                 return@Observer
 
             if (rectLine != null)
-                mMap?.addPolyline(rectLine)
+                map?.addPolyline(rectLine)
             else
                 Toast.makeText(this@MapActivity, R.string.warning_pathNotFound,
                         Toast.LENGTH_SHORT).show()
@@ -166,28 +162,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
-    fun currentLocationFabClick(view: View) {
-        setCurrentLocationAsStartPositionRequestingPermission()
-        viewModel.sendFirebaseFabEvent()
-    }
-
-    fun setCurrentLocationAsStartPositionRequestingPermission() {
-        val hasPermission = ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        if (hasPermission) {
-            setCurrentLocationAsStartPosition()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQ_PERMISSION_FOR_CURRENT_LOCATION)
-        }
-    }
-
-    fun setCurrentLocationAsStartPosition() {
-        clearMapOverlay()
-        val currentLocation = viewModel.getCurrentLocation()
-        if (currentLocation != null) {
-            viewModel.setStartPosition(currentLocation)
-        } else {
-            viewModel.updateCurrentLocation(this)
+    private val triggerCheckedShowProgress = Runnable {
+        if (viewModel.isShowingProgress.value == true) {
+            progressDialog.show()
         }
     }
 
@@ -217,8 +194,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState != null) {
-            viewModel.setStartPosition(savedInstanceState.getParcelable<LatLng>("startPosition"))
-            viewModel.setFinishPosition(savedInstanceState.getParcelable<LatLng>("finishPosition"))
+            viewModel.setStartPosition(savedInstanceState.getParcelable("startPosition"))
+            viewModel.setFinishPosition(savedInstanceState.getParcelable("finishPosition"))
         }
     }
 
@@ -227,7 +204,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        this.map = googleMap
 
         googleMap.setOnMapClickListener({ latLng -> viewModel.addPoint(latLng) })
         googleMap.setOnMapLongClickListener({ viewModel.requestClear() })
@@ -242,6 +219,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }, 500)
     }
 
+    private fun clearMapOverlay() {
+        map?.clear()
+        mapMarkerToWeather.clear()
+    }
+
     private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
         val weather = mapMarkerToWeather[marker]
         val url = if (weather?.url == null) "" else weather.url
@@ -249,18 +231,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun pointMapTo(center: LatLng?) {
-        if (center != null) mMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))
+        if (center != null) map?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))
     }
 
-    private fun fitCurrentRouteOnScreen() {
-        pointMapTo(viewModel.getRouteBounds())
-    }
+    private fun fitCurrentRouteOnScreen() = pointMapTo(viewModel.getRouteBounds())
 
     private fun pointMapTo(latLng: LatLngBounds?) {
         if (latLng == null) return
 
         try {
-            mMap?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
+            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
         } catch (e: IllegalStateException) {
             Mint.logException(e)
         }
@@ -276,42 +256,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .position(weather.latLng)
                 .title(forecast.text)
                 .icon(forecast.icon)
-        val marker = mMap?.addMarker(markerOptions)
+        val marker = map?.addMarker(markerOptions)
         if (marker != null) mapMarkerToWeather.put(marker, weather)
-    }
-
-    fun clearMapOverlay() {
-        mMap?.clear()
-        mapMarkerToWeather.clear()
     }
 
     private fun showErrorDialog(error: Error) {
         AlertDialog.Builder(this)
                 .setTitle(R.string.warning)
                 .setMessage(error.messageId)
-                .setPositiveButton(R.string.ok) { dialog, _ ->
-                    viewModel.dismissError()
-                    dialog.dismiss()
-                }.show()
+                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .setOnDismissListener { viewModel.dismissError() }
+                .show()
     }
 
     private fun showActionRequest(actionRequest: ActionRequest) {
         AlertDialog.Builder(this)
                 .setMessage(actionRequest.messageId)
-                .setPositiveButton(R.string.yes) { dialog, which -> viewModel.actionRequestAccepted(actionRequest) }.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }.show()
+                .setPositiveButton(R.string.yes) { _, _ -> viewModel.actionRequestAccepted(actionRequest) }
+                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                .setOnDismissListener { viewModel.actionRequestDismissed() }
+                .show()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
-            setCurrentLocationAsStartPosition()
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-    /**
-     * Search button click event.
-     */
     fun toggleSearch(view: View) {
         viewModel.toggleTopBar()
     }
@@ -329,11 +295,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         AndroidUtil.showKeyboard(this, eSearch)
     }
 
-    /**
-     * User wants to open side menu.
-     */
     fun onMenu(view: View) {
         drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    fun onClearSearch(view: View) {
+        eSearch.setText("")
     }
 
     private fun refreshMarkers() {
@@ -348,12 +315,36 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun onClearSearch(view: View) {
-        eSearch.setText("")
+    fun currentLocationFabClick(view: View) {
+        setCurrentLocationAsStartPositionRequestingPermission()
+        viewModel.sendFirebaseFabEvent()
     }
 
-    companion object {
-        private val ANIM_ROUTE_TIME = 1200
-        private val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
+    private fun setCurrentLocationAsStartPositionRequestingPermission() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (hasPermission) {
+            setCurrentLocationAsStartPosition()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQ_PERMISSION_FOR_CURRENT_LOCATION)
+        }
+    }
+
+    private fun setCurrentLocationAsStartPosition() {
+        clearMapOverlay()
+        val currentLocation = viewModel.getCurrentLocation()
+        if (currentLocation != null) {
+            viewModel.setStartPosition(currentLocation)
+        } else {
+            viewModel.updateCurrentLocation(this)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
+            setCurrentLocationAsStartPosition()
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 }
