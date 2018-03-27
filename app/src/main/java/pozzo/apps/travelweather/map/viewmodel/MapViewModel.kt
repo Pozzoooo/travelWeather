@@ -60,7 +60,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun currentLocationFabClick() {
-        finishPosition.postValue(null)
+        setFinishPosition(null)
         setStartPosition(getCurrentLocation())
     }
 
