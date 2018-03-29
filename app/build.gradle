@@ -3,14 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 26
-  buildToolsVersion '26.0.2'
+  compileSdkVersion 27
+  buildToolsVersion '27.0.3'
   useLibrary 'org.apache.http.legacy'
 
   defaultConfig {
     applicationId "pozzo.apps.travelweather"
     minSdkVersion 21
-    targetSdkVersion 26
+    targetSdkVersion 27
     versionCode 8
     versionName "1.0.8-snapshot"
     multiDexEnabled true
@@ -32,11 +32,6 @@ android {
 		android.signingConfigs[configName].keyAlias = props['keyAlias']
 		android.signingConfigs[configName].keyPassword = props['keyPassword']
     }
-  }
-
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
   }
 
   buildTypes {
@@ -67,14 +62,14 @@ android {
 
 dependencies {
   //Google
-  implementation 'com.android.support:design:26.1.0'
-  implementation "android.arch.lifecycle:runtime:1.1.0"
-  implementation "android.arch.lifecycle:extensions:1.1.0"
-  implementation 'com.google.firebase:firebase-core:11.8.0'
-  implementation 'com.google.android.gms:play-services-maps:11.8.0'
-  implementation 'com.google.android.gms:play-services-location:11.8.0'
-  kapt "android.arch.lifecycle:compiler:1.1.0"
-  kapt "com.android.databinding:compiler:3.0.1"
+  implementation 'com.android.support:design:27.1.0'
+  implementation "android.arch.lifecycle:runtime:1.1.1"
+  implementation "android.arch.lifecycle:extensions:1.1.1"
+  implementation 'com.google.firebase:firebase-core:12.0.1'
+  implementation 'com.google.android.gms:play-services-maps:12.0.1'
+  implementation 'com.google.android.gms:play-services-location:12.0.1'
+  kapt "android.arch.lifecycle:compiler:1.1.1"
+  kapt "com.android.databinding:compiler:3.1.0"
   //Web requests
   implementation 'com.squareup.retrofit2:retrofit:2.3.0'
   implementation 'com.squareup.retrofit2:converter-gson:2.3.0'

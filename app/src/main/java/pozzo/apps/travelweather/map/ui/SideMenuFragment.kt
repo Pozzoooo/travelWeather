@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.map.ui
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -19,9 +20,9 @@ class SideMenuFragment : Fragment() {
     private lateinit var rgDaySelection: RadioGroup
     private lateinit var viewModel: PreferencesViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity).get(PreferencesViewModel::class.java)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        viewModel = ViewModelProviders.of(activity!!).get(PreferencesViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
