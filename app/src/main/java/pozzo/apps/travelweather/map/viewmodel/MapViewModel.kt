@@ -1,13 +1,16 @@
 package pozzo.apps.travelweather.map.viewmodel
 
+import android.Manifest
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
@@ -21,8 +24,9 @@ import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
-import pozzo.apps.travelweather.map.ActionRequest
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper
+import pozzo.apps.travelweather.map.viewrequest.ActionRequest
+import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -52,6 +56,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val weathers = MutableLiveData<List<Weather>>()
     val error = MutableLiveData<Error>()
     val actionRequest = MutableLiveData<ActionRequest>()
+    val permissionRequest = MutableLiveData<PermissionRequest>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
@@ -62,9 +67,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingTopBar.value = false
     }
 
-    fun currentLocationFabClick() {
+    fun setCurrentLocationAsStart(lifecycleOwner: LifecycleOwner) {
         setFinishPosition(null)
-        setStartPosition(getCurrentLocation())
+        setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
     }
 
     fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
@@ -264,5 +269,29 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+    }
+
+    private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
+        val hasPermission = ContextCompat.checkSelfPermission(
+                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (hasPermission) {
+            setCurrentLocationAsStartPosition(lifecycleOwner)
+        } else {
+            permissionRequest.postValue(PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)))
+        }
+    }
+
+    private fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
+        val currentLocation = getCurrentLocation()
+        if (currentLocation != null) {
+            setStartPosition(currentLocation)
+        } else {
+            updateCurrentLocation(lifecycleOwner)
+        }
+    }
+
+    fun onPermissionRequesteGranted(lifecycleOwner: LifecycleOwner) {
+        //todo need to check what request exactly is, any polymorphic solution?
+        setCurrentLocationAsStartPosition(lifecycleOwner)
     }
 }

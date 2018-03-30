@@ -1,17 +1,14 @@
 package pozzo.apps.travelweather.map.ui
 
-import android.Manifest
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
@@ -36,9 +33,10 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.Weather
-import pozzo.apps.travelweather.map.ActionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
+import pozzo.apps.travelweather.map.viewrequest.ActionRequest
+import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
 /**
@@ -104,10 +102,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun observeData() {
         viewModel.startPosition.observe(this, Observer { latLng ->
+            clearMapOverlay()
             if (latLng != null) {
                 pointMapTo(latLng)
-            } else {
-                clearMapOverlay()
             }
         })
         viewModel.finishPosition.observe(this, Observer { latLng ->
@@ -159,6 +156,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.actionRequest.observe(this, Observer { actionRequest ->
             if (actionRequest != null)
                 showActionRequest(actionRequest)
+        })
+        viewModel.permissionRequest.observe(this, Observer { permissionRequest ->
+            if (permissionRequest != null) requestPermissions(permissionRequest)
         })
     }
 
@@ -215,7 +215,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mainThread.postDelayed({
             if (viewModel.startPosition.value == null)
-                setCurrentLocationAsStartPositionRequestingPermission()
+                viewModel.setCurrentLocationAsStart(this)
         }, 500)
     }
 
@@ -316,33 +316,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun currentLocationFabClick(view: View) {
-        setCurrentLocationAsStartPositionRequestingPermission()
+        viewModel.setCurrentLocationAsStart(this)
         viewModel.sendFirebaseFabEvent()
     }
 
-    private fun setCurrentLocationAsStartPositionRequestingPermission() {
-        val hasPermission = ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        if (hasPermission) {
-            setCurrentLocationAsStartPosition()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQ_PERMISSION_FOR_CURRENT_LOCATION)
-        }
-    }
-
-    private fun setCurrentLocationAsStartPosition() {
-        clearMapOverlay()
-        val currentLocation = viewModel.getCurrentLocation()
-        if (currentLocation != null) {
-            viewModel.setStartPosition(currentLocation)
-        } else {
-            viewModel.updateCurrentLocation(this)
-        }
+    private fun requestPermissions(permissionRequest: PermissionRequest) {
+        ActivityCompat.requestPermissions(this, permissionRequest.permissions, REQ_PERMISSION_FOR_CURRENT_LOCATION)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
-            setCurrentLocationAsStartPosition()
+            viewModel.onPermissionRequesteGranted(this)
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
