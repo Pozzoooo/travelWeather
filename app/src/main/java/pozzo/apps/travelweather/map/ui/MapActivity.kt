@@ -35,7 +35,7 @@ import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
-import pozzo.apps.travelweather.map.viewrequest.ActionRequest
+import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 

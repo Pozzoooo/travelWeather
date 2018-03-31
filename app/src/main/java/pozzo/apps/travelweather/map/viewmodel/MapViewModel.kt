@@ -24,8 +24,9 @@ import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
+import pozzo.apps.travelweather.map.action.ActionRequest
+import pozzo.apps.travelweather.map.action.ClearActionRequest
 import pozzo.apps.travelweather.map.helper.GeoCoderHelper
-import pozzo.apps.travelweather.map.viewrequest.ActionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -40,7 +41,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(application)
 
     private var locationObserver: Observer<Location>? = null
-
 
 //    todo should I create a bigger pool of threads or leave it small?
 //      executor = ThreadPoolExecutor(
@@ -283,17 +283,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun requestClear() {
         hideTopBar()
-        actionRequest.postValue(ActionRequest.CLEAR)
+        actionRequest.postValue(ClearActionRequest(this))
     }
 
     fun actionRequestAccepted(actionRequest: ActionRequest) {
-        //todo solve it with pollymorphsm?
-        when(actionRequest) {
-            ActionRequest.CLEAR -> {
-                setStartPosition(null)
-                setFinishPosition(null)
-            }
-        }
+        actionRequest.execute()
     }
 
     fun actionRequestDismissed() {
