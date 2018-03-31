@@ -26,14 +26,11 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
-import pozzo.apps.travelweather.map.helper.GeoCoderHelper
+import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
-/**
- * todo is my package strategy good?
- */
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
@@ -270,8 +267,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun searchAddress(string: String) {
         try {
-            val location = geoCoderHelper.getPositionFromFirst(string)
-            addPoint(location)
+            addPoint(geoCoderHelper.getPositionFromFirst(string))
         } catch (e: IOException) {
             error.postValue(Error.ADDRESS_NOT_FOUND)
         }

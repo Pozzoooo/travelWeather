@@ -21,7 +21,7 @@ public class ApiFactory {
         if(yahooWeather == null) {
             yahooWeather = new Retrofit.Builder()
                     .baseUrl("https://query.yahooapis.com")
-                    .addConverterFactory(GsonConverterFactory.create(GsonFactory.getGson()))
+                    .addConverterFactory(GsonConverterFactory.create(GsonFactory.INSTANCE.getGson()))
 					.build()
 					.create(YahooWeather.class);
         }

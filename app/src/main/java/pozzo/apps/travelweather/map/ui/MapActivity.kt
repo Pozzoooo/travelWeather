@@ -11,7 +11,6 @@ import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -29,20 +28,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.Weather
+import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
-import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
 /**
  * todo A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
  */
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : BaseActivity(), OnMapReadyCallback {
     companion object {
         private val ANIM_ROUTE_TIME = 1200
         private val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
