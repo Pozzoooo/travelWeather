@@ -92,7 +92,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         val contentView = DataBindingUtil.setContentView<ActivityMapsBinding>(this, R.layout.activity_maps)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel::class.java)
-        contentView.modelView = viewModel
+        contentView.viewModel = viewModel
     }
 
     private fun setupMapFragment() {
@@ -112,8 +112,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             if (latLng != null) {
                 fitCurrentRouteOnScreen()
                 viewModel.updateRoute()
-            } else {
-                viewModel.setStartPosition(viewModel.startPosition.value)
             }
         })
         viewModel.isShowingProgress.observe(this, Observer { isShowingProgress ->
@@ -313,11 +311,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             key.remove()
             addMark(value)
         }
-    }
-
-    fun currentLocationFabClick(view: View) {
-        viewModel.setCurrentLocationAsStart(this)
-        viewModel.sendFirebaseFabEvent()
     }
 
     private fun requestPermissions(permissionRequest: PermissionRequest) {

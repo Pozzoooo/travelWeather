@@ -67,23 +67,50 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingTopBar.value = false
     }
 
+    fun setCurrentLocationAsStartStartedByUser(lifecycleOwner: LifecycleOwner) {
+        setCurrentLocationAsStart(lifecycleOwner)
+        sendFirebaseFabEvent()
+    }
+
+    private fun sendFirebaseFabEvent() {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+    }
+
     fun setCurrentLocationAsStart(lifecycleOwner: LifecycleOwner) {
         setFinishPosition(null)
         setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
     }
 
-    fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
+    private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
+        val hasPermission = ContextCompat.checkSelfPermission(
+                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (hasPermission) {
+            setCurrentLocationAsStartPosition(lifecycleOwner)
+        } else {
+            permissionRequest.postValue(PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)))
+        }
+    }
+
+    private fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
+        val currentLocation = getCurrentLocation()
+        if (currentLocation != null) {
+            setStartPosition(currentLocation)
+        } else {
+            updateCurrentLocation(lifecycleOwner)
+        }
+    }
+
+    fun onPermissionRequesteGranted(lifecycleOwner: LifecycleOwner) {
+        //todo need to check what request exactly is, any polymorphic solution?
+        setCurrentLocationAsStartPosition(lifecycleOwner)
+    }
+
+    private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
         val locationLiveData = LocationLiveData[getApplication()]
-
-        mainThreadHandler.postDelayed({
-            val locationObserver = this.locationObserver
-            if (locationObserver != null) {
-                hideProgress()
-                locationLiveData.removeObserver(locationObserver)
-                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
-            }
-        }, 30000)
 
         val locationObserver = Observer<Location> { location ->
             hideProgress()
@@ -94,6 +121,23 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
         this.locationObserver = locationObserver
         locationLiveData.observe(lifecycleOwner, locationObserver)
+
+        mainThreadHandler.postDelayed({
+            val localLocationObserver = this.locationObserver
+            if (localLocationObserver != null) {
+                hideProgress()
+                locationLiveData.removeObserver(localLocationObserver)
+                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
+            }
+        }, 30000)
+    }
+
+    private fun showProgress() {
+        isShowingProgress.postValue(true)
+    }
+
+    private fun hideProgress() {
+        isShowingProgress.postValue(false)
     }
 
     fun getCurrentLocation(): LatLng? {
@@ -254,44 +298,5 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun actionRequestDismissed() {
         this.actionRequest.value = null
-    }
-
-    private fun showProgress() {
-        isShowingProgress.postValue(true)
-    }
-
-    private fun hideProgress() {
-        isShowingProgress.postValue(false)
-    }
-
-    fun sendFirebaseFabEvent() {
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
-    }
-
-    private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
-        val hasPermission = ContextCompat.checkSelfPermission(
-                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        if (hasPermission) {
-            setCurrentLocationAsStartPosition(lifecycleOwner)
-        } else {
-            permissionRequest.postValue(PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)))
-        }
-    }
-
-    private fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
-        val currentLocation = getCurrentLocation()
-        if (currentLocation != null) {
-            setStartPosition(currentLocation)
-        } else {
-            updateCurrentLocation(lifecycleOwner)
-        }
-    }
-
-    fun onPermissionRequesteGranted(lifecycleOwner: LifecycleOwner) {
-        //todo need to check what request exactly is, any polymorphic solution?
-        setCurrentLocationAsStartPosition(lifecycleOwner)
     }
 }
