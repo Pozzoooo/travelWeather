@@ -36,6 +36,7 @@ import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
+import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
@@ -319,7 +320,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
-            viewModel.onPermissionRequesteGranted(this)
+            viewModel.onPermissionRequestedGranted(LocationPermissionRequest(viewModel), this)
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }

@@ -27,6 +27,7 @@ import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
+import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
@@ -39,10 +40,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private var locationObserver: Observer<Location>? = null
 
-//    todo should I create a bigger pool of threads or leave it small?
-//      executor = ThreadPoolExecutor(
-//    7, 20, 1, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>(7), ThreadPoolExecutor.DiscardPolicy()
-//    )
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
     private val mainThreadHandler = Handler()
@@ -62,18 +59,18 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     init {
         isShowingProgress.value = false
         isShowingTopBar.value = false
+        shouldFinish.value = false
     }
 
-    fun setCurrentLocationAsStartStartedByUser(lifecycleOwner: LifecycleOwner) {
+    fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
         setCurrentLocationAsStart(lifecycleOwner)
-        sendFirebaseFabEvent()
+        sendFirebaseUserRequestedCurrentLocationEvent()
     }
 
-    private fun sendFirebaseFabEvent() {
+    private fun sendFirebaseUserRequestedCurrentLocationEvent() {
         val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "fab")
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+        firebaseAnalytics.logEvent("fab", bundle)
     }
 
     fun setCurrentLocationAsStart(lifecycleOwner: LifecycleOwner) {
@@ -87,11 +84,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (hasPermission) {
             setCurrentLocationAsStartPosition(lifecycleOwner)
         } else {
-            permissionRequest.postValue(PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)))
+            permissionRequest.postValue(LocationPermissionRequest(this))
         }
     }
 
-    private fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
+    fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
         val currentLocation = getCurrentLocation()
         if (currentLocation != null) {
             setStartPosition(currentLocation)
@@ -100,9 +97,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun onPermissionRequesteGranted(lifecycleOwner: LifecycleOwner) {
-        //todo need to check what request exactly is, any polymorphic solution?
-        setCurrentLocationAsStartPosition(lifecycleOwner)
+    fun onPermissionRequestedGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
+        permissionRequest.execute(lifecycleOwner)
     }
 
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
