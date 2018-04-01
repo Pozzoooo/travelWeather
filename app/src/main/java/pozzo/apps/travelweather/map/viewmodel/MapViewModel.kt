@@ -130,10 +130,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    /**
-     * Update route.
-     */
-     fun updateRoute() {
+     private fun updateRoute() {
         showProgress()
 
         routeExecutor.execute({
