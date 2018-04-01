@@ -123,6 +123,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
                         Toast.LENGTH_SHORT).show()
         })
         viewModel.weathers.observe(this, Observer { weathers ->
+            clearMapOverlay()
             weathers?.forEach {
                 addMark(it)
             }
@@ -160,10 +161,8 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun finishPositionChanged(finishPosition: LatLng?) {
-        clearMapOverlay()
         if (finishPosition != null) {
             fitCurrentRouteOnScreen()
-            viewModel.updateRoute()
         }
     }
 

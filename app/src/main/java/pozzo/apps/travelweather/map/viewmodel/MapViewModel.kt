@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -40,7 +39,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
-    private val mainThreadHandler = Handler()
 
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
@@ -95,6 +93,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    private fun getCurrentLocation(): LatLng? {
+        return try {
+            val location = locationBusiness.getCurrentLocation(getApplication())
+            return if (location != null) LatLng(location.latitude, location.longitude) else null
+        } catch (e: Throwable) { /*todo review if why we don't care */ null}
+    }
+
     fun onPermissionRequestedGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
         permissionRequest.execute(lifecycleOwner)
     }
@@ -125,19 +130,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    fun getCurrentLocation(): LatLng? {
-        try {
-            val location = locationBusiness.getCurrentLocation(getApplication())
-            if (location != null) {
-                return LatLng(location.latitude, location.longitude)
-            }
-        } catch (e: SecurityException) {
-
-        }
-
-        return null
-    }
-
     /**
      * Update route.
      */
@@ -162,11 +154,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.directionLine.postValue(rectLine)
     }
 
-    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
-        val filteredPoints = ArrayList<LatLng>()
-        var lastForecast = direction.get(0)
+    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : Set<LatLng> {
+        val filteredPoints = HashSet<LatLng>()
+        var lastForecast = direction[0]
         for (i in 1 until direction.size - 1) {
-            val latLng = direction.get(i)
+            val latLng = direction[i]
             if (i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
                     && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
                 lastForecast = latLng
@@ -176,14 +168,28 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return filteredPoints
     }
 
-    private fun addWeathers(weatherPoints: List<LatLng>) {
+    private fun addWeathers(weatherPoints: Set<LatLng>) {
         addWeatherExecutor.execute({
-            val newWeathers = requestWeathersFor(weatherPoints)
-            val currentWeathers = this.weathers.value
-            if (currentWeathers?.isEmpty() == false)
-                newWeathers.addAll(currentWeathers)
-            this.weathers.postValue(newWeathers)
+            val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
+            if (filteredPoints.isEmpty()) {
+                this.weathers.postValue(this.weathers.value)
+            } else {
+                addWeathers(requestWeathersFor(filteredPoints))
+            }
         })
+    }
+
+    private fun removeAlreadyUsedLatLng(weatherPoints: Set<LatLng>) : List<LatLng> =
+        weatherPoints.filter { !containsLatLng(it) }
+
+    private fun containsLatLng(latLng: LatLng) : Boolean =
+        weathers.value?.firstOrNull { latLng == it.latLng } != null
+
+    private fun addWeathers(weathers: ArrayList<Weather>) {
+        val currentWeathers = this.weathers.value
+        if (currentWeathers?.isEmpty() == false)
+            weathers.addAll(currentWeathers)
+        this.weathers.postValue(weathers)
     }
 
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
@@ -204,14 +210,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setFinishPosition(finishPosition: LatLng?) {
         this.finishPosition.postValue(finishPosition)
-        if (finishPosition != null)
-            addWeathers(listOf(finishPosition))
+        if (finishPosition != null) {
+            addWeathers(setOf(finishPosition))
+            updateRoute()
+        }
     }
 
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
         if (startPosition != null)
-            addWeathers(listOf(startPosition))
+            addWeathers(setOf(startPosition))
     }
 
     fun back() {
