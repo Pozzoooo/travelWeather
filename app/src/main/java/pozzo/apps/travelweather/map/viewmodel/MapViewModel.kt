@@ -24,9 +24,9 @@ import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
+import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
-import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
@@ -37,8 +37,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
     private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(application)
-
-    private var locationObserver: Observer<Location>? = null
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
@@ -103,26 +101,20 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
+
         val locationLiveData = LocationLiveData[getApplication()]
-
-        val locationObserver = Observer<Location> { location ->
+        var locationObserver : Observer<Location>? = null
+        locationObserver = Observer { location ->
             hideProgress()
-            locationObserver = null
-            if (location != null)
+            locationLiveData.removeObserver(locationObserver!!)
+
+            if (location != null) {
                 setStartPosition(LatLng(location.latitude, location.longitude))
-        }
-
-        this.locationObserver = locationObserver
-        locationLiveData.observe(lifecycleOwner, locationObserver)
-
-        mainThreadHandler.postDelayed({
-            val localLocationObserver = this.locationObserver
-            if (localLocationObserver != null) {
-                hideProgress()
-                locationLiveData.removeObserver(localLocationObserver)
+            } else {
                 error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
             }
-        }, 30000)
+        }
+        locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
     }
 
     private fun showProgress() {
