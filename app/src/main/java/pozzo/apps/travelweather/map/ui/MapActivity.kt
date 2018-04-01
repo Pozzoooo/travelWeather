@@ -66,10 +66,26 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.mainThread = Handler()
+        setupViewModel()
         setupDataBind()
         setupMapFragment()
         setupView()
-        observeData()
+        observeViewModel()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel::class.java)
+    }
+
+    private fun setupDataBind() {
+        val contentView = DataBindingUtil.setContentView<ActivityMapsBinding>(this, R.layout.activity_maps)
+        contentView.viewModel = viewModel
+    }
+
+    private fun setupMapFragment() {
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun setupView() {
@@ -77,6 +93,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         vgTopBar = findViewById(R.id.vgTopBar)
         eSearch = findViewById(R.id.eSearch)
         eSearch.setOnEditorActionListener(onSearchGo)
+        //todo replace progress dialog
         progressDialog = ProgressDialog(this)
         progressDialog.isIndeterminate = true
     }
@@ -86,43 +103,15 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
             return@OnEditorActionListener false
 
         viewModel.searchAddress(textView.text.toString())
-        true
+        return@OnEditorActionListener true
     }
 
-    private fun setupDataBind() {
-        val contentView = DataBindingUtil.setContentView<ActivityMapsBinding>(this, R.layout.activity_maps)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel::class.java)
-        contentView.viewModel = viewModel
-    }
-
-    private fun setupMapFragment() {
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-    }
-
-    private fun observeData() {
-        viewModel.startPosition.observe(this, Observer { latLng ->
-            clearMapOverlay()
-            if (latLng != null) {
-                pointMapTo(latLng)
-            }
-        })
-        viewModel.finishPosition.observe(this, Observer { latLng ->
-            clearMapOverlay()
-            if (latLng != null) {
-                fitCurrentRouteOnScreen()
-                viewModel.updateRoute()
-            }
-        })
-        viewModel.isShowingProgress.observe(this, Observer { isShowingProgress ->
-            if (isShowingProgress == true) {
-                mainThread.postDelayed(triggerCheckedShowProgress, 700)
-            } else {
-                progressDialog.hide()
-            }
-        })
+    private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
+
+        viewModel.startPosition.observe(this, Observer { latLng -> startPositionChanged(latLng) })
+        viewModel.finishPosition.observe(this, Observer { latLng -> finishPositionChanged(latLng) })
+        viewModel.isShowingProgress.observe(this, Observer { isShowingProgress -> progressDialogStateChanged(isShowingProgress) })
         viewModel.directionLine.observe(this, Observer { rectLine ->
             if (map == null)
                 return@Observer
@@ -159,6 +148,43 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         viewModel.permissionRequest.observe(this, Observer { permissionRequest ->
             if (permissionRequest != null) requestPermissions(permissionRequest)
         })
+    }
+
+    private fun startPositionChanged(startPosition: LatLng?) {
+        clearMapOverlay()
+        pointMapTo(startPosition)
+    }
+
+    private fun pointMapTo(center: LatLng?) {
+        if (center != null) map?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))
+    }
+
+    private fun finishPositionChanged(finishPosition: LatLng?) {
+        clearMapOverlay()
+        if (finishPosition != null) {
+            fitCurrentRouteOnScreen()
+            viewModel.updateRoute()
+        }
+    }
+
+    private fun fitCurrentRouteOnScreen() = pointMapTo(viewModel.getRouteBounds())
+
+    private fun pointMapTo(latLng: LatLngBounds?) {
+        if (latLng == null) return
+
+        try {
+            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
+        } catch (e: IllegalStateException) {
+            Mint.logException(e)
+        }
+    }
+
+    private fun progressDialogStateChanged(isShowingProgress: Boolean?) {
+        if (isShowingProgress == true) {
+            mainThread.postDelayed(triggerCheckedShowProgress, 300)
+        } else {
+            progressDialog.hide()
+        }
     }
 
     private val triggerCheckedShowProgress = Runnable {
@@ -227,22 +253,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         val weather = mapMarkerToWeather[marker]
         val url = if (weather?.url == null) "" else weather.url
         AndroidUtil.openUrl(url, this@MapActivity)
-    }
-
-    private fun pointMapTo(center: LatLng?) {
-        if (center != null) map?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))
-    }
-
-    private fun fitCurrentRouteOnScreen() = pointMapTo(viewModel.getRouteBounds())
-
-    private fun pointMapTo(latLng: LatLngBounds?) {
-        if (latLng == null) return
-
-        try {
-            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
-        } catch (e: IllegalStateException) {
-            Mint.logException(e)
-        }
     }
 
     private fun addMark(weather: Weather?) {
