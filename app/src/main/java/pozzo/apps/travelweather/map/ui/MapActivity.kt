@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -37,16 +36,12 @@ import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
-/**
- * todo A viewmodel nao pode definir como alguma coisa exibida, apenas deinir o que vai ser exibida... ?
- */
 class MapActivity : BaseActivity(), OnMapReadyCallback {
     companion object {
-        private val ANIM_ROUTE_TIME = 1200
-        private val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
+        private const val ANIM_ROUTE_TIME = 1200
+        private const val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
     }
 
-    //todo maybe I can create an improved abstraction of this map
     private var mapMarkerToWeather = HashMap<Marker, Weather>()
 
     private var map: GoogleMap? = null
@@ -128,6 +123,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun finishPositionChanged(finishPosition: LatLng?) {
+        clearMapOverlay()
         if (finishPosition != null) {
             fitCurrentRouteOnScreen()
         }
@@ -160,17 +156,13 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun showWeathers(weathers: List<Weather>) {
-        clearMapOverlay()
         weathers.forEach {
             addMark(it)
         }
     }
 
     private fun plotRoute(polylineOptions: PolylineOptions?) {
-        if (polylineOptions != null)
-            map?.addPolyline(polylineOptions)
-        else
-            Toast.makeText(this@MapActivity, R.string.warning_pathNotFound, Toast.LENGTH_SHORT).show()
+        if (polylineOptions != null) map?.addPolyline(polylineOptions)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -246,7 +238,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
                 .title(forecast.text)
                 .icon(forecast.icon)
         val marker = map?.addMarker(markerOptions)
-        if (marker != null) mapMarkerToWeather.put(marker, weather)
+        if (marker != null) mapMarkerToWeather[marker] = weather
     }
 
     private fun showErrorDialog(error: Error) {

@@ -31,9 +31,6 @@ import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
-/**
- * todo There might be parts that could be better abstracted
- */
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
@@ -59,6 +56,20 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
+        registerObservers()
+    }
+
+    private fun registerObservers() {
+        finishPosition.observeForever({
+            if (it != null) {
+                addWeathers(setOf(it))
+                updateRoute()
+            }
+        })
+        startPosition.observeForever({
+            if (it != null)
+                addWeathers(setOf(it))
+        })
     }
 
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
@@ -133,7 +144,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-     private fun updateRoute() {
+    private fun updateRoute() {
         showProgress()
 
         routeExecutor.execute({
@@ -141,6 +152,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             if (direction?.isEmpty() == false) {
                 setDirectionLine(direction)
                 addWeathers(filterDirectionToWeatherPoints(direction))
+            } else {
+                this.error.postValue(Error.CANT_FIND_ROUTE)
             }
             hideProgress()
         })
@@ -207,16 +220,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setFinishPosition(finishPosition: LatLng?) {
         this.finishPosition.postValue(finishPosition)
-        if (finishPosition != null) {
-            addWeathers(setOf(finishPosition))
-            updateRoute()
-        }
     }
 
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
-        if (startPosition != null)
-            addWeathers(setOf(startPosition))
     }
 
     fun back() {
