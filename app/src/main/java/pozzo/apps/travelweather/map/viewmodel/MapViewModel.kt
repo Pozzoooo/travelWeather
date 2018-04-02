@@ -179,6 +179,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun addWeathers(weatherPoints: Set<LatLng>) {
+        //todo need to add the weathers progressivally, so the user wont wait for a long time
         addWeatherExecutor.execute({
             val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
             if (filteredPoints.isEmpty()) {

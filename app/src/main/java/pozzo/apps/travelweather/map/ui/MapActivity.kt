@@ -142,7 +142,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun progressDialogStateChanged(isShowingProgress: Boolean?) {
-        if (isShowingProgress == true) {
+        if (isShowingProgress == true) {//todo need to syncronize the delay with any running animation
             mainThread.postDelayed(triggerCheckedShowProgress, 300)
         } else {
             progressDialog.hide()
