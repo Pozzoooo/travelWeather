@@ -79,7 +79,7 @@
 				android:contentDescription="@android:string/search_go"
 				android:src="@android:drawable/ic_menu_search"
 				android:background="@color/colorAccent"
-				android:onClick="toggleSearch"/>
+				android:onClick="@{() -> viewModel.toggleTopBar()}"/>
 
 			<android.support.design.widget.FloatingActionButton
 				android:id="@+id/bMyLocation"

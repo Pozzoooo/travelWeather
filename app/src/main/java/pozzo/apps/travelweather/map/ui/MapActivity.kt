@@ -106,9 +106,9 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
-        viewModel.startPosition.observe(this, Observer { latLng -> startPositionChanged(latLng) })
-        viewModel.finishPosition.observe(this, Observer { latLng -> finishPositionChanged(latLng) })
-        viewModel.isShowingProgress.observe(this, Observer { isShowingProgress -> progressDialogStateChanged(isShowingProgress) })
+        viewModel.startPosition.observe(this, Observer { startPositionChanged(it) })
+        viewModel.finishPosition.observe(this, Observer { finishPositionChanged(it) })
+        viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.directionLine.observe(this, Observer { plotRoute(it) })
         viewModel.weathers.observe(this, Observer { if (it != null) showWeathers(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
@@ -267,10 +267,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
                 .show()
     }
 
-    fun toggleSearch(view: View) {
-        viewModel.toggleTopBar()
-    }
-
     private fun hideTopBar() {
         vgTopBar.animate().alpha(0f)
         eSearch.visibility = View.INVISIBLE
@@ -293,14 +289,11 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     private fun refreshMarkers() {
-        if (mapMarkerToWeather.isEmpty())
-            return
-
         val markerWeathers = this.mapMarkerToWeather
         this.mapMarkerToWeather = HashMap()
-        for ((key, value) in markerWeathers) {
-            key.remove()
-            addMark(value)
+        markerWeathers.forEach {
+            it.key.remove()
+            addMark(it.value)
         }
     }
 
