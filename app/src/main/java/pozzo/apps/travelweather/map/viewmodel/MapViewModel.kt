@@ -8,7 +8,6 @@ import android.arch.lifecycle.Observer
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -26,6 +25,7 @@ import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
+import pozzo.apps.travelweather.map.firebase.MapAnalytics
 import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
@@ -35,7 +35,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
-    private val firebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(application)
+    private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
@@ -74,13 +74,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
         setCurrentLocationAsStart(lifecycleOwner)
-        sendFirebaseUserRequestedCurrentLocationEvent()
-    }
-
-    private fun sendFirebaseUserRequestedCurrentLocationEvent() {
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "currentLocation")
-        firebaseAnalytics.logEvent("fab", bundle)
+        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
     }
 
     fun setCurrentLocationAsStart(lifecycleOwner: LifecycleOwner) {
@@ -179,7 +173,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun addWeathers(weatherPoints: Set<LatLng>) {
-        //todo need to add the weathers progressivally, so the user wont wait for a long time
+        //todo need to add the weathers progressively, so the user wont wait for a long time
         addWeatherExecutor.execute({
             val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
             if (filteredPoints.isEmpty()) {
