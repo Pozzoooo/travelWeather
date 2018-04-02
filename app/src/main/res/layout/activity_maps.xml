@@ -1,9 +1,12 @@
 <layout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools">
+
 	<data>
-		<import type="android.arch.lifecycle.LifecycleOwner" />
-		<variable name="viewModel" type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
+		<import type="android.arch.lifecycle.LifecycleOwner"/>
+		<variable
+			name="viewModel"
+			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
 	</data>
 
 	<android.support.v4.widget.DrawerLayout
@@ -17,30 +20,31 @@
 			android:layout_height="match_parent">
 
 			<fragment
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
 				android:id="@+id/map"
 				android:name="pozzo.apps.travelweather.map.ui.MapFragment"
-				tools:context=".MapsActivity" />
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				tools:context=".MapsActivity"/>
 
 			<FrameLayout
 				android:id="@+id/vgTopBar"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingBottom="@dimen/margin_bigger"
-				android:background="@drawable/screen_gradient"
 				android:alpha="0"
+				android:background="@drawable/screen_gradient"
+				android:paddingBottom="@dimen/margin_bigger"
 				tools:alpha="1">
 
 				<EditText
 					android:id="@+id/eSearch"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginLeft="50dp"
-					android:layout_marginRight="70dp"
+					android:layout_marginStart="50dp"
+					android:layout_marginEnd="70dp"
 					android:layout_marginTop="@dimen/margin_bigger"
-					android:inputType="text"
 					android:imeOptions="actionGo"
+					android:inputType="text"
+					android:hint="@string/search"
 					android:visibility="invisible"
 					tools:visibility="visible"/>
 
@@ -48,46 +52,49 @@
 					android:id="@+id/bClearSearch"
 					android:layout_width="@dimen/button_size"
 					android:layout_height="@dimen/button_size"
-					android:layout_marginRight="@dimen/margin_button"
-					android:layout_gravity="right|center_vertical"
+					android:layout_gravity="start|center_vertical"
+					android:layout_marginEnd="@dimen/margin_button"
 					android:background="@null"
-					android:src="@android:drawable/ic_menu_close_clear_cancel"
-					android:onClick="onClearSearch"/>
+					android:contentDescription="@string/clearSearch"
+					android:onClick="onClearSearch"
+					android:src="@android:drawable/ic_menu_close_clear_cancel"/>
 			</FrameLayout>
 
 			<ImageButton
 				android:id="@+id/bMenu"
 				android:layout_width="wrap_content"
 				android:layout_height="@dimen/button_size"
-				android:layout_alignParentLeft="true"
+				android:layout_alignParentStart="true"
 				android:layout_alignParentTop="true"
-				android:paddingTop="@dimen/margin_bigger"
-				android:paddingBottom="@dimen/margin_bigger"
-				android:paddingRight="@dimen/margin_bigger"
-				android:elevation="@dimen/elevation_floatingButton"
 				android:background="@color/colorAccent"
-				android:src="@drawable/ic_drawer"
-				android:onClick="onMenu"/>
+				android:elevation="@dimen/elevation_floatingButton"
+				android:onClick="onMenu"
+				android:paddingBottom="@dimen/margin_bigger"
+				android:paddingEnd="@dimen/margin_bigger"
+				android:paddingStart="@dimen/margin_bigger"
+				android:paddingTop="@dimen/margin_bigger"
+				android:contentDescription="@string/menu"
+				android:src="@drawable/ic_drawer"/>
 
 			<ImageButton
 				android:id="@+id/bSearch"
 				android:layout_width="@dimen/button_size"
 				android:layout_height="@dimen/button_size"
-				android:layout_alignParentRight="true"
+				android:layout_alignParentEnd="true"
 				android:layout_alignParentTop="true"
-				android:elevation="@dimen/elevation_floatingButton"
-				android:contentDescription="@android:string/search_go"
-				android:src="@android:drawable/ic_menu_search"
 				android:background="@color/colorAccent"
-				android:onClick="@{() -> viewModel.toggleTopBar()}"/>
+				android:contentDescription="@android:string/search_go"
+				android:elevation="@dimen/elevation_floatingButton"
+				android:onClick="@{() -> viewModel.toggleTopBar()}"
+				android:src="@android:drawable/ic_menu_search"/>
 
 			<android.support.design.widget.FloatingActionButton
 				android:id="@+id/bMyLocation"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_gravity="bottom|end"
-				android:layout_alignParentRight="true"
 				android:layout_alignParentBottom="true"
+				android:layout_alignParentEnd="true"
+				android:layout_gravity="bottom|end"
 				android:layout_margin="@dimen/margin_big"
 				android:onClick="@{() -> viewModel.setStartAsCurrentLocationRequestedByUser((LifecycleOwner) context)}"
 				android:src="@android:drawable/ic_menu_mylocation"/>
@@ -95,10 +102,10 @@
 
 		<fragment
 			android:id="@+id/navigationDrawer"
+			android:name="pozzo.apps.travelweather.map.ui.SideMenuFragment"
 			android:layout_width="@dimen/width_navigationDrawer"
 			android:layout_height="match_parent"
 			android:layout_gravity="start"
-			android:name="pozzo.apps.travelweather.map.ui.SideMenuFragment"
 			tools:layout="@layout/fragment_side_menu"/>
 	</android.support.v4.widget.DrawerLayout>
 </layout>

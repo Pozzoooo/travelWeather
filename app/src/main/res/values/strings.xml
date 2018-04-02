@@ -4,6 +4,10 @@
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>
     <string name="warning">Atenção</string>
+	<string name="menu">Menu</string>
+
+	<string name="search">Busca</string>
+	<string name="clearSearch">Limpar busca</string>
 
     <string name="title_activityMaps">Map</string>
 

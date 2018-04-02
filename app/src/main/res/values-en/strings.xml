@@ -5,6 +5,10 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="warning">Warning</string>
+	<string name="menu">Menu</string>
+
+	<string name="search">Search</string>
+	<string name="clearSearch">Clear Search</string>
 
     <string name="title_activityMaps">Map</string>
 
