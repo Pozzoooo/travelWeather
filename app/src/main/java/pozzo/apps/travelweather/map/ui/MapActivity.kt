@@ -29,6 +29,7 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.Weather
+import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
@@ -51,6 +52,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var progressDialog: ProgressDialog
 
     private lateinit var mainThread: Handler
+    private lateinit var animationCallback: AnimationCallbackTrigger
 
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
@@ -88,6 +90,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         //todo replace progress dialog
         progressDialog = ProgressDialog(this)
         progressDialog.isIndeterminate = true
+        animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -135,18 +138,19 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (latLng == null) return
 
         try {
-            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, null)
+            animationCallback.animationStarted()
+            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, animationCallback)
         } catch (e: IllegalStateException) {
             Mint.logException(e)
         }
     }
 
     private fun progressDialogStateChanged(isShowingProgress: Boolean?) {
-        if (isShowingProgress == true) {//todo need to syncronize the delay with any running animation
-            mainThread.postDelayed(triggerCheckedShowProgress, 300)
-        } else {
+        if (isShowingProgress == true) {
+            if (!animationCallback.isAnimating)
+                mainThread.postDelayed(triggerCheckedShowProgress, 200)
+        } else
             progressDialog.hide()
-        }
     }
 
     private val triggerCheckedShowProgress = Runnable {
