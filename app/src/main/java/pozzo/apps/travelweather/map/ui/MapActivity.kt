@@ -21,10 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
@@ -112,43 +109,13 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         viewModel.startPosition.observe(this, Observer { latLng -> startPositionChanged(latLng) })
         viewModel.finishPosition.observe(this, Observer { latLng -> finishPositionChanged(latLng) })
         viewModel.isShowingProgress.observe(this, Observer { isShowingProgress -> progressDialogStateChanged(isShowingProgress) })
-        viewModel.directionLine.observe(this, Observer { rectLine ->
-            if (map == null)
-                return@Observer
-
-            if (rectLine != null)
-                map?.addPolyline(rectLine)
-            else
-                Toast.makeText(this@MapActivity, R.string.warning_pathNotFound,
-                        Toast.LENGTH_SHORT).show()
-        })
-        viewModel.weathers.observe(this, Observer { weathers ->
-            clearMapOverlay()
-            weathers?.forEach {
-                addMark(it)
-            }
-        })
-        viewModel.isShowingTopBar.observe(this, Observer { aBoolean ->
-            if (aBoolean == true)
-                showTopBar()
-            else
-                hideTopBar()
-        })
-        viewModel.shouldFinish.observe(this, Observer { aBoolean ->
-            if (aBoolean == true)
-                finish()
-        })
-        viewModel.error.observe(this, Observer { error ->
-            if (error != null)
-                showErrorDialog(error)
-        })
-        viewModel.actionRequest.observe(this, Observer { actionRequest ->
-            if (actionRequest != null)
-                showActionRequest(actionRequest)
-        })
-        viewModel.permissionRequest.observe(this, Observer { permissionRequest ->
-            if (permissionRequest != null) requestPermissions(permissionRequest)
-        })
+        viewModel.directionLine.observe(this, Observer { plotRoute(it) })
+        viewModel.weathers.observe(this, Observer { if (it != null) showWeathers(it) })
+        viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
+        viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
+        viewModel.error.observe(this, Observer { if (it != null) showErrorDialog(it) })
+        viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
+        viewModel.permissionRequest.observe(this, Observer { if (it != null) requestPermissions(it) })
     }
 
     private fun startPositionChanged(startPosition: LatLng?) {
@@ -190,6 +157,20 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (viewModel.isShowingProgress.value == true) {
             progressDialog.show()
         }
+    }
+
+    private fun showWeathers(weathers: List<Weather>) {
+        clearMapOverlay()
+        weathers.forEach {
+            addMark(it)
+        }
+    }
+
+    private fun plotRoute(polylineOptions: PolylineOptions?) {
+        if (polylineOptions != null)
+            map?.addPolyline(polylineOptions)
+        else
+            Toast.makeText(this@MapActivity, R.string.warning_pathNotFound, Toast.LENGTH_SHORT).show()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
