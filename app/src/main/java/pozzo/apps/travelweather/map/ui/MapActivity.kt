@@ -258,7 +258,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (weather?.address == null) return
 
         val selectedDay = preferencesViewModel.selectedDay.value
-        val forecast = weather.getForecast(selectedDay)
+        val forecast = weather.getForecast(selectedDay!!)
 
         val markerOptions = MarkerOptions()
                 .position(weather.latLng)
@@ -273,7 +273,7 @@ class MapActivity : BaseActivity(), OnMapReadyCallback {
                 .setTitle(R.string.warning)
                 .setMessage(error.messageId)
                 .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .setOnDismissListener { viewModel.dismissError() }
+                .setOnDismissListener { viewModel.errorDismissed() }
                 .show()
     }
 

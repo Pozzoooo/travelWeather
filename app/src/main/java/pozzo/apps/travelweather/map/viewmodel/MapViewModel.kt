@@ -31,6 +31,9 @@ import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
+/**
+ * todo There might be parts that could be better abstracted
+ */
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
@@ -144,10 +147,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun setDirectionLine(direction: List<LatLng>) {
-        val rectLine = PolylineOptions().width(7F).color(Color.BLUE)
-        direction.forEach {
-            rectLine.add(it)
-        }
+        val rectLine = PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
         this.directionLine.postValue(rectLine)
     }
 
@@ -229,8 +229,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun toggleTopBar() = if (isShowingTopBar.value != true) displayTopBar() else hideTopBar()
-    fun displayTopBar() = isShowingTopBar.postValue(true)
-    fun hideTopBar() = isShowingTopBar.postValue(false)
+    private fun displayTopBar() = isShowingTopBar.postValue(true)
+    private fun hideTopBar() = isShowingTopBar.postValue(false)
 
     fun getRouteBounds() : LatLngBounds? {
         return if (isFullRouteSelected()) {
@@ -242,12 +242,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun isFullRouteSelected() : Boolean = startPosition.value != null && finishPosition.value != null
+    private fun isFullRouteSelected() : Boolean = startPosition.value != null && finishPosition.value != null
 
     fun addPoint(latLng: LatLng) {
-        //todo what about create a polymorphsm on something like "currentSelection", so at least 1 if is avoided
         hideTopBar()
-        if (!checkConnection()) {
+        if (!NetworkUtil.isNetworkAvailable(getApplication())) {
             error.postValue(Error.NO_CONNECTION)
         } else if (startPosition.value == null) {
             setStartPosition(latLng)
@@ -255,8 +254,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             setFinishPosition(latLng)
         }
     }
-
-    private fun checkConnection() : Boolean = NetworkUtil.isNetworkAvailable(getApplication())
 
     fun searchAddress(string: String) {
         try {
@@ -266,7 +263,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun dismissError() {
+    fun errorDismissed() {
         error.value = null
     }
 
