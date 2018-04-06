@@ -72,6 +72,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         })
     }
 
+    fun onMapReady(lifecycleOwner: LifecycleOwner) {
+        if (startPosition.value == null)
+            setCurrentLocationAsStart(lifecycleOwner)
+    }
+
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
         setCurrentLocationAsStart(lifecycleOwner)
         mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
