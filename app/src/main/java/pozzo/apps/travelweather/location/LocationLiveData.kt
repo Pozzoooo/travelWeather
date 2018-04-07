@@ -9,24 +9,11 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.support.annotation.MainThread
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class LocationLiveData private constructor(context: Context) : LiveData<Location>() {
-    companion object {
-        private var instance: LocationLiveData? = null
-
-        @MainThread
-        operator fun get(context: Context): LocationLiveData {
-            if (instance == null) {
-                instance = LocationLiveData(context.applicationContext)
-            }
-            return instance as LocationLiveData
-        }
-    }
-
+class LocationLiveData constructor(context: Context) : LiveData<Location>() {
     private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private val timeoutExecutor = Executors.newSingleThreadScheduledExecutor()
     private val timeoutScheduleByObserver = HashMap<Observer<*>, ScheduledFuture<*>>()

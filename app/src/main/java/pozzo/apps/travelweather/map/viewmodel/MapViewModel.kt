@@ -120,7 +120,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
 
-        val locationLiveData = LocationLiveData[getApplication()]
+        val locationLiveData = LocationLiveData(getApplication())
         var locationObserver : Observer<Location>? = null
         locationObserver = Observer { location ->
             hideProgress()
