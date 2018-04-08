@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -249,7 +250,7 @@ class MapActivity : BaseActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
+        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION && PackageManager.PERMISSION_GRANTED == grantResults[0]) {
             viewModel.onPermissionRequestedGranted(LocationPermissionRequest(viewModel), this)
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
