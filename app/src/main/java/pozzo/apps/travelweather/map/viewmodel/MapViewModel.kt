@@ -264,9 +264,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun searchAddress(string: String) {
         try {
-            addPoint(geoCoderHelper.getPositionFromFirst(string))
+            val addressLatLng = geoCoderHelper.getPositionFromFirst(string)
+            if (addressLatLng != null)
+                addPoint(addressLatLng)
+            else
+                error.postValue(Error.ADDRESS_NOT_FOUND)
         } catch (e: IOException) {
-            error.postValue(Error.ADDRESS_NOT_FOUND)
+            error.postValue(Error.NO_CONNECTION)
         }
     }
 
