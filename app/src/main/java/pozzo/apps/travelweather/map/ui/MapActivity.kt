@@ -254,7 +254,8 @@ class MapActivity : BaseActivity() {
             if (PackageManager.PERMISSION_GRANTED == grantResults[0])
                 viewModel.onPermissionGranted(LocationPermissionRequest(viewModel), this)
             else
-                viewModel.onPermissionDenied(LocationPermissionRequest(viewModel))
+                viewModel.onPermissionDenied(
+                        LocationPermissionRequest(viewModel))
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
