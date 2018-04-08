@@ -113,8 +113,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         } catch (e: Throwable) { /*todo review if why we don't care */ null}
     }
 
-    fun onPermissionRequestedGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
-        permissionRequest.execute(lifecycleOwner)
+    fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
+        permissionRequest.granted(lifecycleOwner)
+    }
+
+    fun onPermissionDenied(permissionRequest: PermissionRequest) {
+        permissionRequest.denied()
     }
 
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {

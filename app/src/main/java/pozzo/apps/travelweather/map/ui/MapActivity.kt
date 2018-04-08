@@ -250,8 +250,11 @@ class MapActivity : BaseActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION && PackageManager.PERMISSION_GRANTED == grantResults[0]) {
-            viewModel.onPermissionRequestedGranted(LocationPermissionRequest(viewModel), this)
+        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
+            if (PackageManager.PERMISSION_GRANTED == grantResults[0])
+                viewModel.onPermissionGranted(LocationPermissionRequest(viewModel), this)
+            else
+                viewModel.onPermissionDenied(LocationPermissionRequest(viewModel))
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
