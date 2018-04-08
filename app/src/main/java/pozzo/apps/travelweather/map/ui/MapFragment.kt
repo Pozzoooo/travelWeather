@@ -4,8 +4,10 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.splunk.mint.Mint
@@ -33,6 +35,15 @@ class MapFragment : SupportMapFragment() {
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
+        initializeMaps()
+    }
+
+    private fun initializeMaps() {
+        try {
+            MapsInitializer.initialize(context)
+        } catch (e: GooglePlayServicesNotAvailableException) {
+            Mint.logException(e)
+        }
         getMapAsync { onMapReady(it) }
     }
 
