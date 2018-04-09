@@ -126,8 +126,7 @@
 
 					<android.support.design.widget.FloatingActionButton
 						android:id="@+id/bFinishPosition"
-						android:src="@android:drawable/ic_menu_mylocation"
-						android:visibility="gone"
+						android:src="@drawable/finish_flag"
 						style="@style/buttonsOnButtonBar"/>
 				</LinearLayout>
 			</RelativeLayout>

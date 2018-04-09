@@ -11,16 +11,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.EditText
 import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import kotlinx.android.synthetic.main.activity_maps.*
 import pozzo.apps.tools.AndroidUtil
+import pozzo.apps.tools.Log
 import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
@@ -34,6 +36,9 @@ import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
+/**
+ * todo ta removendo o current location listener quando da dismiss no dialog de loading?
+ */
 class MapActivity : BaseActivity() {
     companion object {
         private const val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
@@ -41,9 +46,6 @@ class MapActivity : BaseActivity() {
 
     private var mapMarkerToWeather = HashMap<Marker, Weather>()
 
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var eSearch: EditText
-    private lateinit var vgTopBar: View
     private lateinit var progressDialog: ProgressDialog
 
     private lateinit var mainThread: Handler
@@ -78,14 +80,14 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupView() {
-        drawerLayout = findViewById(R.id.drawerLayout)
-        vgTopBar = findViewById(R.id.vgTopBar)
-        eSearch = findViewById(R.id.eSearch)
         eSearch.setOnEditorActionListener(onSearchGo)
         //todo replace progress dialog
         progressDialog = ProgressDialog(this)
         progressDialog.isIndeterminate = true
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
+
+        bFinishPosition.setOnDragListener(draggingFinish)
+        bFinishPosition.setOnTouchListener(startDraggingFinish)
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -94,6 +96,19 @@ class MapActivity : BaseActivity() {
 
         viewModel.searchAddress(textView.text.toString())
         return@OnEditorActionListener true
+    }
+
+    private val draggingFinish = View.OnDragListener {
+        v, event -> Log.d("event: $event");
+        return@OnDragListener false
+    }
+
+    private val startDraggingFinish = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+        val flag = resources.getDrawable(R.drawable.finish_flag, null)
+        if (motionEvent.action == MotionEvent.ACTION_DOWN)
+            bFinishPosition.startDrag(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+
+        return@OnTouchListener true
     }
 
     //todo is there a simple way to organize my bunch of observers?
