@@ -2,8 +2,11 @@ package pozzo.apps.travelweather.map.ui
 
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
+import android.view.DragEvent
+import android.view.View
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
@@ -84,10 +87,17 @@ class MapFragment : SupportMapFragment() {
         googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(activity))
 
         clearMapOverlay()
+        addDragListener()
 
         mainThread.postDelayed({
             viewModel.onMapReady(this)
         }, 500)
+    }
+
+    private fun addDragListener() {
+        view?.apply {
+            setOnDragListener(draggingFinishFlag)
+        } ?: Mint.logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
     fun addMark(mapPoint: MapPoint) : Marker? {
@@ -99,5 +109,19 @@ class MapFragment : SupportMapFragment() {
                 ?.apply { mapPointByMarkerId[id] = mapPoint }
     }
 
-    fun getProjection() : Projection? = map?.projection
+    //todo o mastro da bandeira exatamento no ponto q vai ser utilizado
+    private val draggingFinishFlag = View.OnDragListener { _, event ->
+        return@OnDragListener when(event.action) {
+            DragEvent.ACTION_DROP -> {
+                getProjection()?.let {
+                    viewModel.addPoint(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                } ?: Mint.logException(IllegalStateException("Trying to drag to the map with map not ready yet"))
+                false
+            }
+            DragEvent.ACTION_DRAG_STARTED -> true
+            else -> false
+        }
+    }
+
+    private fun getProjection() : Projection? = map?.projection
 }

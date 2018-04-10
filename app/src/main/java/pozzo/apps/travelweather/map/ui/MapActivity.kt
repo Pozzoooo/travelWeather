@@ -7,12 +7,14 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
-import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
-import android.view.*
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -85,7 +87,6 @@ class MapActivity : BaseActivity() {
         progressDialog.isIndeterminate = true
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
-        vgMain.setOnDragListener(draggingFinishFlag)
         bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
     }
 
@@ -95,20 +96,6 @@ class MapActivity : BaseActivity() {
 
         viewModel.searchAddress(textView.text.toString())
         return@OnEditorActionListener true
-    }
-
-    //todo o mastro da bandeira exatamento no ponto q vai ser utilizado
-    private val draggingFinishFlag = View.OnDragListener { _, event ->
-        return@OnDragListener when(event.action) {
-            DragEvent.ACTION_DROP -> {
-                mapFragment.getProjection()?.let {
-                    viewModel.setFinishPosition(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
-                }
-                false
-            }
-            DragEvent.ACTION_DRAG_STARTED -> true
-            else -> false
-        }
     }
 
     private val startDraggingFinishFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
