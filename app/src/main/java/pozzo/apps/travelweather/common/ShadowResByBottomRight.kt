@@ -7,8 +7,8 @@ import android.view.View
 
 class ShadowResByBottomRight(private val parentView: View, private val shadow: Drawable) : View.DragShadowBuilder(parentView) {
     override fun onProvideShadowMetrics(size: Point, touch: Point) {
-        val width = parentView.width
-        val height = parentView.height
+        val width = parentView.width / 2
+        val height = parentView.height / 2
 
         shadow.setBounds(0, 0, width, height)
 

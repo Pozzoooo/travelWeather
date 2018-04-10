@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
@@ -101,4 +98,6 @@ class MapFragment : SupportMapFragment() {
         return map?.addMarker(markerOptions)
                 ?.apply { mapPointByMarkerId[id] = mapPoint }
     }
+
+    fun getProjection() : Projection? = map?.projection
 }

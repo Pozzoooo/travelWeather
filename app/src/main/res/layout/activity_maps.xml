@@ -101,6 +101,7 @@
 					android:src="@android:drawable/ic_menu_search"/>
 
 				<LinearLayout
+					android:id="@+id/vgBottom"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:layout_alignParentBottom="true"

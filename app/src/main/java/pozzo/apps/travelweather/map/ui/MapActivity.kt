@@ -7,20 +7,17 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
+import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import pozzo.apps.tools.AndroidUtil
-import pozzo.apps.tools.Log
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.core.BaseActivity
@@ -39,6 +36,7 @@ import java.util.*
 /**
  * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
+ * todo fix overdraw
  */
 class MapActivity : BaseActivity() {
     companion object {
@@ -87,8 +85,8 @@ class MapActivity : BaseActivity() {
         progressDialog.isIndeterminate = true
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
-        bFinishPosition.setOnDragListener(draggingFinish)
-        bFinishPosition.setOnTouchListener(startDraggingFinish)
+        vgMain.setOnDragListener(draggingFinishFlag)
+        bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -99,12 +97,21 @@ class MapActivity : BaseActivity() {
         return@OnEditorActionListener true
     }
 
-    private val draggingFinish = View.OnDragListener {
-        v, event -> Log.d("event: $event");
-        return@OnDragListener false
+    //todo o mastro da bandeira exatamento no ponto q vai ser utilizado
+    private val draggingFinishFlag = View.OnDragListener { _, event ->
+        return@OnDragListener when(event.action) {
+            DragEvent.ACTION_DROP -> {
+                mapFragment.getProjection()?.let {
+                    viewModel.setFinishPosition(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                }
+                false
+            }
+            DragEvent.ACTION_DRAG_STARTED -> true
+            else -> false
+        }
     }
 
-    private val startDraggingFinish = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+    private val startDraggingFinishFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
         val flag = resources.getDrawable(R.drawable.finish_flag, null)
         if (motionEvent.action == MotionEvent.ACTION_DOWN)
             bFinishPosition.startDrag(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
