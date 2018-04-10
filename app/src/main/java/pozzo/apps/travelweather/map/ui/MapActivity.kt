@@ -37,6 +37,7 @@ import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
 /**
+ * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
  */
 class MapActivity : BaseActivity() {
@@ -111,7 +112,7 @@ class MapActivity : BaseActivity() {
         return@OnTouchListener true
     }
 
-    //todo is there a simple way to organize my bunch of observers?
+    //todo seems like I can organise it better on a more object oriented way, with a single object holding a lot of definitions
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
