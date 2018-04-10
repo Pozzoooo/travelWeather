@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
@@ -100,8 +101,13 @@ class MapActivity : BaseActivity() {
 
     private val startDraggingFinishFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
         val flag = resources.getDrawable(R.drawable.finish_flag, null)
-        if (motionEvent.action == MotionEvent.ACTION_DOWN)
-            bFinishPosition.startDrag(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+        if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                bFinishPosition.startDragAndDrop(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+            } else {
+                bFinishPosition.startDrag(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+            }
+        }
 
         return@OnTouchListener true
     }
