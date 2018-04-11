@@ -243,8 +243,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (isShowingTopBar.value != true) {
             displayTopBar()
         } else {
-            searchAddress(text)
             hideTopBar()
+            if (text.isNotBlank())
+                searchAddress(text)
         }
     }
 
