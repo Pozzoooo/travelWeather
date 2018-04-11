@@ -90,13 +90,18 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
-        val hasPermission = ContextCompat.checkSelfPermission(
-                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        if (hasPermission) {
+        if (hasLocationPermission()) {
             setCurrentLocationAsStartPosition(lifecycleOwner)
         } else {
-            permissionRequest.postValue(LocationPermissionRequest(this))
+            requestLocationPermission()
         }
+    }
+
+    private fun hasLocationPermission() : Boolean = ContextCompat.checkSelfPermission(
+                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
+    private fun requestLocationPermission() {
+        permissionRequest.postValue(LocationPermissionRequest(this))
     }
 
     fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {

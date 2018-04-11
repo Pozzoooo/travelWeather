@@ -14,6 +14,7 @@ import com.splunk.mint.Mint
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * Outra fonte para busca de previsao do tempo
+ * Unit test :)
  */
 class App : Application() {
 
