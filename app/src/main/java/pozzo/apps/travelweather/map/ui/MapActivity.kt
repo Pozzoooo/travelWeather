@@ -41,7 +41,6 @@ import java.util.*
 /**
  * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
- * todo improve layout
  */
 class MapActivity : BaseActivity() {
     companion object {

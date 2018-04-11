@@ -14,124 +14,101 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
-		<LinearLayout
+		<RelativeLayout
+			android:id="@+id/vgMain"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical">
+			android:clipToPadding="false">
 
-			<!--<android.support.v7.widget.Toolbar-->
-				<!--android:id="@+id/toolbar"-->
-				<!--android:layout_width="match_parent"-->
-				<!--android:layout_height="wrap_content"-->
-				<!--android:background="@color/colorPrimary"/>-->
-
-			<RelativeLayout
-				android:id="@+id/vgMain"
+			<fragment
+				android:id="@+id/map"
+				android:name="pozzo.apps.travelweather.map.ui.MapFragment"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:clipToPadding="false">
+				tools:context=".MapsActivity"/>
 
-				<fragment
-					android:id="@+id/map"
-					android:name="pozzo.apps.travelweather.map.ui.MapFragment"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					tools:context=".MapsActivity"/>
+			<FrameLayout
+				android:id="@+id/vgTopBar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:alpha="0"
+				android:background="@drawable/screen_gradient"
+				android:paddingBottom="@dimen/margin_bigger"
+				tools:alpha="0">
 
-				<FrameLayout
-					android:id="@+id/vgTopBar"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:alpha="0"
-					android:background="@drawable/screen_gradient"
-					android:paddingBottom="@dimen/margin_bigger"
-					tools:alpha="0">
-
-					<EditText
-						android:id="@+id/eSearch"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_marginEnd="70dp"
-						android:layout_marginStart="50dp"
-						android:layout_marginTop="@dimen/margin_bigger"
-						android:hint="@string/search"
-						android:imeOptions="actionGo"
-						android:inputType="text"
-						android:visibility="invisible"
-						tools:visibility="visible"/>
-
-					<ImageButton
-						android:id="@+id/bClearSearch"
-						android:layout_width="@dimen/button_size"
-						android:layout_height="@dimen/button_size"
-						android:layout_gravity="start|center_vertical"
-						android:layout_marginEnd="@dimen/margin_button"
-						android:background="@null"
-						android:contentDescription="@string/clearSearch"
-						android:onClick="onClearSearch"
-						android:src="@android:drawable/ic_menu_close_clear_cancel"/>
-				</FrameLayout>
-
-				<ImageButton
-					android:id="@+id/bMenu"
-					android:layout_width="wrap_content"
-					android:layout_height="@dimen/button_size"
-					android:layout_alignParentStart="true"
-					android:layout_alignParentTop="true"
-					android:background="@color/colorPrimary"
-					android:onClick="onMenu"
-					android:paddingBottom="@dimen/margin_bigger"
-					android:paddingEnd="@dimen/margin_bigger"
-					android:paddingStart="@dimen/margin_bigger"
-					android:paddingTop="@dimen/margin_bigger"
-					android:contentDescription="@string/menu"
-					android:elevation="@dimen/elevation_floatingButton"
-					android:src="@drawable/ic_drawer"/>
-
-				<ImageButton
-					android:id="@+id/bSearch"
-					android:layout_width="@dimen/button_size"
-					android:layout_height="@dimen/button_size"
-					android:layout_alignParentEnd="true"
-					android:layout_alignParentTop="true"
-					android:background="@color/colorPrimary"
-					android:contentDescription="@android:string/search_go"
-					android:elevation="@dimen/elevation_floatingButton"
-					android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
-					android:src="@android:drawable/ic_menu_search"/>
-
-				<LinearLayout
-					android:id="@+id/vgBottom"
+				<EditText
+					android:id="@+id/eSearch"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_alignParentBottom="true"
-					android:gravity="end">
+					android:layout_marginEnd="70dp"
+					android:layout_marginStart="70dp"
+					android:layout_marginTop="@dimen/margin_bigger"
+					android:hint="@string/search"
+					android:imeOptions="actionGo"
+					android:inputType="text"
+					android:visibility="invisible"
+					tools:visibility="visible"/>
+			</FrameLayout>
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/bClear"
-						android:onClick="@{() -> viewModel.requestClear()}"
-						android:src="@android:drawable/ic_menu_close_clear_cancel"
-						style="@style/buttonsOnButtonBar"/>
+			<ImageButton
+				android:id="@+id/bMenu"
+				android:layout_width="@dimen/button_size"
+				android:layout_height="@dimen/button_size"
+				android:layout_alignParentStart="true"
+				android:layout_alignParentTop="true"
+				android:background="@color/colorPrimary"
+				android:onClick="onMenu"
+				android:paddingBottom="@dimen/margin_bigger"
+				android:paddingEnd="@dimen/margin_bigger"
+				android:paddingStart="@dimen/margin_bigger"
+				android:paddingTop="@dimen/margin_bigger"
+				android:contentDescription="@string/menu"
+				android:elevation="@dimen/elevation_floatingButton"
+				android:src="@drawable/ic_drawer"/>
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/bMyLocation"
-						android:onClick="@{() -> viewModel.setStartAsCurrentLocationRequestedByUser((LifecycleOwner) context)}"
-						android:src="@android:drawable/ic_menu_mylocation"
-						style="@style/buttonsOnButtonBar"/>
+			<ImageButton
+				android:id="@+id/bSearch"
+				android:layout_width="@dimen/button_size"
+				android:layout_height="@dimen/button_size"
+				android:layout_alignParentEnd="true"
+				android:layout_alignParentTop="true"
+				android:background="@color/colorPrimary"
+				android:contentDescription="@android:string/search_go"
+				android:elevation="@dimen/elevation_floatingButton"
+				android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
+				android:src="@android:drawable/ic_menu_search"/>
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/bStartPosition"
-						android:src="@android:drawable/ic_menu_mylocation"
-						android:visibility="gone"
-						style="@style/buttonsOnButtonBar"/>
+			<LinearLayout
+				android:id="@+id/vgBottom"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+				android:gravity="center_horizontal">
 
-					<android.support.design.widget.FloatingActionButton
-						android:id="@+id/bFinishPosition"
-						android:src="@drawable/finish_flag"
-						style="@style/buttonsOnButtonBar"/>
-				</LinearLayout>
-			</RelativeLayout>
-		</LinearLayout>
+				<android.support.design.widget.FloatingActionButton
+					android:id="@+id/bClear"
+					android:onClick="@{() -> viewModel.requestClear()}"
+					android:src="@android:drawable/ic_menu_close_clear_cancel"
+					style="@style/buttonsOnButtonBar"/>
+
+				<android.support.design.widget.FloatingActionButton
+					android:id="@+id/bMyLocation"
+					android:onClick="@{() -> viewModel.setStartAsCurrentLocationRequestedByUser((LifecycleOwner) context)}"
+					android:src="@android:drawable/ic_menu_mylocation"
+					style="@style/buttonsOnButtonBar"/>
+
+				<android.support.design.widget.FloatingActionButton
+					android:id="@+id/bStartPosition"
+					android:src="@android:drawable/ic_menu_mylocation"
+					android:visibility="gone"
+					style="@style/buttonsOnButtonBar"/>
+
+				<android.support.design.widget.FloatingActionButton
+					android:id="@+id/bFinishPosition"
+					android:src="@drawable/finish_flag"
+					style="@style/buttonsOnButtonBar"/>
+			</LinearLayout>
+		</RelativeLayout>
 
 		<fragment
 			android:id="@+id/navigationDrawer"
