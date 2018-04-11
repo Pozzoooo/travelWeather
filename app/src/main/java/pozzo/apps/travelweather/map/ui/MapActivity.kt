@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
@@ -25,6 +26,7 @@ import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -123,7 +125,8 @@ class MapActivity : BaseActivity() {
         viewModel.weathers.observe(this, Observer { if (it != null) showWeathers(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
-        viewModel.error.observe(this, Observer { if (it != null) showErrorDialog(it) })
+        viewModel.error.observe(this, Observer { if (it != null) showError(it) })
+        viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
         viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
         viewModel.permissionRequest.observe(this, Observer { if (it != null) requestPermissions(it) })
     }
@@ -203,13 +206,17 @@ class MapActivity : BaseActivity() {
         viewModel.back()
     }
 
-    private fun showErrorDialog(error: Error) {
+    private fun showError(error: Error) {
         AlertDialog.Builder(this)
                 .setTitle(R.string.warning)
                 .setMessage(error.messageId)
                 .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
                 .setOnDismissListener { viewModel.errorDismissed() }
                 .show()
+    }
+
+    private fun showWarning(warning: Warning) {
+        Toast.makeText(this, getString(warning.messageId), Toast.LENGTH_LONG).show()
     }
 
     private fun showActionRequest(actionRequest: ActionRequest) {

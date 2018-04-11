@@ -17,6 +17,7 @@ import com.splunk.mint.Mint
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -45,6 +46,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val directionLine = MutableLiveData<PolylineOptions>()
     val weathers = MutableLiveData<List<Weather>>()
     val error = MutableLiveData<Error>()
+    val warning = MutableLiveData<Warning>()
     val actionRequest = MutableLiveData<ActionRequest>()
     val permissionRequest = MutableLiveData<PermissionRequest>()
 
@@ -119,6 +121,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun onPermissionDenied(permissionRequest: PermissionRequest) {
         permissionRequest.denied()
+    }
+
+    fun warn(warning: Warning) {
+        this.warning.postValue(warning)
     }
 
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {

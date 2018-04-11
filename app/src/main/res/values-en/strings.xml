@@ -19,9 +19,12 @@
     <string name="startPosition">Start</string>
     <string name="finishPosition">Finish</string>
     <string name="removeAllMarkers">Remove all makrs?</string>
-    <string name="error_addressNotFound">Address not found</string>
     <string name="title_forecastDate">Forecast for</string>
-    <string name="warning_needsConnection">Internet connection required</string>
-    <string name="warning_pathNotFound">Could not found a route</string>
-	<string name="warning_currentLocationNotFound">Not able to find your current location</string>
+
+	<string name="error_addressNotFound">Address not found</string>
+	<string name="error_needsConnection">Internet connection required</string>
+    <string name="error_pathNotFound">Could not found a route</string>
+	<string name="error_currentLocationNotFound">Not able to find your current location</string>
+
+	<string name="warning_permissionDenied">Permission has been denied</string>
 </resources>
