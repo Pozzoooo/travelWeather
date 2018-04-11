@@ -97,7 +97,7 @@
 					android:background="@color/colorPrimary"
 					android:contentDescription="@android:string/search_go"
 					android:elevation="@dimen/elevation_floatingButton"
-					android:onClick="@{() -> viewModel.toggleTopBar()}"
+					android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
 					android:src="@android:drawable/ic_menu_search"/>
 
 				<LinearLayout

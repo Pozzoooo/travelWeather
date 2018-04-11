@@ -39,7 +39,7 @@ import java.util.*
 /**
  * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
- * todo fix overdraw
+ * todo improve layout
  */
 class MapActivity : BaseActivity() {
     companion object {
@@ -83,7 +83,7 @@ class MapActivity : BaseActivity() {
 
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
-        //todo replace progress dialog
+        //todo replace progress dialog and add one with a text message
         progressDialog = ProgressDialog(this)
         progressDialog.isIndeterminate = true
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)

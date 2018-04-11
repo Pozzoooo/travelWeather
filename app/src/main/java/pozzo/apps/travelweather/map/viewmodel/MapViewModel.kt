@@ -239,7 +239,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun toggleTopBar() = if (isShowingTopBar.value != true) displayTopBar() else hideTopBar()
+    fun toggleTopBar(text: String) {
+        if (isShowingTopBar.value != true) {
+            displayTopBar()
+        } else {
+            searchAddress(text)
+            hideTopBar()
+        }
+    }
+
     private fun displayTopBar() = isShowingTopBar.postValue(true)
     private fun hideTopBar() = isShowingTopBar.postValue(false)
 
