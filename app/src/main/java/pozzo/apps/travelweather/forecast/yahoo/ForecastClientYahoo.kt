@@ -52,7 +52,7 @@ class ForecastClientYahoo : ForecastClient {
     private fun requestWeather(query: String, maxRetries: Int): Weather? {
         val response: Response<ResponseBody>
         try {
-            response = ApiFactory.getInstance().yahooWather.forecast(query).execute()
+            response = ApiFactory.instance.yahooWeather.forecast(query).execute()
         } catch (e: RuntimeException) {
             e.printStackTrace()
             Mint.logException("query", query, e)
