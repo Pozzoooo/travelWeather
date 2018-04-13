@@ -41,6 +41,9 @@ import java.util.*
 /**
  * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
+ * todo do I really need to go back to the viewModel when I dismiss a dialog? Maybe I can make the
+ *  object the has been used to create the dialog to have a callback that calls the ViewMode to
+ *  tell is is being closed?
  */
 class MapActivity : BaseActivity() {
     companion object {
