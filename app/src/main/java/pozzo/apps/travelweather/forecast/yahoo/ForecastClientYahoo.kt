@@ -31,7 +31,7 @@ class ForecastClientYahoo : ForecastClient {
         return requestWeather(query)
     }
 
-    override fun fromCoordinates(coordinates: LatLng): Weather? {
+    override fun fromCoordinates(coordinates: LatLng): Weather {
         val query = "select item from weather.forecast where woeid in " +
                 "(select woeid from geo.places where " +
                 "text=\"(" + coordinates.latitude + "," + coordinates.longitude + ")\") and u='c'"
@@ -42,7 +42,7 @@ class ForecastClientYahoo : ForecastClient {
             address.longitude = coordinates.longitude
             weather.address = address
         }
-        return weather
+        return weather!!
     }
 
     private fun requestWeather(query: String) : Weather? {
