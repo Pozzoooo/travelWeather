@@ -87,7 +87,7 @@
 
 				<android.support.design.widget.FloatingActionButton
 					android:id="@+id/bClear"
-					android:onClick="@{() -> viewModel.requestClear()}"
+					android:onClick="@{() -> viewModel.requestClearRequestedByUser()}"
 					android:src="@android:drawable/ic_menu_close_clear_cancel"
 					style="@style/buttonsOnButtonBar"/>
 

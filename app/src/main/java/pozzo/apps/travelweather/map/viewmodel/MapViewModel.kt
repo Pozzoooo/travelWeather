@@ -54,6 +54,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val isShowingTopBar = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
+    var dragStart = 0L
+
     init {
         isShowingProgress.value = false
         isShowingTopBar.value = false
@@ -275,6 +277,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun isFullRouteSelected() : Boolean = startPosition.value != null && finishPosition.value != null
 
+    fun finishFlagDragActionStarted() {
+        mapAnalytics.sendDragFinishEvent()
+        dragStart = System.currentTimeMillis()
+    }
+
+    fun finishFlagDragActionFinished(latLng: LatLng) {
+        addPoint(latLng)
+        mapAnalytics.sendDragDurationEvent("finishFlag", System.currentTimeMillis() - dragStart)
+    }
+
     fun addPoint(latLng: LatLng) {
         hideTopBar()
         if (!NetworkUtil.isNetworkAvailable(getApplication())) {
@@ -300,6 +312,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun errorDismissed() {
         error.value = null
+    }
+
+    fun requestClearRequestedByUser() {
+        mapAnalytics.sendClearRouteEvent()
+        requestClear()
     }
 
     fun requestClear() {
