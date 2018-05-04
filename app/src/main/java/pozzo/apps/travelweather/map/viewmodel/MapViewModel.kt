@@ -64,20 +64,33 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun registerObservers() {
-        finishPosition.observeForever({
-            if (it != null) {
-                addWeathers(setOf(it))
-                updateRoute()
-            }
-        })
-        startPosition.observeForever({
-            if (it != null)
-                addWeathers(setOf(it))
-        })
-        error.observeForever {
-            if (it != null)
-                mapAnalytics.sendErrorMessage(it)
+        finishPosition.observeForever(finishObserver)
+        startPosition.observeForever(startObserver)
+        error.observeForever(errorObserver)
+    }
+
+    private val finishObserver = Observer<LatLng?> {
+        if (it != null) {
+            addWeathers(setOf(it))
+            updateRoute()
         }
+    }
+
+    private val startObserver = Observer<LatLng?> {
+        if (it != null)
+            addWeathers(setOf(it))
+    }
+
+    private val errorObserver = Observer<Error?> {
+        if (it != null)
+            mapAnalytics.sendErrorMessage(it)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        finishPosition.removeObserver(finishObserver)
+        startPosition.removeObserver(startObserver)
+        error.removeObserver(errorObserver)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
