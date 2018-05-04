@@ -157,13 +157,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val locationLiveData = LocationLiveData(getApplication())
         var locationObserver : Observer<Location>? = null
         locationObserver = Observer { location ->
-            hideProgress()
             locationLiveData.removeObserver(locationObserver!!)
 
-            if (location != null) {
-                setStartPosition(LatLng(location.latitude, location.longitude))
-            } else {
-                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
+            if (isShowingProgress.value == true) {
+                hideProgress()
+                if (location != null) {
+                    setStartPosition(LatLng(location.latitude, location.longitude))
+                } else {
+                    error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
+                }
             }
         }
         locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
@@ -173,7 +175,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(true)
     }
 
-    private fun hideProgress() {
+    fun hideProgress() {
         isShowingProgress.postValue(false)
     }
 

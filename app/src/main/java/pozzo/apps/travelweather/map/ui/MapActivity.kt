@@ -40,7 +40,6 @@ import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
 /**
- * todo ta removendo o current location listener quando da dismiss no dialog de loading?
  * todo do I really need to go back to the viewModel when I dismiss a dialog? Maybe I can make the
  *  object the has been used to create the dialog to have a callback that calls the ViewMode to
  *  tell is is being closed?
@@ -91,6 +90,7 @@ class MapActivity : BaseActivity() {
         //todo replace progress dialog and add one with a text message
         progressDialog = ProgressDialog(this)
         progressDialog.isIndeterminate = true
+        progressDialog.setOnDismissListener { viewModel.hideProgress() }
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
         bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
@@ -287,8 +287,7 @@ class MapActivity : BaseActivity() {
             if (PackageManager.PERMISSION_GRANTED == grantResults[0])
                 viewModel.onPermissionGranted(LocationPermissionRequest(viewModel), this)
             else
-                viewModel.onPermissionDenied(
-                        LocationPermissionRequest(viewModel))
+                viewModel.onPermissionDenied(LocationPermissionRequest(viewModel))
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
