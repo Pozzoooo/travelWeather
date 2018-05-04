@@ -108,6 +108,14 @@
 					android:src="@drawable/finish_flag"
 					style="@style/buttonsOnButtonBar"/>
 			</LinearLayout>
+
+			<ProgressBar
+				android:id="@+id/progressBar"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:indeterminate="true"
+				android:layout_alignParentBottom="true"
+				style="?android:attr/progressBarStyleHorizontal"/>
 		</RelativeLayout>
 
 		<fragment

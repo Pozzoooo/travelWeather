@@ -56,19 +56,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     var dragStart = 0L
 
-    init {
-        isShowingProgress.value = false
-        isShowingTopBar.value = false
-        shouldFinish.value = false
-        registerObservers()
-    }
-
-    private fun registerObservers() {
-        finishPosition.observeForever(finishObserver)
-        startPosition.observeForever(startObserver)
-        error.observeForever(errorObserver)
-    }
-
     private val finishObserver = Observer<LatLng?> {
         if (it != null) {
             addWeathers(setOf(it))
@@ -84,6 +71,19 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val errorObserver = Observer<Error?> {
         if (it != null)
             mapAnalytics.sendErrorMessage(it)
+    }
+
+    init {
+        isShowingProgress.value = false
+        isShowingTopBar.value = false
+        shouldFinish.value = false
+        registerObservers()
+    }
+
+    private fun registerObservers() {
+        finishPosition.observeForever(finishObserver)
+        startPosition.observeForever(startObserver)
+        error.observeForever(errorObserver)
     }
 
     override fun onCleared() {

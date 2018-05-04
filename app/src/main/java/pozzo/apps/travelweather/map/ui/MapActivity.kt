@@ -1,7 +1,6 @@
 package pozzo.apps.travelweather.map.ui
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
@@ -51,8 +50,6 @@ class MapActivity : BaseActivity() {
 
     private var mapMarkerToWeather = HashMap<Marker, Weather>()
 
-    private lateinit var progressDialog: ProgressDialog
-
     private lateinit var mainThread: Handler
     private lateinit var animationCallback: AnimationCallbackTrigger
 
@@ -88,9 +85,6 @@ class MapActivity : BaseActivity() {
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
         //todo replace progress dialog and add one with a text message
-        progressDialog = ProgressDialog(this)
-        progressDialog.isIndeterminate = true
-        progressDialog.setOnDismissListener { viewModel.hideProgress() }
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
         bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
@@ -168,12 +162,12 @@ class MapActivity : BaseActivity() {
             if (!animationCallback.isAnimating)
                 mainThread.postDelayed(triggerCheckedShowProgress, 200)
         } else
-            progressDialog.hide()
+            progressBar.visibility = View.GONE
     }
 
     private val triggerCheckedShowProgress = Runnable {
         if (viewModel.isShowingProgress.value == true) {
-            progressDialog.show()
+            progressBar.visibility = View.VISIBLE
         }
     }
 
