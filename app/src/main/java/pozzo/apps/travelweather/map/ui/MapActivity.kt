@@ -259,10 +259,6 @@ class MapActivity : BaseActivity() {
         drawerLayout.openDrawer(GravityCompat.START)
     }
 
-    fun onClearSearch(view: View) {
-        eSearch.setText("")
-    }
-
     private fun refreshMarkers() {
         val markerWeathers = this.mapMarkerToWeather
         this.mapMarkerToWeather = HashMap()

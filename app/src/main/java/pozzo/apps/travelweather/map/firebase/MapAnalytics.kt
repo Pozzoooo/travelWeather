@@ -47,4 +47,12 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         bundle.putString(FirebaseAnalytics.Param.VALUE, it.name)
         firebaseAnalytics.logEvent("errorMessage", bundle)
     }
+
+    fun sendDisplayTopBarAction() {
+        firebaseAnalytics.logEvent("displayTopBar", null)
+    }
+
+    fun sendSearchAddress() {
+        firebaseAnalytics.logEvent("searchAddress", null)
+    }
 }

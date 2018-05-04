@@ -266,7 +266,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private fun displayTopBar() = isShowingTopBar.postValue(true)
+    private fun displayTopBar() {
+        isShowingTopBar.postValue(true)
+        mapAnalytics.sendDisplayTopBarAction()
+    }
+
     private fun hideTopBar() = isShowingTopBar.postValue(false)
 
     fun getRouteBounds() : LatLngBounds? {
@@ -304,6 +308,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun searchAddress(string: String) {
         try {
+            mapAnalytics.sendSearchAddress()
             val addressLatLng = geoCoderHelper.getPositionFromFirst(string)
             if (addressLatLng != null)
                 addPoint(addressLatLng)
