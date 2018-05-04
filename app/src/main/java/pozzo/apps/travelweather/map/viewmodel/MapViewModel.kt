@@ -331,4 +331,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun actionRequestDismissed() {
         this.actionRequest.value = null
     }
+
+    fun drawerMenuOpened() {
+        mapAnalytics.sendDrawerOpened()
+    }
 }

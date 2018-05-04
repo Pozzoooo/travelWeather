@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -39,7 +40,6 @@ import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
 /**
- * todo add more analytics tracking, something more intelligent
  * todo ta removendo o current location listener quando da dismiss no dialog de loading?
  * todo do I really need to go back to the viewModel when I dismiss a dialog? Maybe I can make the
  *  object the has been used to create the dialog to have a callback that calls the ViewMode to
@@ -69,6 +69,7 @@ class MapActivity : BaseActivity() {
         setupMapFragment()
         setupView()
         observeViewModel()
+        listenDrawerState()
     }
 
     private fun setupViewModel() {
@@ -131,6 +132,17 @@ class MapActivity : BaseActivity() {
         viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
         viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
         viewModel.permissionRequest.observe(this, Observer { if (it != null) requestPermissions(it) })
+    }
+
+    private fun listenDrawerState() {
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) {
+                viewModel.drawerMenuOpened()
+            }
+        })
     }
 
     private fun startPositionChanged(startPosition: LatLng?) {

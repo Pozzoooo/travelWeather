@@ -3,12 +3,16 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import android.preference.PreferenceManager
+import com.google.firebase.analytics.FirebaseAnalytics
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.map.firebase.MapAnalytics
 
 class PreferencesViewModel(application: Application) : BaseViewModel(application) {
     val selectedDay = MutableLiveData<Day>()
+
+    private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
 
     init {
         readInitialSelectedDate()
@@ -24,6 +28,8 @@ class PreferencesViewModel(application: Application) : BaseViewModel(application
         val preferences = PreferenceManager.getDefaultSharedPreferences(getApplication()).edit()
         preferences.putInt("selectedDay", resourceId).apply()
         preferences.apply()
-        this.selectedDay.value = Day.getByResourceId(resourceId)
+        val selection = Day.getByResourceId(resourceId)
+        this.selectedDay.value = selection
+        mapAnalytics.sendDaySelectionChanged(selection)
     }
 }
