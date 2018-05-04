@@ -74,6 +74,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             if (it != null)
                 addWeathers(setOf(it))
         })
+        error.observeForever {
+            if (it != null)
+                mapAnalytics.sendErrorMessage(it)
+        }
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {

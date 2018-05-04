@@ -2,9 +2,9 @@ package pozzo.apps.travelweather.map.firebase
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.model.Day
 
-//todo enviar quando nao encontrar a rota
 class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
 
     fun sendFirebaseUserRequestedCurrentLocationEvent() {
@@ -40,5 +40,11 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.VALUE, day.name)
         firebaseAnalytics.logEvent("daySelection", bundle)
+    }
+
+    fun sendErrorMessage(it: Error) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.VALUE, it.name)
+        firebaseAnalytics.logEvent("errorMessage", bundle)
     }
 }
