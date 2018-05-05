@@ -1,7 +1,5 @@
 package pozzo.apps.travelweather.location.helper;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;
@@ -26,10 +24,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public class GMapV2Direction {
     public final static String MODE_DRIVING = "driving";
-    public final static String MODE_WALKING = "walking";
-
-    public GMapV2Direction() {
-    }
 
     public Document getDocument(LatLng start, LatLng end, String mode) {
         String url = "http://maps.googleapis.com/maps/api/directions/xml?"
@@ -49,123 +43,6 @@ public class GMapV2Direction {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public String getDurationText(Document doc) {
-        try {
-
-            NodeList nl1 = doc.getElementsByTagName("duration");
-            Node node1 = nl1.item(0);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "text"));
-            Log.i("DurationText", node2.getTextContent());
-            return node2.getTextContent();
-        } catch (Exception e) {
-            return "0";
-        }
-    }
-
-    public int getDurationValue(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("duration");
-            Node node1 = nl1.item(0);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.i("DurationValue", node2.getTextContent());
-            return Integer.parseInt(node2.getTextContent());
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    public String getDistanceText(Document doc) {
-    /*
-     * while (en.hasMoreElements()) { type type = (type) en.nextElement();
-     *
-     * }
-     */
-
-        try {
-            NodeList nl1;
-            nl1 = doc.getElementsByTagName("distance");
-
-            Node node1 = nl1.item(nl1.getLength() - 1);
-            NodeList nl2 = null;
-            nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.d("DistanceText", node2.getTextContent());
-            return node2.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
-    /*
-     * NodeList nl1; if(doc.getElementsByTagName("distance")!=null){ nl1=
-     * doc.getElementsByTagName("distance");
-     *
-     * Node node1 = nl1.item(nl1.getLength() - 1); NodeList nl2 = null; if
-     * (node1.getChildNodes() != null) { nl2 = node1.getChildNodes(); Node
-     * node2 = nl2.item(getNodeIndex(nl2, "value")); Log.d("DistanceText",
-     * node2.getTextContent()); return node2.getTextContent(); } else return
-     * "-1";} else return "-1";
-     */
-    }
-
-    public int getDistanceValue(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("distance");
-            Node node1 = null;
-            node1 = nl1.item(nl1.getLength() - 1);
-            NodeList nl2 = node1.getChildNodes();
-            Node node2 = nl2.item(getNodeIndex(nl2, "value"));
-            Log.i("DistanceValue", node2.getTextContent());
-            return Integer.parseInt(node2.getTextContent());
-        } catch (Exception e) {
-            return -1;
-        }
-    /*
-     * NodeList nl1 = doc.getElementsByTagName("distance"); Node node1 =
-     * null; if (nl1.getLength() > 0) node1 = nl1.item(nl1.getLength() - 1);
-     * if (node1 != null) { NodeList nl2 = node1.getChildNodes(); Node node2
-     * = nl2.item(getNodeIndex(nl2, "value")); Log.i("DistanceValue",
-     * node2.getTextContent()); return
-     * Integer.parseInt(node2.getTextContent()); } else return 0;
-     */
-    }
-
-    public String getStartAddress(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("start_address");
-            Node node1 = nl1.item(0);
-            Log.i("StartAddress", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
-    }
-
-    public String getEndAddress(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("end_address");
-            Node node1 = nl1.item(0);
-            Log.i("StartAddress", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-    }
-
-    public String getCopyRights(Document doc) {
-        try {
-            NodeList nl1 = doc.getElementsByTagName("copyrights");
-            Node node1 = nl1.item(0);
-            Log.i("CopyRights", node1.getTextContent());
-            return node1.getTextContent();
-        } catch (Exception e) {
-            return "-1";
-        }
-
     }
 
     public ArrayList<LatLng> getDirection(Document doc) {

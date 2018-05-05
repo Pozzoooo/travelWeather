@@ -159,6 +159,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         locationObserver = Observer { location ->
             locationLiveData.removeObserver(locationObserver!!)
 
+            //todo there is room to improve this progress binding
             if (isShowingProgress.value == true) {
                 hideProgress()
                 if (location != null) {
