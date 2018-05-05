@@ -84,7 +84,6 @@ class MapActivity : BaseActivity() {
 
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
-        //todo replace progress dialog and add one with a text message
         animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
         bFinishPosition.setOnTouchListener(startDraggingFinishFlag)

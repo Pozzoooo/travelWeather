@@ -124,7 +124,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
-        val currentLocation = getCurrentLocation()
+        val currentLocation = getCurrentKnownLocation()
         if (currentLocation != null) {
             setStartPosition(currentLocation)
         } else {
@@ -132,11 +132,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private fun getCurrentLocation(): LatLng? {
-        return try {
-            val location = locationBusiness.getCurrentLocation(getApplication())
+    private fun getCurrentKnownLocation(): LatLng? {
+        try {
+            val location = locationBusiness.getCurrentKnownLocation(getApplication())
             return if (location != null) LatLng(location.latitude, location.longitude) else null
-        } catch (e: Throwable) { /*todo review if why we don't care */ null}
+        } catch (e: SecurityException) {
+            //we might not have permission, we leave the system try to activate the gps before any message
+        } catch (e: Exception) {
+            Mint.logException(e)
+        }
+        return null
     }
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {

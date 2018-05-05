@@ -21,14 +21,17 @@ public class LocationBusiness {
     /**
      * @return Posicao atual do usuario.
      */
-    public Location getCurrentLocation(Context context) throws SecurityException {
+    public Location getCurrentKnownLocation(Context context) throws SecurityException {
         LocationManager locationManager = (LocationManager)
                 context.getSystemService(Context.LOCATION_SERVICE);
-        String bestProvider = locationManager.getBestProvider(new Criteria(), false);
-        if (bestProvider == null)
-        	throw new SecurityException("No providers found");
+        if (locationManager != null) {
+			String bestProvider = locationManager.getBestProvider(new Criteria(), false);
+			if (bestProvider == null)
+				throw new SecurityException("No providers found");
 
-		return locationManager.getLastKnownLocation(bestProvider);
+			return locationManager.getLastKnownLocation(bestProvider);
+		}
+		return null;
     }
 
     /**
