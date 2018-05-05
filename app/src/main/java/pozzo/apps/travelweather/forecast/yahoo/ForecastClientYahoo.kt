@@ -71,22 +71,28 @@ class ForecastClientYahoo : ForecastClient {
     }
 
     private fun handleResponse(body: String?) : Weather? {
-        val jsonResult = JsonParser().parse(body).asJsonObject
-        val channel = jsonResult
-                .getAsJsonObject("query")
-                .getAsJsonObject("results")
-                .getAsJsonObject("channel")
-        val item = channel.getAsJsonObject("item")
-        val forecastArray = item.getAsJsonArray("forecast")
-        val gson = GsonFactory.getGson()
-        val forecastType = object : TypeToken<List<Forecast>>() {}.type
-        val forecasts = gson.fromJson<List<Forecast>>(forecastArray, forecastType)
-        if (forecasts.isEmpty())
-            return null
+        try {
+            val jsonResult = JsonParser().parse(body).asJsonObject
+            val channel = jsonResult
+                    .getAsJsonObject("query")
+                    .getAsJsonObject("results")
+                    .getAsJsonObject("channel")
+            val item = channel.getAsJsonObject("item")
+            val forecastArray = item.getAsJsonArray("forecast")
+            val gson = GsonFactory.getGson()
+            val forecastType = object : TypeToken<List<Forecast>>() {}.type
+            val forecasts = gson.fromJson<List<Forecast>>(forecastArray, forecastType)
+            if (forecasts.isEmpty())
+                return null
 
-        val weather = Weather()
-        weather.setForecasts(forecasts)
-        weather.url = item.get("link").asString
-        return weather
+            val weather = Weather()
+            weather.setForecasts(forecasts)
+            weather.url = item.get("link").asString
+            return weather
+        } catch (e: ClassCastException) {
+            //sometime yahoo is sending us a null object, not really sure why, but all we can do for
+            //  now is ignore it and keep on going
+            return null
+        }
     }
 }

@@ -249,10 +249,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         weatherPoints.forEach {
             try {
                 weathers.add(forecastBusiness.from(it))
-            } catch (e: ClassCastException) {
-                //Business don't want't to send us this forecast
-                //This one is known server issue and won't be logged
-                //todo improve it for a more specific exception
             } catch (e: Exception) {
                 Mint.logException(e)
             }

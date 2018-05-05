@@ -19,6 +19,7 @@ class AnimationCallbackTrigger(private val triggerProgress: Runnable) : GoogleMa
     }
 
     override fun onCancel() {
+
         triggerProgress.run()
         isAnimating = false
     }
