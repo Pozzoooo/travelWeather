@@ -114,7 +114,6 @@ class MapFragment : SupportMapFragment() {
                 }
     }
 
-    //todo o mastro da bandeira exatamento no ponto q vai ser utilizado
     private val draggingFinishFlag = View.OnDragListener { _, event ->
         return@OnDragListener when(event.action) {
             DragEvent.ACTION_DROP -> {
