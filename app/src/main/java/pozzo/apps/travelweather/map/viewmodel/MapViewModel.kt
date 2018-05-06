@@ -166,14 +166,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         locationObserver = Observer { location ->
             locationLiveData.removeObserver(locationObserver!!)
 
-            //todo there is room to improve this progress binding
-            if (isShowingProgress.value == true) {
-                hideProgress()
-                if (location != null) {
-                    setStartPosition(LatLng(location.latitude, location.longitude))
-                } else {
-                    error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
-                }
+            hideProgress()
+            if (location != null) {
+                setStartPosition(LatLng(location.latitude, location.longitude))
+            } else {
+                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
             }
         }
         locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
