@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.map.ui
 
+import android.animation.ObjectAnimator
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Point
@@ -106,7 +107,11 @@ class MapFragment : SupportMapFragment() {
                 .title(mapPoint.title)
                 .icon(mapPoint.icon)
         return map?.addMarker(markerOptions)
-                ?.apply { mapPointByMarkerId[id] = mapPoint }
+                ?.apply {
+                    mapPointByMarkerId[id] = mapPoint
+                    ObjectAnimator.ofFloat(this, "alpha", 0F, 1F)
+                            .setDuration(500L).start()
+                }
     }
 
     //todo o mastro da bandeira exatamento no ponto q vai ser utilizado

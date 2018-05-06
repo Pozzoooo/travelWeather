@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map.viewrequest
+package pozzo.apps.travelweather.map.userinputrequest
 
 import android.Manifest
 import android.arch.lifecycle.LifecycleOwner

@@ -5,8 +5,8 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import pozzo.apps.travelweather.map.ui.MapActivity
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
-import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
-import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
+import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
+import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
 
 /**
  * Manages permission requests and results.

@@ -27,8 +27,8 @@ import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
 import pozzo.apps.travelweather.map.firebase.MapAnalytics
-import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
-import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
+import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
+import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -40,6 +40,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
+
+    private var dragStart = 0L
 
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
@@ -53,8 +55,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
-
-    var dragStart = 0L
 
     private val finishObserver = Observer<LatLng?> {
         if (it != null) {
