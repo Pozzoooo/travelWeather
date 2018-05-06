@@ -146,10 +146,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
         permissionRequest.granted(lifecycleOwner)
+        this.permissionRequest.value = null
     }
 
     fun onPermissionDenied(permissionRequest: PermissionRequest) {
         permissionRequest.denied()
+        this.permissionRequest.value = null
     }
 
     fun warn(warning: Warning) {
@@ -352,6 +354,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun actionRequestAccepted(actionRequest: ActionRequest) {
         actionRequest.execute()
+        this.actionRequest.value = null
     }
 
     fun actionRequestDismissed() {

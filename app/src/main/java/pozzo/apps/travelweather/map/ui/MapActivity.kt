@@ -3,13 +3,11 @@ package pozzo.apps.travelweather.map.ui
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
@@ -32,22 +30,12 @@ import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.action.ActionRequest
+import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
-import pozzo.apps.travelweather.map.viewrequest.LocationPermissionRequest
-import pozzo.apps.travelweather.map.viewrequest.PermissionRequest
 import java.util.*
 
-/**
- * todo do I really need to go back to the viewModel when I dismiss a dialog? Maybe I can make the
- *  object the has been used to create the dialog to have a callback that calls the ViewMode to
- *  tell is is being closed?
- */
 class MapActivity : BaseActivity() {
-    companion object {
-        private const val REQ_PERMISSION_FOR_CURRENT_LOCATION = 0x1
-    }
-
     private var mapMarkerToWeather = HashMap<Marker, Weather>()
 
     private lateinit var mainThread: Handler
@@ -56,10 +44,12 @@ class MapActivity : BaseActivity() {
     private lateinit var mapFragment: MapFragment
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
+    private lateinit var permissionManager: PermissionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.mainThread = Handler()
+        this.permissionManager = PermissionManager(this)
         setupViewModel()
         setupDataBind()
         setupMapFragment()
@@ -124,7 +114,7 @@ class MapActivity : BaseActivity() {
         viewModel.error.observe(this, Observer { if (it != null) showError(it) })
         viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
         viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
-        viewModel.permissionRequest.observe(this, Observer { if (it != null) requestPermissions(it) })
+        viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
     }
 
     private fun listenDrawerState() {
@@ -261,7 +251,7 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    fun addMark(weather: Weather?) {
+    private fun addMark(weather: Weather?) {
         if (weather?.address == null) return
 
         val selectedDay = preferencesViewModel.selectedDay.value
@@ -271,17 +261,8 @@ class MapActivity : BaseActivity() {
         if (marker != null) mapMarkerToWeather[marker] = weather
     }
 
-    private fun requestPermissions(permissionRequest: PermissionRequest) {
-        ActivityCompat.requestPermissions(this, permissionRequest.permissions, REQ_PERMISSION_FOR_CURRENT_LOCATION)
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == REQ_PERMISSION_FOR_CURRENT_LOCATION) {
-            if (PackageManager.PERMISSION_GRANTED == grantResults[0])
-                viewModel.onPermissionGranted(LocationPermissionRequest(viewModel), this)
-            else
-                viewModel.onPermissionDenied(LocationPermissionRequest(viewModel))
-        } else {
+        if (!permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
