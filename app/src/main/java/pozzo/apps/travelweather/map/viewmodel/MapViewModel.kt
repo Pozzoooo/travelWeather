@@ -181,7 +181,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(true)
     }
 
-    fun hideProgress() {
+    private fun hideProgress() {
         isShowingProgress.postValue(false)
     }
 
@@ -196,7 +196,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             } else {
                 this.error.postValue(Error.CANT_FIND_ROUTE)
             }
-            hideProgress()
         })
     }
 
@@ -220,7 +219,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun addWeathers(weatherPoints: Set<LatLng>) {
-        //todo need to add the weathers progressively, so the user wont wait for a long time
+        showProgress()
         addWeatherExecutor.execute({
             val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
             if (filteredPoints.isEmpty()) {
@@ -228,6 +227,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             } else {
                 addWeathers(requestWeathersFor(filteredPoints))
             }
+            hideProgress()
         })
     }
 
