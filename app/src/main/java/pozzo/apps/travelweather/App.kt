@@ -5,13 +5,11 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
- * Busca na action bar, e a selecao de dia (hoje, amananha...) pode ir em uma spinner no estilo navegacao.
- * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
- * Remove http legacy
- * Realizar a separacao early, late...
- * A questao do horario de saida e chegada, como fica?
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
+ * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
+ * Realizar a separacao early, late...
+ * A questao do horario de saida e chegada, como fica?
  * Outra fonte para busca de previsao do tempo
  * Unit test :)
  */
