@@ -38,13 +38,13 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
 
     fun sendDaySelectionChanged(day: Day) {
         val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.VALUE, day.name)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, day.name)
         firebaseAnalytics.logEvent("daySelection", bundle)
     }
 
     fun sendErrorMessage(it: Error) {
         val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.VALUE, it.name)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, it.name)
         firebaseAnalytics.logEvent("errorMessage", bundle)
     }
 
