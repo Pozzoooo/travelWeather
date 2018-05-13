@@ -27,7 +27,6 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.MapPoint
-import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
@@ -36,7 +35,7 @@ import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
 class MapActivity : BaseActivity() {
-    private var mapMarkerToWeather = HashMap<Marker, Weather>()
+    private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
     private lateinit var mainThread: Handler
     private lateinit var animationCallback: AnimationCallbackTrigger
@@ -108,7 +107,7 @@ class MapActivity : BaseActivity() {
         viewModel.finishPosition.observe(this, Observer { finishPositionChanged(it) })
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.directionLine.observe(this, Observer { if (it != null) mapFragment.plotRoute(it) })
-        viewModel.weathers.observe(this, Observer { if (it != null) showWeathers(it) })
+        viewModel.mapPoints.observe(this, Observer { if (it != null) showWeathers(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
         viewModel.error.observe(this, Observer { if (it != null) showError(it) })
@@ -160,7 +159,7 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    private fun showWeathers(weathers: List<Weather>) {
+    private fun showWeathers(weathers: List<MapPoint>) {
         weathers.forEach {
             addMark(it)
         }
@@ -251,14 +250,9 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    private fun addMark(weather: Weather?) {
-        if (weather?.address == null) return
-
-        val selectedDay = preferencesViewModel.selectedDay.value
-        val forecast = weather.getForecast(selectedDay!!)
-
-        val marker = mapFragment.addMark(MapPoint(forecast.icon, forecast.text, weather.latLng, weather.url))
-        if (marker != null) mapMarkerToWeather[marker] = weather
+    private fun addMark(mapPoint: MapPoint) {
+        val marker = mapFragment.addMark(mapPoint)
+        if (marker != null) mapMarkerToWeather[marker] = mapPoint
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

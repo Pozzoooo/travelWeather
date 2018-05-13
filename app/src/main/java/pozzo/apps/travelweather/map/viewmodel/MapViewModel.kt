@@ -20,12 +20,14 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
+import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
+import pozzo.apps.travelweather.map.business.PreferencesBusiness
 import pozzo.apps.travelweather.map.firebase.MapAnalytics
 import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
@@ -37,6 +39,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
+    private val preferencesBusiness = PreferencesBusiness(application)
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
@@ -46,7 +49,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
     val directionLine = MutableLiveData<PolylineOptions>()
-    val weathers = MutableLiveData<List<Weather>>()
+    val mapPoints = MutableLiveData<List<MapPoint>>()
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
     val actionRequest = MutableLiveData<ActionRequest>()
@@ -221,11 +224,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         showProgress()
         addWeatherExecutor.execute({
             val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
-            if (filteredPoints.isEmpty()) {
-                this.weathers.postValue(this.weathers.value)
-            } else {
-                addWeathers(requestWeathersFor(filteredPoints))
-            }
+            val weathers = requestWeathersFor(filteredPoints)
+            val mapPoints = parseWeatherIntoMapPoints(weathers)
+            addWeathers(mapPoints)
             hideProgress()
         })
     }
@@ -234,14 +235,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         weatherPoints.filter { !containsLatLng(it) }
 
     private fun containsLatLng(latLng: LatLng) : Boolean =
-        weathers.value?.firstOrNull { latLng == it.latLng } != null
-
-    private fun addWeathers(weathers: ArrayList<Weather>) {
-        val currentWeathers = this.weathers.value
-        if (currentWeathers?.isEmpty() == false)
-            weathers.addAll(currentWeathers)
-        this.weathers.postValue(weathers)
-    }
+        mapPoints.value?.firstOrNull { latLng == it.position } != null
 
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
         val weathers = ArrayList<Weather>()
@@ -253,6 +247,29 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             }
         }
         return weathers
+    }
+
+    private fun parseWeatherIntoMapPoints(weathers: ArrayList<Weather>) : ArrayList<MapPoint> {
+        val mapPoints = ArrayList<MapPoint>()
+
+        weathers.forEach {
+            if (it.address != null) {
+
+                val selectedDay = preferencesBusiness.getSelectedDay()
+                val forecast = it.getForecast(selectedDay)
+                mapPoints.add(MapPoint(forecast.icon, forecast.text, it.latLng, it.url))
+            }
+        }
+
+        return mapPoints
+    }
+
+    private fun addWeathers(mapPoints: ArrayList<MapPoint>) {
+        val currentWeathers = this.mapPoints.value
+        if (currentWeathers?.isEmpty() == false)
+            mapPoints.addAll(currentWeathers)
+
+        this.mapPoints.postValue(mapPoints)
     }
 
     fun setFinishPosition(finishPosition: LatLng?) {

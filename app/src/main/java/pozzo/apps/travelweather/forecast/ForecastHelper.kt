@@ -14,26 +14,35 @@ import pozzo.apps.travelweather.forecast.model.Forecast
  * To help us on reusability, as I am not sure exactly where to place it =/.
  */
 object ForecastHelper {
-    private const val SUN = "sun"
+    private const val SUN = "sunny"
     private const val THUNDERSTORMS = "thunderstorms"
+    private const val SCATTERED_THUNDERSTORMS = "scattered thunderstorms"
     private const val RAIN = "rain"
+    private const val SCATTERED_SHOWERS = "scattered showers"
     private const val SHOWERS = "showers"
     private const val PARTLY_CLOUDY = "partly cloudy"
+    private const val MOSTLY_CLOUDY = "mostly cloudy"
     private const val CLOUDY = "cloudy"
     private const val SNOW = "snow"
+    private const val RAIN_SNOW = "rain and snow"
 
     private val iconIdMap : Map<String, Int>
     private val bitmapCache = HashMap<String?, BitmapDescriptor?>()
 
     init {
+        //todo bring more icons for the duplicated itens
         iconIdMap = mapOf(
                 Pair(SUN, R.drawable.sun),
                 Pair(THUNDERSTORMS, R.drawable.thunderstorm),
+                Pair(SCATTERED_THUNDERSTORMS, R.drawable.thunderstorm),
                 Pair(RAIN, R.drawable.heavy_rain),
+                Pair(SCATTERED_SHOWERS, R.drawable.rain),
                 Pair(SHOWERS, R.drawable.rain),
                 Pair(PARTLY_CLOUDY, R.drawable.partly_cloudy),
                 Pair(CLOUDY, R.drawable.cloudy),
-                Pair(SNOW, R.drawable.snow))
+                Pair(MOSTLY_CLOUDY, R.drawable.cloudy),
+                Pair(SNOW, R.drawable.snow),
+                Pair(RAIN_SNOW, R.drawable.snow))
     }
 
     fun forecastIcon(forecast: Forecast): BitmapDescriptor? {
