@@ -11,9 +11,8 @@ class Forecast {
     var high: Int = 0
     var low: Int = 0
 
-    val icon: BitmapDescriptor
+    val icon: BitmapDescriptor?
         get() {
-            val icon = ForecastHelper.forecastIcon(this)
-            return BitmapDescriptorFactory.fromResource(icon)
+            return ForecastHelper.forecastIcon(this)
         }
 }

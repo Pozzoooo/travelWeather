@@ -11,7 +11,6 @@ import com.splunk.mint.Mint
  * Realizar a separacao early, late...
  * A questao do horario de saida e chegada, como fica?
  * Outra fonte para busca de previsao do tempo
- * Adicionar icone no inicio e no final do percurso que sejam draggable, ai usuario pode mover em volta a vontade...
  * Unit test :)
  */
 class App : Application() {

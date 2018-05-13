@@ -3,4 +3,7 @@ package pozzo.apps.travelweather.forecast.model
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 
-data class MapPoint(val icon: BitmapDescriptor, val title: String?, val position: LatLng, val onClickLoadUrl: String?)
+open class MapPoint(open val icon: BitmapDescriptor?,
+                    open val title: String?,
+                    open val position: LatLng,
+                    open val onClickLoadUrl: String?)
