@@ -46,6 +46,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private var dragStart = 0L
 
+    //todo is it possibility to hide all this observers and expose an observe method? So I can make them mutable only inside this class
     val startPosition = MutableLiveData<LatLng?>()
     val finishPosition = MutableLiveData<LatLng?>()
     val directionLine = MutableLiveData<PolylineOptions>()
@@ -59,18 +60,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val isShowingTopBar = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
-    private val finishObserver = Observer<LatLng?> {
-        if (it != null) {
-            addWeathers(setOf(it))
-            updateRoute()
-        }
-    }
-
-    private val startObserver = Observer<LatLng?> {
-        if (it != null)
-            addWeathers(setOf(it))
-    }
-
+    //todo I don't really need this observer either, should create a "postError()"
     private val errorObserver = Observer<Error?> {
         if (it != null)
             mapAnalytics.sendErrorMessage(it)
@@ -84,15 +74,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun registerObservers() {
-        finishPosition.observeForever(finishObserver)
-        startPosition.observeForever(startObserver)
         error.observeForever(errorObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
-        finishPosition.removeObserver(finishObserver)
-        startPosition.removeObserver(startObserver)
         error.removeObserver(errorObserver)
     }
 
@@ -194,7 +180,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             val direction = locationBusiness.getDirections(startPosition.value, finishPosition.value)
             if (direction?.isEmpty() == false) {
                 setDirectionLine(direction)
-                addWeathers(filterDirectionToWeatherPoints(direction))
+                addMapPoints(filterDirectionToWeatherPoints(direction))
             } else {
                 this.error.postValue(Error.CANT_FIND_ROUTE)
             }
@@ -220,13 +206,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return filteredPoints
     }
 
-    private fun addWeathers(weatherPoints: Set<LatLng>) {
+    private fun addMapPoints(weatherPoints: Set<LatLng>) {
         showProgress()
         addWeatherExecutor.execute({
             val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
             val weathers = requestWeathersFor(filteredPoints)
             val mapPoints = parseWeatherIntoMapPoints(weathers)
-            addWeathers(mapPoints)
+            addMapPoints(mapPoints)
             hideProgress()
         })
     }
@@ -241,7 +227,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val weathers = ArrayList<Weather>()
         weatherPoints.forEach {
             try {
-                weathers.add(forecastBusiness.from(it))
+                weathers.add(requestWeatherFor(it))
             } catch (e: Exception) {
                 Mint.logException(e)
             }
@@ -249,22 +235,28 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return weathers
     }
 
+    private fun requestWeatherFor(weatherPoint: LatLng) : Weather = forecastBusiness.from(weatherPoint)
+
     private fun parseWeatherIntoMapPoints(weathers: ArrayList<Weather>) : ArrayList<MapPoint> {
         val mapPoints = ArrayList<MapPoint>()
 
         weathers.forEach {
-            if (it.address != null) {
-
-                val selectedDay = preferencesBusiness.getSelectedDay()
-                val forecast = it.getForecast(selectedDay)
-                mapPoints.add(MapPoint(forecast.icon, forecast.text, it.latLng, it.url))
-            }
+            parseWeatherIntoMapPoint(it)?.let { mapPoints.add(it) }
         }
 
         return mapPoints
     }
 
-    private fun addWeathers(mapPoints: ArrayList<MapPoint>) {
+    private fun parseWeatherIntoMapPoint(weather: Weather) : MapPoint? {
+        if (weather.address != null) {
+            val selectedDay = preferencesBusiness.getSelectedDay()
+            val forecast = weather.getForecast(selectedDay)
+            return MapPoint(forecast.icon, forecast.text, weather.latLng, weather.url)
+        }
+        return null
+    }
+
+    private fun addMapPoints(mapPoints: ArrayList<MapPoint>) {
         val currentWeathers = this.mapPoints.value
         if (currentWeathers?.isEmpty() == false)
             mapPoints.addAll(currentWeathers)
@@ -274,10 +266,28 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setFinishPosition(finishPosition: LatLng?) {
         this.finishPosition.postValue(finishPosition)
+
+        finishPosition?.let {
+            addMapPoint(finishPosition)
+            updateRoute()
+        }
+    }
+
+    private fun addMapPoint(latLng: LatLng) {
+        addWeatherExecutor.execute({
+            val weather = requestWeatherFor(latLng)
+            parseWeatherIntoMapPoint(weather)?.let {
+                addMapPoints(arrayListOf(it))
+            }
+        })
     }
 
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
+
+        startPosition?.let {
+            addMapPoint(startPosition)
+        }
     }
 
     fun back() {
