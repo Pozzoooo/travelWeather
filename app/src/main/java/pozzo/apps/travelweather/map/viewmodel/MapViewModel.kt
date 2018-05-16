@@ -20,7 +20,9 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
+import pozzo.apps.travelweather.forecast.model.FinishPoint
 import pozzo.apps.travelweather.forecast.model.MapPoint
+import pozzo.apps.travelweather.forecast.model.StartPoint
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
@@ -229,6 +231,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             try {
                 weathers.add(requestWeatherFor(it))
             } catch (e: Exception) {
+                //todo handle no connection error here
                 Mint.logException(e)
             }
         }
@@ -267,27 +270,45 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setFinishPosition(finishPosition: LatLng?) {
         this.finishPosition.postValue(finishPosition)
 
-        finishPosition?.let {
-            addMapPoint(finishPosition)
-            updateRoute()
+        if (finishPosition != null) {
+            createFinishPoint(finishPosition)
         }
     }
 
-    private fun addMapPoint(latLng: LatLng) {
+    private fun createFinishPoint(finishPosition: LatLng) {
         addWeatherExecutor.execute({
-            val weather = requestWeatherFor(latLng)
-            parseWeatherIntoMapPoint(weather)?.let {
-                addMapPoints(arrayListOf(it))
+            val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
+
+            if (weather?.address != null) {
+                val selectedDay = preferencesBusiness.getSelectedDay()
+                val forecast = weather.getForecast(selectedDay)
+                val mapPoint = FinishPoint(forecast.text, weather.latLng, weather.url)
+                addMapPoints(arrayListOf<MapPoint>(mapPoint))
             }
         })
+
+        updateRoute()
     }
 
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
 
-        startPosition?.let {
-            addMapPoint(startPosition)
+        if (startPosition != null) {
+            createStartPoint(startPosition)
         }
+    }
+
+    private fun createStartPoint(startPosition: LatLng) {
+        addWeatherExecutor.execute({
+            val weather = requestWeathersFor(listOf(startPosition)).getOrNull(0)
+
+            if (weather?.address != null) {
+                val selectedDay = preferencesBusiness.getSelectedDay()
+                val forecast = weather.getForecast(selectedDay)
+                val mapPoint = StartPoint(forecast.text, weather.latLng, weather.url)
+                addMapPoints(arrayListOf<MapPoint>(mapPoint))
+            }
+        })
     }
 
     fun back() {
