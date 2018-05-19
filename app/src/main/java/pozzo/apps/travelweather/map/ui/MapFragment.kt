@@ -119,6 +119,7 @@ class MapFragment : SupportMapFragment() {
     fun addMark(mapPoint: MapPoint) : Marker? {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
+                .anchor(1F, 1F)
                 .title(mapPoint.title)
                 .icon(mapPoint.icon)
                 .draggable(mapPoint.isDraggable)
