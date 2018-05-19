@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.R
 
-class StartPoint(title: String?, position: LatLng, onClickLoadUrl: String?) : MapPoint(null, title, position, onClickLoadUrl) {
+class StartPoint(title: String?, position: LatLng, onClickLoadUrl: String?) : MapPoint(null, title, position, onClickLoadUrl, true) {
 
     override val icon: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.finish_flag)
 }

@@ -86,6 +86,7 @@ class MapFragment : SupportMapFragment() {
         googleMap.setOnMapLongClickListener({ viewModel.requestClear() })
         googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
         googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(activity))
+        googleMap.setOnMarkerDragListener(markerDragListener)
 
         clearMapOverlay()
         addDragListener()
@@ -101,11 +102,26 @@ class MapFragment : SupportMapFragment() {
         } ?: Mint.logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
+    private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
+        override fun onMarkerDragEnd(marker: Marker) {
+            println("drag ended $marker")
+        }
+
+        override fun onMarkerDragStart(marker: Marker) {
+            println("drag started $marker")
+        }
+
+        override fun onMarkerDrag(marker: Marker) {
+            println("drag $marker")
+        }
+    }
+
     fun addMark(mapPoint: MapPoint) : Marker? {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
                 .title(mapPoint.title)
                 .icon(mapPoint.icon)
+                .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)
                 ?.apply {
                     mapPointByMarkerId[id] = mapPoint

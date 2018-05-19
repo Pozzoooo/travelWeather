@@ -6,4 +6,5 @@ import com.google.android.gms.maps.model.LatLng
 open class MapPoint(open val icon: BitmapDescriptor?,
                     open val title: String?,
                     open val position: LatLng,
-                    open val onClickLoadUrl: String?)
+                    open val onClickLoadUrl: String?,
+                    val isDraggable: Boolean = false)
