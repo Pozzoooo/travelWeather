@@ -175,8 +175,24 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
         val filteredPoints = ArrayList<LatLng>()
-        var lastForecast = direction[0]
-        for (i in 1 until direction.size - 1) {
+        val directionSize = direction.size
+
+        if (directionSize == 0) {
+            return filteredPoints
+        }
+
+        if (directionSize < 1000) {
+            filteredPoints.add(direction[directionSize / 2])
+            return filteredPoints
+        }
+
+        val firstPoint = direction[350]
+        val lastPoint = direction[directionSize - 350]
+        filteredPoints.add(firstPoint)
+        filteredPoints.add(lastPoint)
+
+        var lastForecast = firstPoint
+        for (i in 500 until directionSize - 500) {
             val latLng = direction[i]
             if (i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
                     && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
