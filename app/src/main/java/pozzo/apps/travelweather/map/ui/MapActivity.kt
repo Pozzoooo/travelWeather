@@ -34,6 +34,13 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
+/*
+    todo uma idea eh adicionar aquele botao extra de start activity e ao arrastar e colocar no mapa
+        eu removo ele complementamente depois de utilizado
+    Poderia ficar desabilitado o finish ateh que ele colocar o start no mapa
+    Sera q reposicionar estes botoes na parte do lado da estea, como se fosse uma shelve?
+        Nesse caso nem o botao precisaria aparecer, soh os icones
+*/
 class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 

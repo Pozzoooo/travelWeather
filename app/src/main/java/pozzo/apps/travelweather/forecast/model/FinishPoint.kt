@@ -7,5 +7,6 @@ import pozzo.apps.travelweather.R
 
 class FinishPoint(title: String?, position: LatLng, onClickLoadUrl: String?) : MapPoint(null, title, position, onClickLoadUrl, true) {
 
+    //todo is there a better way to do it?
     override val icon: BitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.finish_flag)
 }

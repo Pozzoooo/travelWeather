@@ -15,6 +15,7 @@ import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.MapPoint
+import pozzo.apps.travelweather.forecast.model.StartPoint
 import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
@@ -26,7 +27,6 @@ class MapFragment : SupportMapFragment() {
     private var map: GoogleMap? = null
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
-    private val mapPointByMarkerId = HashMap<String, MapPoint>()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -53,8 +53,8 @@ class MapFragment : SupportMapFragment() {
     }
 
     private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
-        val mapPoint = mapPointByMarkerId[marker.id]
-        mapPoint?.onClickLoadUrl?.let { AndroidUtil.openUrl(it, activity) }
+        val mapPoint = marker.tag as MapPoint
+        mapPoint.onClickLoadUrl?.let { AndroidUtil.openUrl(it, activity) }
     }
 
     fun pointMapTo(center: LatLng, animationCallback: AnimationCallbackTrigger? = null) {
@@ -104,16 +104,17 @@ class MapFragment : SupportMapFragment() {
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
         override fun onMarkerDragEnd(marker: Marker) {
-            println("drag ended $marker")
+            //todo maybe I can resolve it better with polymorphism
+            val tag = marker.tag
+            if (tag is StartPoint) {
+                viewModel.setStartPosition(marker.position)
+            } else {
+                viewModel.setFinishPosition(marker.position)
+            }
         }
 
-        override fun onMarkerDragStart(marker: Marker) {
-            println("drag started $marker")
-        }
-
-        override fun onMarkerDrag(marker: Marker) {
-            println("drag $marker")
-        }
+        override fun onMarkerDragStart(marker: Marker) { }
+        override fun onMarkerDrag(marker: Marker) { }
     }
 
     fun addMark(mapPoint: MapPoint) : Marker? {
@@ -125,7 +126,7 @@ class MapFragment : SupportMapFragment() {
                 .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)
                 ?.apply {
-                    mapPointByMarkerId[id] = mapPoint
+                    tag = mapPoint
                     ObjectAnimator.ofFloat(this, "alpha", 0F, 1F)
                             .setDuration(500L).start()
                 }
