@@ -150,6 +150,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.warning.postValue(warning)
     }
 
+    //todo if user starts using it before it actually find it, I need to cancel it or at least
+    //  give some better feedback on whats going on
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
 
@@ -176,11 +178,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    private fun updateRoute() {
+    private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
         showProgress()
 
         routeExecutor.execute({
-            val direction = locationBusiness.getDirections(startPosition.value, finishPosition.value)
+            val direction = locationBusiness.getDirections(startPosition, finishPosition)
             if (direction?.isEmpty() == false) {
                 setDirectionLine(direction)
                 addMapPoints(filterDirectionToWeatherPoints(direction))
@@ -289,7 +291,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             }
         })
 
-        updateRoute()
+        updateRoute(startPosition.value!!, finishPosition)
     }
 
     fun setStartPosition(startPosition: LatLng?) {
