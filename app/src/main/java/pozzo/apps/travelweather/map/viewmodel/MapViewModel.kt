@@ -279,6 +279,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    //todo quando atualizar a rota preciso limpar a tela, isso talvez jah ajude na questao das bandeira perdidas na tela
     private fun createFinishPoint(finishPosition: LatLng) {
         addWeatherExecutor.execute({
             val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
@@ -294,6 +295,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         updateRoute(startPosition.value!!, finishPosition)
     }
 
+    //todo preciso que ele possa ser setada e atualizar a rota automaticamente (quando ele arrasta a bandeira)
     fun setStartPosition(startPosition: LatLng?) {
         this.startPosition.postValue(startPosition)
 
