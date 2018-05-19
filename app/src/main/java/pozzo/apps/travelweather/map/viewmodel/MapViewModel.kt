@@ -20,10 +20,7 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
-import pozzo.apps.travelweather.forecast.model.FinishPoint
-import pozzo.apps.travelweather.forecast.model.MapPoint
-import pozzo.apps.travelweather.forecast.model.StartPoint
-import pozzo.apps.travelweather.forecast.model.Weather
+import pozzo.apps.travelweather.forecast.model.*
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
@@ -49,11 +46,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private var dragStart = 0L
 
-    //todo is it possibility to hide all this observers and expose an observe method? So I can make them mutable only inside this class
-    val startPosition = MutableLiveData<LatLng?>()
-    val finishPosition = MutableLiveData<LatLng?>()
-    val directionLine = MutableLiveData<PolylineOptions>()
-    val mapPoints = MutableLiveData<List<MapPoint>>()
+    val route = MutableLiveData<Route>()
+
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
     val actionRequest = MutableLiveData<ActionRequest>()
@@ -73,6 +67,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
+        route.value = Route()
         registerObservers()
     }
 
@@ -86,7 +81,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
-        if (startPosition.value == null)
+        if (route.value?.startPoint == null)
             setCurrentLocationAsStart(lifecycleOwner)
     }
 
@@ -178,27 +173,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
-        showProgress()
-
-        routeExecutor.execute({
-            val direction = locationBusiness.getDirections(startPosition, finishPosition)
-            if (direction?.isEmpty() == false) {
-                setDirectionLine(direction)
-                addMapPoints(filterDirectionToWeatherPoints(direction))
-            } else {
-                this.error.postValue(Error.CANT_FIND_ROUTE)
-            }
-        })
-    }
-
-    private fun setDirectionLine(direction: List<LatLng>) {
-        val rectLine = PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
-        this.directionLine.postValue(rectLine)
-    }
-
-    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : Set<LatLng> {
-        val filteredPoints = HashSet<LatLng>()
+    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
+        val filteredPoints = ArrayList<LatLng>()
         var lastForecast = direction[0]
         for (i in 1 until direction.size - 1) {
             val latLng = direction[i]
@@ -210,23 +186,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
         return filteredPoints
     }
-
-    private fun addMapPoints(weatherPoints: Set<LatLng>) {
-        showProgress()
-        addWeatherExecutor.execute({
-            val filteredPoints = removeAlreadyUsedLatLng(weatherPoints)
-            val weathers = requestWeathersFor(filteredPoints)
-            val mapPoints = parseWeatherIntoMapPoints(weathers)
-            addMapPoints(mapPoints)
-            hideProgress()
-        })
-    }
-
-    private fun removeAlreadyUsedLatLng(weatherPoints: Set<LatLng>) : List<LatLng> =
-        weatherPoints.filter { !containsLatLng(it) }
-
-    private fun containsLatLng(latLng: LatLng) : Boolean =
-        mapPoints.value?.firstOrNull { latLng == it.position } != null
 
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
         val weathers = ArrayList<Weather>()
@@ -263,23 +222,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return null
     }
 
-    private fun addMapPoints(mapPoints: ArrayList<MapPoint>) {
-        val currentWeathers = this.mapPoints.value
-        if (currentWeathers?.isEmpty() == false)
-            mapPoints.addAll(currentWeathers)
-
-        this.mapPoints.postValue(mapPoints)
-    }
-
     fun setFinishPosition(finishPosition: LatLng?) {
-        this.finishPosition.postValue(finishPosition)
-
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
+        } else {
+            route.value = Route(startPoint = route.value!!.startPoint)
         }
     }
 
-    //todo quando atualizar a rota preciso limpar a tela, isso talvez jah ajude na questao das bandeira perdidas na tela
     private fun createFinishPoint(finishPosition: LatLng) {
         addWeatherExecutor.execute({
             val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
@@ -288,19 +238,52 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 val selectedDay = preferencesBusiness.getSelectedDay()
                 val forecast = weather.getForecast(selectedDay)
                 val mapPoint = FinishPoint(forecast.text, weather.latLng, weather.url)
-                addMapPoints(arrayListOf<MapPoint>(mapPoint))
+                val route = Route(route.value, finishPoint = mapPoint)
+                this.route.postValue(route)
             }
+            updateRoute(route.value!!.startPoint!!.position, finishPosition)
         })
-
-        updateRoute(startPosition.value!!, finishPosition)
     }
 
-    //todo preciso que ele possa ser setada e atualizar a rota automaticamente (quando ele arrasta a bandeira)
-    fun setStartPosition(startPosition: LatLng?) {
-        this.startPosition.postValue(startPosition)
+    private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
+        showProgress()
 
+        routeExecutor.execute({
+            val direction = locationBusiness.getDirections(startPosition, finishPosition)
+            if (direction?.isEmpty() == false) {
+                setDirectionLine(direction)
+                setMapPoints(filterDirectionToWeatherPoints(direction))
+            } else {
+                this.error.postValue(Error.CANT_FIND_ROUTE)
+            }
+        })
+    }
+
+    private fun setDirectionLine(direction: List<LatLng>) {
+        val rectLine = PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
+        route.postValue(Route(route.value, polyline = rectLine))
+    }
+
+    private fun setMapPoints(weatherPoints: List<LatLng>) {
+        showProgress()
+        addWeatherExecutor.execute({
+            val weathers = requestWeathersFor(weatherPoints)
+            val mapPoints = parseWeatherIntoMapPoints(weathers)
+            setMapPoints(mapPoints)
+            hideProgress()
+        })
+    }
+
+    private fun setMapPoints(mapPoints: ArrayList<MapPoint>) {
+        route.postValue(Route(route.value, mapPoints = mapPoints))
+    }
+
+    fun setStartPosition(startPosition: LatLng?) {
+        //todo need to point map at this point
         if (startPosition != null) {
             createStartPoint(startPosition)
+        } else {
+            route.value = Route()
         }
     }
 
@@ -312,16 +295,18 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 val selectedDay = preferencesBusiness.getSelectedDay()
                 val forecast = weather.getForecast(selectedDay)
                 val mapPoint = StartPoint(forecast.text, weather.latLng, weather.url)
-                addMapPoints(arrayListOf<MapPoint>(mapPoint))
+                val route = Route(route.value, mapPoint)
+                this.route.postValue(route)
             }
+            route.value!!.finishPoint?.let { updateRoute(startPosition, it.position) }
         })
     }
 
     fun back() {
         when {
             isShowingTopBar.value == true -> hideTopBar()
-            finishPosition.value != null -> setFinishPosition(null)
-            startPosition.value != null -> setStartPosition(null)
+            route.value?.finishPoint != null -> setFinishPosition(null)
+            route.value?.startPoint != null -> setStartPosition(null)
             else -> shouldFinish.postValue(true)
         }
     }
@@ -345,15 +330,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun getRouteBounds() : LatLngBounds? {
         return if (isFullRouteSelected()) {
-            LatLngBounds.builder()
-                    .include(startPosition.value)
-                    .include(finishPosition.value).build()
+            val route = route.value as Route
+            LatLngBounds.builder()//todo need to check how nullable are they in here
+                    .include(route.startPoint?.position)
+                    .include(route.finishPoint?.position).build()
         } else {
             null
         }
     }
 
-    private fun isFullRouteSelected() : Boolean = startPosition.value != null && finishPosition.value != null
+    private fun isFullRouteSelected() : Boolean = route.value!!.startPoint != null && route.value!!.finishPoint != null
 
     fun finishFlagDragActionStarted() {
         mapAnalytics.sendDragFinishEvent()
@@ -369,7 +355,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         hideTopBar()
         if (!NetworkUtil.isNetworkAvailable(getApplication())) {
             error.postValue(Error.NO_CONNECTION)
-        } else if (startPosition.value == null) {
+        } else if (route.value!!.startPoint == null) {
             setStartPosition(latLng)
         } else {
             setFinishPosition(latLng)

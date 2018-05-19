@@ -16,7 +16,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import pozzo.apps.tools.AndroidUtil
@@ -27,6 +26,7 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.MapPoint
+import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
@@ -110,11 +110,9 @@ class MapActivity : BaseActivity() {
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
-        viewModel.startPosition.observe(this, Observer { startPositionChanged(it) })
-        viewModel.finishPosition.observe(this, Observer { finishPositionChanged(it) })
+        viewModel.route.observe(this, Observer { updateRoute(it as Route) })
+
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
-        viewModel.directionLine.observe(this, Observer { if (it != null) mapFragment.plotRoute(it) })
-        viewModel.mapPoints.observe(this, Observer { if (it != null) showWeathers(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
         viewModel.error.observe(this, Observer { if (it != null) showError(it) })
@@ -134,17 +132,19 @@ class MapActivity : BaseActivity() {
         })
     }
 
-    private fun startPositionChanged(startPosition: LatLng?) {
-        clearMap()
-        if (startPosition != null) mapFragment.pointMapTo(startPosition)
+    private fun updateRoute(route: Route) {
+        fitMap(route)
+        route.polyline?.let { mapFragment.plotRoute(it) }
+        showMapPoints(route)
+        route.startPoint?.let { addMark(route.startPoint) }
+        route.finishPoint?.let { addMark(route.finishPoint)  }
     }
 
-    private fun finishPositionChanged(finishPosition: LatLng?) {
+    private fun fitMap(route: Route) {
         clearMap()
         val routeBounds = viewModel.getRouteBounds()
-        if (routeBounds != null) {
-            mapFragment.pointMapTo(routeBounds, animationCallback)
-        }
+        if (routeBounds != null) mapFragment.pointMapTo(routeBounds, animationCallback)
+        else if (route.startPoint != null) mapFragment.pointMapTo(route.startPoint.position)
     }
 
     private fun clearMap() {
@@ -166,8 +166,8 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    private fun showWeathers(weathers: List<MapPoint>) {
-        weathers.forEach {
+    private fun showMapPoints(route: Route) {
+        route.mapPoints.forEach {
             addMark(it)
         }
     }
@@ -191,8 +191,9 @@ class MapActivity : BaseActivity() {
     }
 
     public override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable("startPosition", viewModel.startPosition.value)
-        outState?.putParcelable("finishPosition", viewModel.finishPosition.value)
+        //todo need to save the object type
+//        outState?.putParcelable("startPosition", viewModel.startPosition.value)
+//        outState?.putParcelable("finishPosition", viewModel.finishPosition.value)
 
         super.onSaveInstanceState(outState)
     }
