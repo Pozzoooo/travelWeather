@@ -126,8 +126,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.warning.postValue(warning)
     }
 
-    //todo if user starts using it before it actually find it, I need to cancel it or at least
-    //  give some better feedback on whats going on
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
 
@@ -333,17 +331,17 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun hideTopBar() = isShowingTopBar.postValue(false)
 
     fun getRouteBounds() : LatLngBounds? {
-        return if (isFullRouteSelected()) {
-            val route = route.value as Route
-            LatLngBounds.builder()//todo need to check how nullable are they in here
-                    .include(route.startPoint?.position)
-                    .include(route.finishPoint?.position).build()
+        val startPoint = route.value!!.startPoint
+        val finishPoint = route.value!!.finishPoint
+
+        return if (finishPoint != null && startPoint != null) {
+            LatLngBounds.builder()
+                    .include(startPoint.position)
+                    .include(finishPoint.position).build()
         } else {
             null
         }
     }
-
-    private fun isFullRouteSelected() : Boolean = route.value!!.startPoint != null && route.value!!.finishPoint != null
 
     fun finishFlagDragActionStarted() {
         mapAnalytics.sendDragFinishEvent()
