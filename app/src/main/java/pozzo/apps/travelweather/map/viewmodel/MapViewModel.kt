@@ -34,6 +34,7 @@ import java.io.IOException
 import java.net.UnknownHostException
 import java.util.concurrent.Executors
 
+//todo seems like my linkage to yahoo is not working anymore
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
@@ -57,27 +58,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val isShowingTopBar = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
-    //todo I don't really need this observer either, should create a "postError()"
-    private val errorObserver = Observer<Error?> {
-        if (it != null)
-            mapAnalytics.sendErrorMessage(it)
-    }
-
     init {
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
         route.value = Route()
-        registerObservers()
-    }
-
-    private fun registerObservers() {
-        error.observeForever(errorObserver)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        error.removeObserver(errorObserver)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -159,10 +144,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             if (location != null) {
                 setStartPosition(LatLng(location.latitude, location.longitude))
             } else {
-                error.postValue(Error.CANT_FIND_CURRENT_LOCATION)
+                postError(Error.CANT_FIND_CURRENT_LOCATION)
             }
         }
         locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
+    }
+
+    private fun postError(error: Error) {
+        this.error.postValue(error)
+        mapAnalytics.sendErrorMessage(error)
     }
 
     private fun showProgress() {
@@ -210,7 +200,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             try {
                 weathers.add(requestWeatherFor(it))
             } catch (e: UnknownHostException) {
-                this.error.postValue(Error.NO_CONNECTION)
+                postError(Error.NO_CONNECTION)
             } catch (e: Exception) {
                 Mint.logException(e)
             }
@@ -273,7 +263,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 val mapPoints = toMapPoints(filterDirectionToWeatherPoints(direction))
                 route.postValue(Route(route.value, polyline = directionLine, mapPoints = mapPoints))
             } else {
-                this.error.postValue(Error.CANT_FIND_ROUTE)
+                postError(Error.CANT_FIND_ROUTE)
             }
             hideProgress()
         })
@@ -363,7 +353,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun addPoint(latLng: LatLng) {
         hideTopBar()
         if (!NetworkUtil.isNetworkAvailable(getApplication())) {
-            error.postValue(Error.NO_CONNECTION)
+            postError(Error.NO_CONNECTION)
         } else if (route.value!!.startPoint == null) {
             setStartPosition(latLng)
         } else {
@@ -378,9 +368,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             if (addressLatLng != null)
                 addPoint(addressLatLng)
             else
-                error.postValue(Error.ADDRESS_NOT_FOUND)
+                postError(Error.ADDRESS_NOT_FOUND)
         } catch (e: IOException) {
-            error.postValue(Error.NO_CONNECTION)
+            postError(Error.NO_CONNECTION)
         }
     }
 
