@@ -6,6 +6,8 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastClientYahoo
 import pozzo.apps.travelweather.map.model.Address
 import pozzo.apps.travelweather.forecast.model.Weather
 
+//todo I need to remove yahoo dependency, probably a good idea is to create an dependency inversion
+//  and add a generic forecast object
 class ForecastBusiness {
     companion object {
         const val MAX_RETRIES = 3

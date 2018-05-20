@@ -46,6 +46,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val addWeatherExecutor = Executors.newSingleThreadExecutor()
 
     private var dragStart = 0L
+    private val locationLiveData = LocationLiveData(getApplication())
+    private var locationObserver: Observer<Location>? = null
 
     val route = MutableLiveData<Route>()
 
@@ -67,17 +69,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
         if (route.value?.startPoint == null)
-            setCurrentLocationAsStart(lifecycleOwner)
+            setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
     }
 
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
-        setCurrentLocationAsStart(lifecycleOwner)
-        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
-    }
-
-    fun setCurrentLocationAsStart(lifecycleOwner: LifecycleOwner) {
-        setFinishPosition(null)
         setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
+        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
     }
 
     private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
@@ -135,12 +132,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
         showProgress()
 
-        val locationLiveData = LocationLiveData(getApplication())
-        var locationObserver : Observer<Location>? = null
-        locationObserver = Observer { location ->
-            locationLiveData.removeObserver(locationObserver!!)
-
-            hideProgress()
+        val locationObserver = Observer<Location> { location ->
+            removeLocationObserver()
             if (location != null) {
                 setStartPosition(LatLng(location.latitude, location.longitude))
             } else {
@@ -148,6 +141,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             }
         }
         locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
+        this.locationObserver = locationObserver
+    }
+
+    private fun removeLocationObserver() {
+        hideProgress()
+        locationObserver?.let {
+            locationLiveData.removeObserver(it)
+        }
     }
 
     private fun postError(error: Error) {
@@ -230,6 +231,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setFinishPosition(finishPosition: LatLng?) {
+        removeLocationObserver()
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
         } else {
@@ -282,6 +284,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         //  talvez eu deva ter um observer apenas para onde o mapa esta apontando?
         //  ai eu controlaria ambos os momento ao adicionar o start e o finish
         //      Seria isso mesmo responsabilidade da ViewModel ou da view?
+        removeLocationObserver()
         if (startPosition != null) {
             createStartPoint(startPosition)
         } else {

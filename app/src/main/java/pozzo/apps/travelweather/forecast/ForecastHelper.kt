@@ -14,7 +14,8 @@ import pozzo.apps.travelweather.forecast.model.Forecast
  * To help us on reusability, as I am not sure exactly where to place it =/.
  */
 object ForecastHelper {
-    private const val SUN = "sunny"
+    private const val SUNNY = "sunny"
+    private const val MOSTLY_SUNNY = "mostly sunny"
     private const val THUNDERSTORMS = "thunderstorms"
     private const val SCATTERED_THUNDERSTORMS = "scattered thunderstorms"
     private const val RAIN = "rain"
@@ -32,7 +33,8 @@ object ForecastHelper {
     init {
         //todo bring more icons for the duplicated itens
         iconIdMap = mapOf(
-                Pair(SUN, R.drawable.sun),
+                Pair(SUNNY, R.drawable.sun),
+                Pair(MOSTLY_SUNNY, R.drawable.sun),
                 Pair(THUNDERSTORMS, R.drawable.thunderstorm),
                 Pair(SCATTERED_THUNDERSTORMS, R.drawable.thunderstorm),
                 Pair(RAIN, R.drawable.heavy_rain),
