@@ -5,4 +5,4 @@ import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.R
 
 class FinishPoint(title: String?, position: LatLng, onClickLoadUrl: String?) :
-        MapPoint(BitmapDescriptorFactory.fromResource(R.drawable.finish_flag), title, position, onClickLoadUrl, true)
+        MapPoint(BitmapDescriptorFactory.fromResource(R.drawable.finish_flag), title, position, onClickLoadUrl, true, false)

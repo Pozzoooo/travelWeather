@@ -127,8 +127,9 @@ class MapFragment : SupportMapFragment() {
         return map?.addMarker(markerOptions)
                 ?.apply {
                     tag = mapPoint
-                    ObjectAnimator.ofFloat(this, "alpha", 0F, 1F)
-                            .setDuration(500L).start()
+                    if (mapPoint.shouldFadeIn)
+                        ObjectAnimator.ofFloat(this, "alpha", 0F, 1F)
+                                .setDuration(500L).start()
                 }
     }
 

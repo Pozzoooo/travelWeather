@@ -173,6 +173,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
+    //todo requires redability improvements here
     private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
         val filteredPoints = ArrayList<LatLng>()
         val directionSize = direction.size
@@ -250,14 +251,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         addWeatherExecutor.execute({
             val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
 
+            val startPoint = route.value!!.startPoint!!
             if (weather?.address != null) {
                 val selectedDay = preferencesBusiness.getSelectedDay()
                 val forecast = weather.getForecast(selectedDay)
                 val mapPoint = FinishPoint(forecast.text, weather.latLng, weather.url)
-                val route = Route(route.value, finishPoint = mapPoint)
+                val route = Route(startPoint = startPoint, finishPoint = mapPoint)
                 this.route.postValue(route)
             }
-            updateRoute(route.value!!.startPoint!!.position, finishPosition)
+            updateRoute(startPoint.position, finishPosition)
         })
     }
 
@@ -267,31 +269,22 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         routeExecutor.execute({
             val direction = locationBusiness.getDirections(startPosition, finishPosition)
             if (direction?.isEmpty() == false) {
-                setDirectionLine(direction)
-                setMapPoints(filterDirectionToWeatherPoints(direction))
+                val directionLine = setDirectionLine(direction)
+                val mapPoints = toMapPoints(filterDirectionToWeatherPoints(direction))
+                route.postValue(Route(route.value, polyline = directionLine, mapPoints = mapPoints))
             } else {
                 this.error.postValue(Error.CANT_FIND_ROUTE)
             }
-        })
-    }
-
-    private fun setDirectionLine(direction: List<LatLng>) {
-        val rectLine = PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
-        route.postValue(Route(route.value, polyline = rectLine))
-    }
-
-    private fun setMapPoints(weatherPoints: List<LatLng>) {
-        showProgress()
-        addWeatherExecutor.execute({
-            val weathers = requestWeathersFor(weatherPoints)
-            val mapPoints = parseWeatherIntoMapPoints(weathers)
-            setMapPoints(mapPoints)
             hideProgress()
         })
     }
 
-    private fun setMapPoints(mapPoints: ArrayList<MapPoint>) {
-        route.postValue(Route(route.value, mapPoints = mapPoints))
+    private fun setDirectionLine(direction: List<LatLng>) : PolylineOptions =
+            PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
+
+    private fun toMapPoints(weatherPoints: List<LatLng>) : List<MapPoint> {
+        val weathers = requestWeathersFor(weatherPoints)
+        return parseWeatherIntoMapPoints(weathers)
     }
 
     fun setStartPosition(startPosition: LatLng?) {

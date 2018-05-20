@@ -7,4 +7,5 @@ open class MapPoint(open val icon: BitmapDescriptor?,
                     open val title: String?,
                     open val position: LatLng,
                     open val onClickLoadUrl: String?,
-                    val isDraggable: Boolean = false)
+                    val isDraggable: Boolean = false,
+                    val shouldFadeIn: Boolean = true)
