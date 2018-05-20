@@ -34,7 +34,6 @@ import java.io.IOException
 import java.net.UnknownHostException
 import java.util.concurrent.Executors
 
-//todo seems like my linkage to yahoo is not working anymore
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()

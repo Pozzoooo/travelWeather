@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.forecast.yahoo
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.splunk.mint.Mint
@@ -87,12 +88,22 @@ class ForecastClientYahoo : ForecastClient {
 
             val weather = Weather()
             weather.setForecasts(forecasts)
-            weather.url = item.get("link").asString
+            weather.url = getLink(item)
             return weather
         } catch (e: ClassCastException) {
             //sometime yahoo is sending us a null object, not really sure why, but all we can do for
             //  now is ignore it and keep on going
             return null
+        }
+    }
+
+    private fun getLink(jsonObject: JsonObject) : String {
+        val link = jsonObject.get("link").asString
+        val separatorIndex = link?.indexOf("*") ?: 0
+        return if (separatorIndex > 0) {
+            link.substring(separatorIndex + 1)
+        } else {
+            link
         }
     }
 }
