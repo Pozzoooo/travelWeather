@@ -279,6 +279,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setStartPosition(startPosition: LatLng?) {
         //todo need to point map at this point
+        //  talvez eu deva ter um observer apenas para onde o mapa esta apontando?
+        //  ai eu controlaria ambos os momento ao adicionar o start e o finish
+        //      Seria isso mesmo responsabilidade da ViewModel ou da view?
         if (startPosition != null) {
             createStartPoint(startPosition)
         } else {
