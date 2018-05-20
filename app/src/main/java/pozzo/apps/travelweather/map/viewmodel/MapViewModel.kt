@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.splunk.mint.Mint
 import pozzo.apps.tools.NetworkUtil
+import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
@@ -231,7 +232,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setFinishPosition(finishPosition: LatLng?) {
-        //todo I need to go one step further, and show the flags even without the forecast ready yet
+        //todo there is a crash here, when I try to clear the map route
         cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
                 LatLngBounds.builder()
                     .include(route.value!!.startPoint?.position)
@@ -247,18 +248,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun createFinishPoint(finishPosition: LatLng) {
         val startPoint = route.value!!.startPoint!!
-        addWeatherExecutor.execute({
-            val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
-
-            if (weather?.address != null) {
-                val selectedDay = preferencesBusiness.getSelectedDay()
-                val forecast = weather.getForecast(selectedDay)
-                val mapPoint = FinishPoint(forecast.text, weather.latLng, weather.url)
-                val route = Route(startPoint = startPoint, finishPoint = mapPoint)
-                this.route.postValue(route)
-            }
-            updateRoute(startPoint.position, finishPosition)
-        })
+        val mapPoint = FinishPoint(getApplication<App>().resources, finishPosition)
+        val route = Route(startPoint = startPoint, finishPoint = mapPoint)
+        this.route.postValue(route)
+        updateRoute(startPoint.position, finishPosition)
     }
 
     private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
@@ -286,6 +279,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setStartPosition(startPosition: LatLng?) {
+        //todo should camera state be parte of the Route?
         cameraState.postValue(CameraUpdateFactory.newLatLngZoom(startPosition, 8f))
         removeLocationObserver()
         if (startPosition != null) {
@@ -296,18 +290,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun createStartPoint(startPosition: LatLng) {
-        addWeatherExecutor.execute({
-            val weather = requestWeathersFor(listOf(startPosition)).getOrNull(0)
-
-            if (weather?.address != null) {
-                val selectedDay = preferencesBusiness.getSelectedDay()
-                val forecast = weather.getForecast(selectedDay)
-                val mapPoint = StartPoint(forecast.text, weather.latLng, weather.url)
-                val route = Route(route.value, mapPoint)
-                this.route.postValue(route)
-            }
-            route.value!!.finishPoint?.let { updateRoute(startPosition, it.position) }
-        })
+        val finishPoint = this.route.value!!.finishPoint
+        val mapPoint = StartPoint(getApplication<App>().resources, startPosition)
+        val route = Route(startPoint = mapPoint, finishPoint = finishPoint)
+        this.route.postValue(route)
+        finishPoint?.let { updateRoute(startPosition, it.position) }
     }
 
     fun back() {

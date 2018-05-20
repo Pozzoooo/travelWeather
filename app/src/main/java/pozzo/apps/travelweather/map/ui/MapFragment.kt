@@ -62,8 +62,7 @@ class MapFragment : SupportMapFragment() {
         try {
             map?.animateCamera(cameraUpdate)
         } catch (e: IllegalStateException) {
-            e.printStackTrace()
-//            Mint.logException(e)
+            Mint.logException(e)
         }
     }
 
