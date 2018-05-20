@@ -10,13 +10,14 @@ import android.view.DragEvent
 import android.view.View
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.StartPoint
-import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 class MapFragment : SupportMapFragment() {
@@ -57,16 +58,12 @@ class MapFragment : SupportMapFragment() {
         mapPoint.onClickLoadUrl?.let { AndroidUtil.openUrl(it, activity) }
     }
 
-    fun pointMapTo(center: LatLng, animationCallback: AnimationCallbackTrigger? = null) {
-        map?.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 8f), animationCallback)
-    }
-
-    fun pointMapTo(latLng: LatLngBounds, animationCallback: AnimationCallbackTrigger? = null) {
+    fun updateCamera(cameraUpdate: CameraUpdate) {
         try {
-            animationCallback?.animationStarted()
-            map?.animateCamera(CameraUpdateFactory.newLatLngBounds(latLng, 70), ANIM_ROUTE_TIME, animationCallback)
+            map?.animateCamera(cameraUpdate)
         } catch (e: IllegalStateException) {
-            Mint.logException(e)
+            e.printStackTrace()
+//            Mint.logException(e)
         }
     }
 

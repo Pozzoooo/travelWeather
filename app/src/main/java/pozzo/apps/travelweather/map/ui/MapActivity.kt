@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import pozzo.apps.tools.AndroidUtil
@@ -27,7 +28,6 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.Route
-import pozzo.apps.travelweather.map.AnimationCallbackTrigger
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
@@ -45,7 +45,6 @@ class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
     private lateinit var mainThread: Handler
-    private lateinit var animationCallback: AnimationCallbackTrigger
 
     private lateinit var mapFragment: MapFragment
     private lateinit var viewModel: MapViewModel
@@ -80,7 +79,6 @@ class MapActivity : BaseActivity() {
 
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
-        animationCallback = AnimationCallbackTrigger(triggerCheckedShowProgress)
 
         bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
     }
@@ -111,6 +109,7 @@ class MapActivity : BaseActivity() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
         viewModel.route.observe(this, Observer { updateRoute(it as Route) })
+        viewModel.cameraState.observe(this, Observer { it?.let { updateCamera(it) } })
 
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
@@ -133,18 +132,15 @@ class MapActivity : BaseActivity() {
     }
 
     private fun updateRoute(route: Route) {
-        fitMap(route)
+        clearMap()
         route.polyline?.let { mapFragment.plotRoute(it) }
         showMapPoints(route)
         route.startPoint?.let { addMark(route.startPoint) }
         route.finishPoint?.let { addMark(route.finishPoint)  }
     }
 
-    private fun fitMap(route: Route) {
-        clearMap()
-        val routeBounds = viewModel.getRouteBounds()
-        if (routeBounds != null) mapFragment.pointMapTo(routeBounds, animationCallback)
-        else if (route.startPoint != null) mapFragment.pointMapTo(route.startPoint.position)
+    private fun updateCamera(cameraUpdate: CameraUpdate) {
+        mapFragment.updateCamera(cameraUpdate)
     }
 
     private fun clearMap() {
@@ -154,8 +150,7 @@ class MapActivity : BaseActivity() {
 
     private fun progressDialogStateChanged(isShowingProgress: Boolean?) {
         if (isShowingProgress == true) {
-            if (!animationCallback.isAnimating)
-                mainThread.postDelayed(triggerCheckedShowProgress, 200)
+            mainThread.postDelayed(triggerCheckedShowProgress, 200)
         } else
             progressBar.visibility = View.GONE
     }
@@ -182,18 +177,18 @@ class MapActivity : BaseActivity() {
         val observer = view.viewTreeObserver
         observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                val routeBounds = viewModel.getRouteBounds()
-                if (routeBounds != null)
-                    mapFragment.pointMapTo(routeBounds, animationCallback)
+                //todo should I add a lot of lister to just listen after map is ready? why?
+//                val routeBounds = viewModel.getRouteBounds()
+//                if (routeBounds != null)
+//                    mapFragment.updateCamera(routeBounds, animationCallback)
                 view.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
     }
 
     public override fun onSaveInstanceState(outState: Bundle?) {
-        //todo need to save the object type
-//        outState?.putParcelable("startPosition", viewModel.startPosition.value)
-//        outState?.putParcelable("finishPosition", viewModel.finishPosition.value)
+        outState?.putParcelable("startPosition", viewModel.route.value!!.startPoint?.position)
+        outState?.putParcelable("finishPosition", viewModel.route.value!!.finishPoint?.position)
 
         super.onSaveInstanceState(outState)
     }

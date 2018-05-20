@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.support.v4.content.ContextCompat
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
@@ -49,6 +51,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private var locationObserver: Observer<Location>? = null
 
     val route = MutableLiveData<Route>()
+    val cameraState = MutableLiveData<CameraUpdate>()
 
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
@@ -228,6 +231,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setFinishPosition(finishPosition: LatLng?) {
+        //todo I need to go one step further, and show the flags even without the forecast ready yet
+        cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
+                LatLngBounds.builder()
+                    .include(route.value!!.startPoint?.position)
+                    .include(finishPosition).build(),
+                70))
         removeLocationObserver()
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
@@ -237,10 +246,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun createFinishPoint(finishPosition: LatLng) {
+        val startPoint = route.value!!.startPoint!!
         addWeatherExecutor.execute({
             val weather = requestWeathersFor(listOf(finishPosition)).getOrNull(0)
 
-            val startPoint = route.value!!.startPoint!!
             if (weather?.address != null) {
                 val selectedDay = preferencesBusiness.getSelectedDay()
                 val forecast = weather.getForecast(selectedDay)
@@ -277,10 +286,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setStartPosition(startPosition: LatLng?) {
-        //todo need to point map at this point
-        //  talvez eu deva ter um observer apenas para onde o mapa esta apontando?
-        //  ai eu controlaria ambos os momento ao adicionar o start e o finish
-        //      Seria isso mesmo responsabilidade da ViewModel ou da view?
+        cameraState.postValue(CameraUpdateFactory.newLatLngZoom(startPosition, 8f))
         removeLocationObserver()
         if (startPosition != null) {
             createStartPoint(startPosition)
@@ -329,19 +335,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun hideTopBar() = isShowingTopBar.postValue(false)
-
-    fun getRouteBounds() : LatLngBounds? {
-        val startPoint = route.value!!.startPoint
-        val finishPoint = route.value!!.finishPoint
-
-        return if (finishPoint != null && startPoint != null) {
-            LatLngBounds.builder()
-                    .include(startPoint.position)
-                    .include(finishPoint.position).build()
-        } else {
-            null
-        }
-    }
 
     fun finishFlagDragActionStarted() {
         mapAnalytics.sendDragFinishEvent()

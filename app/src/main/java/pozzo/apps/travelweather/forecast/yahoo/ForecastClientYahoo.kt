@@ -43,6 +43,7 @@ class ForecastClientYahoo : ForecastClient {
             address.longitude = coordinates.longitude
             weather.address = address
         }
+        //todo ta meio estranho isso, pq eu to checando logo em cima e forcando aqui??
         return weather!!
     }
 
