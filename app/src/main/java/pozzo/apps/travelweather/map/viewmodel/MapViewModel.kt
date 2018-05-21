@@ -232,18 +232,21 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setFinishPosition(finishPosition: LatLng?) {
-        //todo there is a crash here, when I try to clear the map route
-        cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
-                LatLngBounds.builder()
-                    .include(route.value!!.startPoint?.position)
-                    .include(finishPosition).build(),
-                70))
         removeLocationObserver()
         if (finishPosition != null) {
+            focusOnEntireRoute(finishPosition)
             createFinishPoint(finishPosition)
         } else {
             route.value = Route(startPoint = route.value!!.startPoint)
         }
+    }
+
+    private fun focusOnEntireRoute(finishPosition: LatLng) {
+        cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
+                LatLngBounds.builder()
+                        .include(route.value!!.startPoint?.position)
+                        .include(finishPosition).build(),
+                70))
     }
 
     private fun createFinishPoint(finishPosition: LatLng) {
@@ -280,9 +283,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun setStartPosition(startPosition: LatLng?) {
         //todo should camera state be parte of the Route?
-        cameraState.postValue(CameraUpdateFactory.newLatLngZoom(startPosition, 8f))
         removeLocationObserver()
         if (startPosition != null) {
+            cameraState.postValue(CameraUpdateFactory.newLatLngZoom(startPosition, 8f))
             createStartPoint(startPosition)
         } else {
             route.value = Route()
