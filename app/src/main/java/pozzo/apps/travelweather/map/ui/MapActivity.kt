@@ -26,8 +26,9 @@ import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
-import pozzo.apps.travelweather.forecast.model.MapPoint
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.point.MapPoint
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
@@ -254,6 +255,10 @@ class MapActivity : BaseActivity() {
     }
 
     private fun addMark(mapPoint: MapPoint) {
+        if (mapPoint is WeatherPoint) {//todo how can I improve this?
+            mapPoint.day = preferencesViewModel.selectedDay.value!!
+        }
+
         val marker = mapFragment.addMark(mapPoint)
         if (marker != null) mapMarkerToWeather[marker] = mapPoint
     }

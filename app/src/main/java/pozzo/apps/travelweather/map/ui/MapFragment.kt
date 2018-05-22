@@ -16,15 +16,11 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
-import pozzo.apps.travelweather.forecast.model.MapPoint
-import pozzo.apps.travelweather.forecast.model.StartPoint
+import pozzo.apps.travelweather.forecast.model.point.MapPoint
+import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 class MapFragment : SupportMapFragment() {
-    companion object {
-        private const val ANIM_ROUTE_TIME = 1200
-    }
-
     private var map: GoogleMap? = null
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
@@ -55,7 +51,7 @@ class MapFragment : SupportMapFragment() {
 
     private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
         val mapPoint = marker.tag as MapPoint
-        mapPoint.onClickLoadUrl?.let { AndroidUtil.openUrl(it, activity) }
+        mapPoint.redirectUrl?.let { AndroidUtil.openUrl(it, activity) }
     }
 
     fun updateCamera(cameraUpdate: CameraUpdate) {

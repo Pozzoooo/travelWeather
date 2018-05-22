@@ -1,6 +1,9 @@
 package pozzo.apps.travelweather.forecast.model
 
 import com.google.android.gms.maps.model.PolylineOptions
+import pozzo.apps.travelweather.forecast.model.point.FinishPoint
+import pozzo.apps.travelweather.forecast.model.point.MapPoint
+import pozzo.apps.travelweather.forecast.model.point.StartPoint
 
 //todo ainda seria uma boa fazer um bom refactoring para ajustar toda essa comunicacao q ficou fonfusa
 class Route(

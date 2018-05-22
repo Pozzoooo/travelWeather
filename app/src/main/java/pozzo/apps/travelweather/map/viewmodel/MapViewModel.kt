@@ -24,12 +24,15 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.*
+import pozzo.apps.travelweather.forecast.model.point.FinishPoint
+import pozzo.apps.travelweather.forecast.model.point.MapPoint
+import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
-import pozzo.apps.travelweather.map.business.PreferencesBusiness
 import pozzo.apps.travelweather.map.firebase.MapAnalytics
 import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
@@ -42,10 +45,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
-    private val preferencesBusiness = PreferencesBusiness(application)
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
-    private val addWeatherExecutor = Executors.newSingleThreadExecutor()
 
     private var dragStart = 0L
     private val locationLiveData = LocationLiveData(getApplication())
@@ -222,14 +223,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return mapPoints
     }
 
-    private fun parseWeatherIntoMapPoint(weather: Weather) : MapPoint? {
-        if (weather.address != null) {
-            val selectedDay = preferencesBusiness.getSelectedDay()
-            val forecast = weather.getForecast(selectedDay)
-            return MapPoint(forecast.icon, forecast.text, weather.latLng, weather.url)
-        }
-        return null
-    }
+    private fun parseWeatherIntoMapPoint(weather: Weather) : MapPoint? =
+        if (weather.address != null) WeatherPoint(weather) else null
 
     fun setFinishPosition(finishPosition: LatLng?) {
         removeLocationObserver()

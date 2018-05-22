@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.forecast.model
+package pozzo.apps.travelweather.forecast.model.point
 
 import android.content.res.Resources
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
