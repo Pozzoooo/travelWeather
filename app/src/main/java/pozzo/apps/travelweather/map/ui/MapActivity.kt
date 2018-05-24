@@ -110,7 +110,6 @@ class MapActivity : BaseActivity() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
         viewModel.route.observe(this, Observer { updateRoute(it as Route) })
-        viewModel.cameraState.observe(this, Observer { it?.let { updateCamera(it) } })
 
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
@@ -138,10 +137,6 @@ class MapActivity : BaseActivity() {
         showMapPoints(route)
         route.startPoint?.let { addMark(route.startPoint) }
         route.finishPoint?.let { addMark(route.finishPoint)  }
-    }
-
-    private fun updateCamera(cameraUpdate: CameraUpdate) {
-        mapFragment.updateCamera(cameraUpdate)
     }
 
     private fun clearMap() {
