@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -64,12 +65,13 @@ dependencies {
   implementation 'com.android.support:design:27.1.1'
   implementation "android.arch.lifecycle:runtime:1.1.1"
   implementation "android.arch.lifecycle:extensions:1.1.1"
-  implementation 'com.google.firebase:firebase-core:15.0.2'
+  implementation 'com.google.firebase:firebase-core:16.0.0'
+  implementation "com.google.firebase:firebase-perf:16.0.0"
   implementation 'com.google.android.gms:play-services-maps:15.0.1'
   implementation 'com.google.android.gms:play-services-location:15.0.1'
   kapt "android.arch.lifecycle:compiler:1.1.1"
   //Web requests
-  implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+  implementation 'com.squareup.retrofit2:retrofit:2.4.0'
   implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
   //Mint
   implementation "com.splunk.mint:mint:5.0.0"
