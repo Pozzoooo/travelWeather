@@ -23,7 +23,8 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastHelper
-import pozzo.apps.travelweather.forecast.model.*
+import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -229,19 +230,19 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setFinishPosition(finishPosition: LatLng?) {
         removeLocationObserver()
         if (finishPosition != null) {
-            focusOnEntireRoute(finishPosition)
+            focusOn(finishPosition, route.value!!.startPoint?.position)
             createFinishPoint(finishPosition)
         } else {
             route.value = Route(startPoint = route.value!!.startPoint)
         }
     }
 
-    private fun focusOnEntireRoute(finishPosition: LatLng) {
-        cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
-                LatLngBounds.builder()
-                        .include(route.value!!.startPoint?.position)
-                        .include(finishPosition).build(),
-                70))
+    private fun focusOn(finishPosition: LatLng?, startPosition: LatLng?) {
+        if (finishPosition != null && startPosition != null)
+            cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
+                    LatLngBounds.builder()
+                            .include(startPosition)
+                            .include(finishPosition).build(), 70))
     }
 
     private fun createFinishPoint(finishPosition: LatLng) {
