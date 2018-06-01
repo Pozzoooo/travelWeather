@@ -16,7 +16,8 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import pozzo.apps.tools.AndroidUtil
@@ -136,12 +137,25 @@ class MapActivity : BaseActivity() {
         route.polyline?.let { mapFragment.plotRoute(it) }
         showMapPoints(route)
         route.startPoint?.let { addMark(route.startPoint) }
-        route.finishPoint?.let { addMark(route.finishPoint)  }
+        route.finishPoint?.let { addMark(route.finishPoint) }
+        pointMapToRoute(route)
     }
 
     private fun clearMap() {
         mapMarkerToWeather.clear()
         mapFragment.clearMapOverlay()
+    }
+
+    private fun pointMapToRoute(route: Route) {
+        if (route.hasStartAndFinish()) {
+            mapFragment.updateCamera(
+              CameraUpdateFactory.newLatLngBounds(
+                  LatLngBounds.builder()
+                      .include(route.startPoint!!.position)
+                      .include(route.finishPoint!!.position).build(), 70))
+        } else if (route.startPoint != null) {
+              mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
+        }
     }
 
     private fun progressDialogStateChanged(isShowingProgress: Boolean?) {

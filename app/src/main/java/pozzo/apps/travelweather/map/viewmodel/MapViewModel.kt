@@ -9,10 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.support.v4.content.ContextCompat
-import com.google.android.gms.maps.CameraUpdate
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.splunk.mint.Mint
@@ -55,7 +52,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private var locationObserver: Observer<Location>? = null
 
     val route = MutableLiveData<Route>()
-    val cameraState = MutableLiveData<CameraUpdate>()
 
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
@@ -200,19 +196,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setFinishPosition(finishPosition: LatLng?) {
         removeLocationObserver()
         if (finishPosition != null) {
-            focusOn(finishPosition, route.value!!.startPoint?.position)
             createFinishPoint(finishPosition)
         } else {
             route.value = Route(startPoint = route.value!!.startPoint)
         }
-    }
-
-    private fun focusOn(finishPosition: LatLng?, startPosition: LatLng?) {
-        if (finishPosition != null && startPosition != null)
-            cameraState.postValue(CameraUpdateFactory.newLatLngBounds(
-                    LatLngBounds.builder()
-                            .include(startPosition)
-                            .include(finishPosition).build(), 70))
     }
 
     private fun createFinishPoint(finishPosition: LatLng) {
@@ -248,10 +235,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setStartPosition(startPosition: LatLng?) {
-        //todo should camera state be parte of the Route?
         removeLocationObserver()
         if (startPosition != null) {
-            cameraState.postValue(CameraUpdateFactory.newLatLngZoom(startPosition, 8f))
             createStartPoint(startPosition)
         } else {
             route.value = Route()

@@ -24,4 +24,6 @@ class Route(
         this.polyline = polyline ?: baseRoute?.polyline
         this.mapPoints = mapPoints ?: baseRoute?.mapPoints ?: ArrayList()
     }
+
+  fun hasStartAndFinish() : Boolean = startPoint != null && finishPoint != null
 }

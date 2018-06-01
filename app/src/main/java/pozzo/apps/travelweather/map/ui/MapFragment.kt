@@ -1,7 +1,6 @@
 package pozzo.apps.travelweather.map.ui
 
 import android.animation.ObjectAnimator
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Point
@@ -83,7 +82,6 @@ class MapFragment : SupportMapFragment() {
 
         clearMapOverlay()
         addDragListener()
-        addMapObservers()
 
         mainThread.postDelayed({
             viewModel.onMapReady(this)
@@ -94,10 +92,6 @@ class MapFragment : SupportMapFragment() {
         view?.apply {
             setOnDragListener(draggingFinishFlag)
         } ?: Mint.logException(IllegalStateException("Trying to add drag listener without view"))
-    }
-
-    private fun addMapObservers() {
-        viewModel.cameraState.observe(this, Observer { it?.let { updateCamera(it) } })
     }
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
