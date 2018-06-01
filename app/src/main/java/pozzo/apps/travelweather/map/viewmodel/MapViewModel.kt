@@ -21,8 +21,8 @@ import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
+import pozzo.apps.travelweather.direction.DirectionWeatherFilter
 import pozzo.apps.travelweather.forecast.ForecastBusiness
-import pozzo.apps.travelweather.forecast.ForecastHelper
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
@@ -46,6 +46,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val forecastBusiness = ForecastBusiness()
     private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
+    private val directionWeatherFilter = DirectionWeatherFilter()
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
 
@@ -167,37 +168,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    //todo requires redability improvements here
-    private fun filterDirectionToWeatherPoints(direction: List<LatLng>) : List<LatLng> {
-        val filteredPoints = ArrayList<LatLng>()
-        val directionSize = direction.size
-
-        if (directionSize == 0) {
-            return filteredPoints
-        }
-
-        if (directionSize < 1000) {
-            filteredPoints.add(direction[directionSize / 2])
-            return filteredPoints
-        }
-
-        val firstPoint = direction[350]
-        val lastPoint = direction[directionSize - 350]
-        filteredPoints.add(firstPoint)
-        filteredPoints.add(lastPoint)
-
-        var lastForecast = firstPoint
-        for (i in 500 until directionSize - 500) {
-            val latLng = direction[i]
-            if (i % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-                    && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)) {
-                lastForecast = latLng
-                filteredPoints.add(latLng)
-            }
-        }
-        return filteredPoints
-    }
-
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
         val weathers = ArrayList<Weather>()
         weatherPoints.forEach {
@@ -260,7 +230,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             val direction = locationBusiness.getDirections(startPosition, finishPosition)
             if (direction?.isEmpty() == false) {
                 val directionLine = setDirectionLine(direction)
-                val mapPoints = toMapPoints(filterDirectionToWeatherPoints(direction))
+                val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
                 route.postValue(Route(route.value, polyline = directionLine, mapPoints = mapPoints))
             } else {
                 postError(Error.CANT_FIND_ROUTE)
