@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.map.business
 
 import android.app.Application
 import android.preference.PreferenceManager
+import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.forecast.model.Day
@@ -19,11 +20,10 @@ class PreferencesBusiness(private val application: Application) {
         return Day.getByResourceId(selectedDay)
     }
 
-    //todo what about use the new KTX library here?
     fun setSelectedDay(day: Day) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(application).edit()
-        preferences.putInt(KEY_SELECTED_DAY, day.resourceId).apply()
-        preferences.apply()
+        PreferenceManager.getDefaultSharedPreferences(application).edit {
+            putInt(KEY_SELECTED_DAY, day.resourceId).apply()
+        }
         mapAnalytics.sendDaySelectionChanged(day)
     }
 }

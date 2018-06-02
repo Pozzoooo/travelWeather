@@ -5,13 +5,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion 'android-P'
   buildToolsVersion '27.0.3'
 
   defaultConfig {
     applicationId "pozzo.apps.travelweather"
     minSdkVersion 21
-    targetSdkVersion 27
+    targetSdkVersion 'P'
     versionCode 14
     versionName "1.1.1-SNAPSHOT"
   }
@@ -79,6 +79,7 @@ dependencies {
   implementation 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
   //Kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+  implementation 'androidx.core:core-ktx:1.0.0-alpha1'
 
   testImplementation 'junit:junit:4.12'
 }
