@@ -15,7 +15,7 @@ class ForecastBusiness {
 
     private val forecastClient = ForecastClientYahoo()
 
-    fun from(location: LatLng): Weather {
+    fun from(location: LatLng): Weather? {
         return forecastClient.fromCoordinates(location)
     }
 

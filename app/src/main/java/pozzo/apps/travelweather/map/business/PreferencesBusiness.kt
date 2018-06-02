@@ -13,15 +13,15 @@ class PreferencesBusiness(private val application: Application) {
         private const val KEY_SELECTED_DAY = "selectedDay"
     }
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
+    private val preferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     fun getSelectedDay() : Day {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(application)
         val selectedDay = preferences.getInt(KEY_SELECTED_DAY, R.id.rToday)
         return Day.getByResourceId(selectedDay)
     }
 
     fun setSelectedDay(day: Day) {
-        PreferenceManager.getDefaultSharedPreferences(application).edit {
+        preferences.edit {
             putInt(KEY_SELECTED_DAY, day.resourceId).apply()
         }
         mapAnalytics.sendDaySelectionChanged(day)

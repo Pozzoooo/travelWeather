@@ -168,7 +168,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val weathers = ArrayList<Weather>()
         weatherPoints.forEach {
             try {
-                weathers.add(requestWeatherFor(it))
+                requestWeatherFor(it)?.let { weathers.add(it) }
             } catch (e: UnknownHostException) {
                 postError(Error.NO_CONNECTION)
             } catch (e: Exception) {
@@ -178,7 +178,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return weathers
     }
 
-    private fun requestWeatherFor(weatherPoint: LatLng) : Weather = forecastBusiness.from(weatherPoint)
+    private fun requestWeatherFor(weatherPoint: LatLng) : Weather? = forecastBusiness.from(weatherPoint)
 
     private fun parseWeatherIntoMapPoints(weathers: ArrayList<Weather>) : ArrayList<MapPoint> {
         val mapPoints = ArrayList<MapPoint>()
