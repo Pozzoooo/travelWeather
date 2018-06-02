@@ -15,7 +15,6 @@ import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
 import java.lang.ClassCastException
 import java.lang.RuntimeException
-import java.net.SocketTimeoutException
 
 /**
  * Yahoo forecast api client.
@@ -56,9 +55,6 @@ class ForecastClientYahoo : ForecastClient {
         val response: Response<ResponseBody>
         try {
             response = ApiFactory.instance.yahooWeather.forecast(query).execute()
-        } catch (e: SocketTimeoutException) {
-            //just ignore timeout error, user will miss ons weather spot
-            return null
         } catch (e: RuntimeException) {
             Mint.logException("query", query, e)
             return null

@@ -35,7 +35,6 @@ import pozzo.apps.travelweather.map.firebase.MapAnalytics
 import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
 import java.io.IOException
-import java.net.UnknownHostException
 import java.util.concurrent.Executors
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
@@ -169,8 +168,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         weatherPoints.forEach {
             try {
                 requestWeatherFor(it)?.let { weathers.add(it) }
-            } catch (e: UnknownHostException) {
-                postError(Error.NO_CONNECTION)
+            } catch (e: IOException) {
+                if (error.value == null) postError(Error.NO_CONNECTION)
             } catch (e: Exception) {
                 Mint.logException(e)
             }
