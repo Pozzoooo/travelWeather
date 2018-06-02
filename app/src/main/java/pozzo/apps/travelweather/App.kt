@@ -5,6 +5,10 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
+ * O que acha de parar e diagramar tudo?
+ *  - Sera que isso daria uma visao melhor?
+ *  - Sera que pode me ajudar na manutencao no futuro?
+ *
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.

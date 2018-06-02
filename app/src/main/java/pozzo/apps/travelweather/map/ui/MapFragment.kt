@@ -96,7 +96,6 @@ class MapFragment : SupportMapFragment() {
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
         override fun onMarkerDragEnd(marker: Marker) {
-            //todo maybe I can resolve it better with polymorphism
             val tag = marker.tag
             if (tag is StartPoint) {
                 viewModel.setStartPosition(marker.position)

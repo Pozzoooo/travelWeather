@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.map.ui
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.res.Configuration
 import android.databinding.DataBindingUtil
 import android.os.Build
 import android.os.Bundle
@@ -13,7 +12,6 @@ import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -106,7 +104,6 @@ class MapActivity : BaseActivity() {
         return@OnTouchListener true
     }
 
-    //todo seems like I can organise it better on a more object oriented way, with a single object holding a lot of definitions
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
@@ -177,25 +174,6 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        fitToScreenWhenLayoutIsReady()
-    }
-
-    private fun fitToScreenWhenLayoutIsReady() {
-        val view = findViewById<View>(R.id.vgMain)
-        val observer = view.viewTreeObserver
-        observer.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                //todo should I add a lot of lister to just listen after map is ready? why?
-//                val routeBounds = viewModel.getRouteBounds()
-//                if (routeBounds != null)
-//                    mapFragment.updateCamera(routeBounds, animationCallback)
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-    }
-
     public override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putParcelable("startPosition", viewModel.route.value!!.startPoint?.position)
         outState?.putParcelable("finishPosition", viewModel.route.value!!.finishPoint?.position)
@@ -264,9 +242,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun addMark(mapPoint: MapPoint) {
-        if (mapPoint is WeatherPoint) {//todo how can I improve this?
-            mapPoint.day = preferencesViewModel.selectedDay.value!!
-        }
+        mapPoint.day = preferencesViewModel.selectedDay.value!!
 
         val marker = mapFragment.addMark(mapPoint)
         if (marker != null) mapMarkerToWeather[marker] = mapPoint
