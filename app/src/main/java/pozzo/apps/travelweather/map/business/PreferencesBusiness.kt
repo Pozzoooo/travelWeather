@@ -2,7 +2,6 @@ package pozzo.apps.travelweather.map.business
 
 import android.app.Application
 import android.preference.PreferenceManager
-import androidx.core.content.edit
 import com.google.firebase.analytics.FirebaseAnalytics
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.forecast.model.Day
@@ -21,9 +20,9 @@ class PreferencesBusiness(private val application: Application) {
     }
 
     fun setSelectedDay(day: Day) {
-        preferences.edit {
-            putInt(KEY_SELECTED_DAY, day.resourceId).apply()
-        }
+        val edit = preferences.edit()
+        edit.putInt(KEY_SELECTED_DAY, day.resourceId).apply()
+        edit.apply()
         mapAnalytics.sendDaySelectionChanged(day)
     }
 }
