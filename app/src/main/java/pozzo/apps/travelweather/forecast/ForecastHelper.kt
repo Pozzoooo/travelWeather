@@ -31,18 +31,17 @@ object ForecastHelper {
     private val bitmapCache = HashMap<String?, BitmapDescriptor?>()
 
     init {
-        //todo bring more icons for the duplicated itens
         iconIdMap = mapOf(
                 Pair(SUNNY, R.drawable.sun),
-                Pair(MOSTLY_SUNNY, R.drawable.sun),
+                Pair(MOSTLY_SUNNY, R.drawable.mostly_sunny),
                 Pair(THUNDERSTORMS, R.drawable.thunderstorm),
-                Pair(SCATTERED_THUNDERSTORMS, R.drawable.thunderstorm),
-                Pair(RAIN, R.drawable.heavy_rain),
-                Pair(SCATTERED_SHOWERS, R.drawable.rain),
-                Pair(SHOWERS, R.drawable.rain),
-                Pair(PARTLY_CLOUDY, R.drawable.partly_cloudy),
+                Pair(SCATTERED_THUNDERSTORMS, R.drawable.thunderstorms_scattered),
+                Pair(RAIN, R.drawable.rain),
+                Pair(SHOWERS, R.drawable.showers),
+                Pair(SCATTERED_SHOWERS, R.drawable.rain_scattered),
+                Pair(PARTLY_CLOUDY, R.drawable.mostly_sunny),
                 Pair(CLOUDY, R.drawable.cloudy),
-                Pair(MOSTLY_CLOUDY, R.drawable.cloudy),
+                Pair(MOSTLY_CLOUDY, R.drawable.mostly_cloudy),
                 Pair(SNOW, R.drawable.snow),
                 Pair(RAIN_SNOW, R.drawable.snow))
     }
