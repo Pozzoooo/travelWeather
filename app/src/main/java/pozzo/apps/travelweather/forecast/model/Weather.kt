@@ -29,6 +29,6 @@ class Weather {
     }
 
     override fun hashCode(): Int {
-        return if (address != null) address!!.hashCode() else 0
+        return address?.hashCode() ?: 0
     }
 }

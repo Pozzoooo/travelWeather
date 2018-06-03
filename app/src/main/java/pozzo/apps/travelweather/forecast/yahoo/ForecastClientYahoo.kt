@@ -26,7 +26,7 @@ class ForecastClientYahoo : ForecastClient {
      */
     override fun fromAddress(address: String): Weather? {
         //item = condition + forecast
-        //and u='c' - Serve para pegar temperatura em celsius
+        //and u='c' - Celsius temperature
         val query = "select item from weather.forecast where woeid in " +
                 "(select woeid from geo.places(1) where text=\"" + address + "\") and u='c'"
         return requestWeather(query)
@@ -36,15 +36,12 @@ class ForecastClientYahoo : ForecastClient {
         val query = "select item from weather.forecast where woeid in " +
                 "(select woeid from geo.places where " +
                 "text=\"(" + coordinates.latitude + "," + coordinates.longitude + ")\") and u='c'"
-        val weather = requestWeather(query)
-        if (weather != null) {
+        return requestWeather(query)?.apply {
             val address = Address()
             address.latitude = coordinates.latitude
             address.longitude = coordinates.longitude
-            weather.address = address
-            return weather
+            this.address = address
         }
-        return null
     }
 
     private fun requestWeather(query: String) : Weather? {
