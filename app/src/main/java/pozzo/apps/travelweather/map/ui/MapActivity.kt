@@ -27,20 +27,13 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
-import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
+import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
-/*
-    todo uma idea eh adicionar aquele botao extra de start activity e ao arrastar e colocar no mapa
-        eu removo ele complementamente depois de utilizado
-    Poderia ficar desabilitado o finish ateh que ele colocar o start no mapa
-    Sera q reposicionar estes botoes na parte do lado da estea, como se fosse uma shelve?
-        Nesse caso nem o botao precisaria aparecer, soh os icones
-*/
 class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
@@ -81,6 +74,7 @@ class MapActivity : BaseActivity() {
         eSearch.setOnEditorActionListener(onSearchGo)
 
       startFlag.setOnTouchListener(startDraggingFinishFlag)
+      finishFlag.setOnTouchListener(startDraggingFinishFlag)
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -92,7 +86,9 @@ class MapActivity : BaseActivity() {
     }
 
     private val startDraggingFinishFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
-        val flag = resources.getDrawable(R.drawable.finish_flag, null)
+        view.visibility = View.INVISIBLE
+        val flagResource = if (view.id == R.id.startFlag) R.drawable.start_flag else R.drawable.finish_flag
+        val flag = resources.getDrawable(flagResource, null)
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
               startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
@@ -133,8 +129,8 @@ class MapActivity : BaseActivity() {
         clearMap()
         route.polyline?.let { mapFragment.plotRoute(it) }
         showMapPoints(route)
-        route.startPoint?.let { addMark(route.startPoint) }
-        route.finishPoint?.let { addMark(route.finishPoint) }
+        setStartPoint(route.startPoint)
+        setFinishPoint(route)
         pointMapToRoute(route)
     }
 
@@ -142,6 +138,27 @@ class MapActivity : BaseActivity() {
         mapMarkerToWeather.clear()
         mapFragment.clearMapOverlay()
     }
+
+    private fun setStartPoint(startPoint: StartPoint?) {
+      if (startPoint != null) {
+        addMark(startPoint)
+        startFlag.visibility = View.INVISIBLE
+      } else {
+        startFlag.visibility = View.VISIBLE
+      }
+    }
+
+  private fun setFinishPoint(route: Route) {
+    val finishPoint = route.finishPoint
+    if (finishPoint != null) {
+      addMark(finishPoint)
+      finishFlag.visibility = View.INVISIBLE
+    } else {
+      finishFlag.visibility = View.VISIBLE
+      finishFlag.alpha = if (route.startPoint == null) .4F else 1F
+      finishFlag.isEnabled = route.startPoint != null
+    }
+  }
 
     private fun pointMapToRoute(route: Route) {
         if (route.hasStartAndFinish()) {

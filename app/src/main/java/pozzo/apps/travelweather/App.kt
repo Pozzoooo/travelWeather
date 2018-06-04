@@ -11,6 +11,7 @@ import com.splunk.mint.Mint
  *
  * What about a tutorial on the menu? quick one
  *
+ * Tutorial
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
@@ -18,6 +19,7 @@ import com.splunk.mint.Mint
  * A questao do horario de saida e chegada, como fica?
  * Outra fonte para busca de previsao do tempo
  * Unit test :)
+ * Animar as flags voltando para a lateral quando apertar o clear
  */
 class App : Application() {
 

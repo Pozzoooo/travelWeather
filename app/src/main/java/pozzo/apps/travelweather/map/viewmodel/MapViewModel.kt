@@ -281,7 +281,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         dragStart = System.currentTimeMillis()
     }
 
-    fun finishFlagDragActionFinished(latLng: LatLng) {
+    fun flagDragActionFinished(latLng: LatLng) {
         addPoint(latLng)
         mapAnalytics.sendDragDurationEvent("finishFlag", System.currentTimeMillis() - dragStart)
     }
