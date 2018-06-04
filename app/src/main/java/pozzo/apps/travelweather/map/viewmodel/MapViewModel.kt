@@ -50,7 +50,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationLiveData = LocationLiveData(getApplication())
     private var locationObserver: Observer<Location>? = null
 
-    val route = MutableLiveData<Route>()
+    private var route = Route()
+    val routeData = MutableLiveData<Route>()
 
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
@@ -65,11 +66,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
-        route.value = Route()
+        routeData.value = route
+    }
+
+    private fun setRoute(route: Route) {
+      this.route = route
+      routeData.postValue(route)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
-        if (route.value?.startPoint == null)
+        if (route.startPoint == null)
             setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
     }
 
@@ -197,15 +203,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
         } else {
-            route.value = Route(startPoint = route.value!!.startPoint)
+            setRoute(Route(startPoint = route.startPoint))
         }
     }
 
     private fun createFinishPoint(finishPosition: LatLng) {
-        val startPoint = route.value!!.startPoint!!
+        val startPoint = route.startPoint!!
         val mapPoint = FinishPoint(getApplication<App>().resources, finishPosition)
-        val route = Route(startPoint = startPoint, finishPoint = mapPoint)
-        this.route.postValue(route)
+        setRoute(Route(startPoint = startPoint, finishPoint = mapPoint))
         updateRoute(startPoint.position, finishPosition)
     }
 
@@ -217,7 +222,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             if (direction?.isEmpty() == false) {
                 val directionLine = setDirectionLine(direction)
                 val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
-                route.postValue(Route(route.value, polyline = directionLine, mapPoints = mapPoints))
+                setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
             } else {
                 postError(Error.CANT_FIND_ROUTE)
             }
@@ -238,23 +243,23 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (startPosition != null) {
             createStartPoint(startPosition)
         } else {
-            route.value = Route()
+          setRoute(Route())
         }
     }
 
     private fun createStartPoint(startPosition: LatLng) {
-        val finishPoint = this.route.value!!.finishPoint
+        val finishPoint = route.finishPoint
         val mapPoint = StartPoint(getApplication<App>().resources, startPosition)
         val route = Route(startPoint = mapPoint, finishPoint = finishPoint)
-        this.route.postValue(route)
+        setRoute(route)
         finishPoint?.let { updateRoute(startPosition, it.position) }
     }
 
     fun back() {
         when {
             isShowingTopBar.value == true -> hideTopBar()
-            route.value?.finishPoint != null -> setFinishPosition(null)
-            route.value?.startPoint != null -> setStartPosition(null)
+            route.finishPoint != null -> setFinishPosition(null)
+            route.startPoint != null -> setStartPosition(null)
             else -> shouldFinish.postValue(true)
         }
     }
@@ -290,7 +295,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         hideTopBar()
         if (!NetworkUtil.isNetworkAvailable(getApplication())) {
             postError(Error.NO_CONNECTION)
-        } else if (route.value!!.startPoint == null) {
+        } else if (route.startPoint == null) {
             setStartPosition(latLng)
         } else {
             setFinishPosition(latLng)

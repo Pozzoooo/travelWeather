@@ -103,7 +103,7 @@ class MapActivity : BaseActivity() {
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
 
-        viewModel.route.observe(this, Observer { updateRoute(it as Route) })
+        viewModel.routeData.observe(this, Observer { updateRoute(it as Route) })
 
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
@@ -192,8 +192,8 @@ class MapActivity : BaseActivity() {
     }
 
     public override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable("startPosition", viewModel.route.value!!.startPoint?.position)
-        outState?.putParcelable("finishPosition", viewModel.route.value!!.finishPoint?.position)
+        outState?.putParcelable("startPosition", viewModel.routeData.value!!.startPoint?.position)
+        outState?.putParcelable("finishPosition", viewModel.routeData.value!!.finishPoint?.position)
 
         super.onSaveInstanceState(outState)
     }
