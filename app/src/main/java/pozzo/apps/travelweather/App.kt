@@ -5,6 +5,9 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
+ * Minor bug when droping the pin without connection
+ * Another issue, selected date is coming as after tomorrow
+ *
  * O que acha de parar e diagramar tudo?
  *  - Sera que isso daria uma visao melhor?
  *  - Sera que pode me ajudar na manutencao no futuro?
