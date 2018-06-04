@@ -14,6 +14,8 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
+		<!--todo Need to re organize this layout-->
+
 		<RelativeLayout
 			android:id="@+id/vgMain"
 			android:layout_width="match_parent"
@@ -79,7 +81,29 @@
 				android:src="@android:drawable/ic_menu_search"/>
 
 			<LinearLayout
-				android:id="@+id/vgBottom"
+				android:id="@+id/menuEnd"
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:layout_alignParentEnd="true"
+				android:gravity="center_vertical"
+				android:orientation="vertical">
+
+				<ImageView
+					android:id="@+id/startFlag"
+					style="@style/buttonsOnButtonBar"
+					android:src="@drawable/start_flag"
+					android:contentDescription="@string/startPosition"/>
+
+				<ImageView
+					android:id="@+id/finishFlag"
+					style="@style/buttonsOnButtonBar"
+					android:src="@drawable/finish_flag"
+					android:contentDescription="@string/finishPosition"
+					android:alpha=".4"/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/menuBotton"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_alignParentBottom="true"
@@ -96,26 +120,16 @@
 					android:onClick="@{() -> viewModel.setStartAsCurrentLocationRequestedByUser((LifecycleOwner) context)}"
 					android:src="@android:drawable/ic_menu_mylocation"
 					style="@style/buttonsOnButtonBar"/>
-
-				<android.support.design.widget.FloatingActionButton
-					android:id="@+id/bStartPosition"
-					android:src="@android:drawable/ic_menu_mylocation"
-					android:visibility="gone"
-					style="@style/buttonsOnButtonBar"/>
-
-				<android.support.design.widget.FloatingActionButton
-					android:id="@+id/bFinishPosition"
-					android:src="@drawable/finish_flag"
-					style="@style/buttonsOnButtonBar"/>
 			</LinearLayout>
 
 			<ProgressBar
 				android:id="@+id/progressBar"
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:indeterminate="true"
 				android:layout_alignParentBottom="true"
-				style="?android:attr/progressBarStyleHorizontal"/>
+				android:layout_alignParentEnd="true"
+				style="?android:attr/progressBarStyle"/>
 		</RelativeLayout>
 
 		<fragment

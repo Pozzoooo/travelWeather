@@ -80,7 +80,7 @@ class MapActivity : BaseActivity() {
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
 
-        bFinishPosition.setOnTouchListener(startDraggingFinishFlag)
+      startFlag.setOnTouchListener(startDraggingFinishFlag)
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -95,9 +95,9 @@ class MapActivity : BaseActivity() {
         val flag = resources.getDrawable(R.drawable.finish_flag, null)
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                bFinishPosition.startDragAndDrop(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+              startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             } else {
-                bFinishPosition.startDrag(null, ShadowResByBottomRight(bFinishPosition, flag), null, 0)
+              startFlag.startDrag(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             }
         }
 

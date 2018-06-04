@@ -9,6 +9,8 @@ import com.splunk.mint.Mint
  *  - Sera que isso daria uma visao melhor?
  *  - Sera que pode me ajudar na manutencao no futuro?
  *
+ * What about a tutorial on the menu? quick one
+ *
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
