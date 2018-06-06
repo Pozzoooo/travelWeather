@@ -175,7 +175,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             try {
                 requestWeatherFor(it)?.let { weathers.add(it) }
             } catch (e: IOException) {
-                if (error.value == null) postError(Error.NO_CONNECTION)
+                handleConnectionError(e)
             } catch (e: Exception) {
                 Mint.logException(e)
             }
@@ -218,13 +218,17 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         showProgress()
 
         routeExecutor.execute({
-            val direction = locationBusiness.getDirections(startPosition, finishPosition)
-            if (direction?.isEmpty() == false) {
-                val directionLine = setDirectionLine(direction)
-                val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
-                setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
-            } else {
-                postError(Error.CANT_FIND_ROUTE)
+            try {
+                val direction = locationBusiness.getDirections(startPosition, finishPosition)
+                if (direction?.isEmpty() == false) {
+                  val directionLine = setDirectionLine(direction)
+                  val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
+                  setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
+                } else {
+                  postError(Error.CANT_FIND_ROUTE)
+                }
+            } catch (e: IOException) {
+                handleConnectionError(e)
             }
             hideProgress()
         })
@@ -243,7 +247,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (startPosition != null) {
             createStartPoint(startPosition)
         } else {
-          setRoute(Route())
+            setRoute(Route())
         }
     }
 
@@ -293,9 +297,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun addPoint(latLng: LatLng) {
         hideTopBar()
-        if (!NetworkUtil.isNetworkAvailable(getApplication())) {
-            postError(Error.NO_CONNECTION)
-        } else if (route.startPoint == null) {
+        if (route.startPoint == null) {
             setStartPosition(latLng)
         } else {
             setFinishPosition(latLng)
@@ -311,7 +313,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             else
                 postError(Error.ADDRESS_NOT_FOUND)
         } catch (e: IOException) {
-            postError(Error.NO_CONNECTION)
+            handleConnectionError(e)
         }
     }
 
@@ -341,4 +343,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun drawerMenuOpened() {
         mapAnalytics.sendDrawerOpened()
     }
+
+    private fun handleConnectionError(ioException: IOException) {
+      if (error.value != null) return //there is a popup showing already, so no botherr
+      if (notConnected()) postError(Error.NO_CONNECTION)
+      else postError(Error.CANT_REACH)
+    }
+
+    private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
 }

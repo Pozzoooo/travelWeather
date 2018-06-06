@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.w3c.dom.Document;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import pozzo.apps.travelweather.location.helper.GMapV2Direction;
@@ -37,7 +38,7 @@ public class LocationBusiness {
     /**
      * Rota para o dado destino.
      */
-    public ArrayList<LatLng> getDirections(LatLng startPosition, LatLng finishPosition) {
+    public ArrayList<LatLng> getDirections(LatLng startPosition, LatLng finishPosition) throws IOException {
         if(startPosition == null || finishPosition == null)
             return null;
 

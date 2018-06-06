@@ -1,12 +1,14 @@
 package pozzo.apps.travelweather.location.helper;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.splunk.mint.Mint;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,7 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class GMapV2Direction {
     public final static String MODE_DRIVING = "driving";
 
-    public Document getDocument(LatLng start, LatLng end, String mode) {
+    public Document getDocument(LatLng start, LatLng end, String mode) throws IOException {
         try {
 			URL url = new URL("http://maps.googleapis.com/maps/api/directions/xml?"
 					+ "origin=" + start.latitude + "," + start.longitude
@@ -26,12 +28,13 @@ public class GMapV2Direction {
 					+ "&sensor=false&units=metric&mode=driving");
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            InputStream in = new BufferedInputStream(connection.getInputStream());
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder();
+			InputStream in = new BufferedInputStream(connection.getInputStream());
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			return builder.parse(in);
+		} catch (IOException e) {
+        	throw e;
         } catch (Exception e) {
-            e.printStackTrace();
+			Mint.logException(e);
         }
         return null;
     }
@@ -45,8 +48,7 @@ public class GMapV2Direction {
                 Node node1 = nl1.item(i);
                 nl2 = node1.getChildNodes();
 
-                Node locationNode = nl2
-                        .item(getNodeIndex(nl2, "start_location"));
+                Node locationNode = nl2.item(getNodeIndex(nl2, "start_location"));
                 nl3 = locationNode.getChildNodes();
                 Node latNode = nl3.item(getNodeIndex(nl3, "lat"));
                 double lat = Double.parseDouble(latNode.getTextContent());
@@ -59,8 +61,7 @@ public class GMapV2Direction {
                 latNode = nl3.item(getNodeIndex(nl3, "points"));
                 ArrayList<LatLng> arr = decodePoly(latNode.getTextContent());
                 for (int j = 0; j < arr.size(); j++) {
-                    listGeopoints.add(new LatLng(arr.get(j).latitude, arr
-                            .get(j).longitude));
+                    listGeopoints.add(new LatLng(arr.get(j).latitude, arr.get(j).longitude));
                 }
 
                 locationNode = nl2.item(getNodeIndex(nl2, "end_location"));

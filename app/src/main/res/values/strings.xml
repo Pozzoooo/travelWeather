@@ -21,7 +21,8 @@
     <string name="title_forecastDate">Previsão para</string>
 
 	<string name="error_addressNotFound">Endereço não encontrado</string>
-	<string name="error_needsConnection">Você precisa estar conectado com a internet</string>
+	<string name="error_needsConnection">Verifique se esta conectado</string>
+	<string name="error_cantReach">Sem comunição com o servidor, verifique sua conexão com a internet ou tente novamente mais tarde</string>
     <string name="error_pathNotFound">Não conseguimos gerar uma rota</string>
 	<string name="error_currentLocationNotFound">Não foi possivel determinar sua localização atual</string>
 

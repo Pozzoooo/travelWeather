@@ -71,7 +71,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupView() {
-        eSearch.setOnEditorActionListener(onSearchGo)
+      eSearch.setOnEditorActionListener(onSearchGo)
 
       startFlag.setOnTouchListener(startDraggingFinishFlag)
       finishFlag.setOnTouchListener(startDraggingFinishFlag)
