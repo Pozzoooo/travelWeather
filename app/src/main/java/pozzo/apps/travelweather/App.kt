@@ -5,7 +5,8 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
- * Another issue, selected date is coming as after tomorrow
+ * The after tomorrow selection was not a bug, but a auto backup feature.
+ *  - But this show me more the need to make the day selection more clear, should come soon
  *
  * O que acha de parar e diagramar tudo?
  *  - Sera que isso daria uma visao melhor?
