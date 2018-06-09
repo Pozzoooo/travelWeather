@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
