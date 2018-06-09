@@ -94,6 +94,7 @@ class MapActivity : BaseActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
               startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             } else {
+              @Suppress("DEPRECATION")
               startFlag.startDrag(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             }
         }

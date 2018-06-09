@@ -49,7 +49,7 @@ class DirectionWeatherFilter {
   private fun startPoint() : LatLng = directionLine[PADDING]
   private fun lastPoint() : LatLng = directionLine[directionLine.size - PADDING]
 
-  private inline fun isGoodFitForWeather(position: Int, latLng: LatLng, lastForecast: LatLng) : Boolean {
+  private fun isGoodFitForWeather(position: Int, latLng: LatLng, lastForecast: LatLng) : Boolean {
     return position % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
         && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)
   }
