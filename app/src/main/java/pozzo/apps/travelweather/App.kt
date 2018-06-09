@@ -5,15 +5,17 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
+ * Acho que preciso tomar medidas para clarificar as coisas
+ *  - Tutorial
+ *  - Melhor store, descricao e imagens
+ *  - Melhroar design
+ *
+ *
  * Minor bug, select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  *
  * The after tomorrow selection was not a bug, but a auto backup feature.
  *  - But this show me more the need to make the day selection more clear, should come soon
- *
- * O que acha de parar e diagramar tudo?
- *  - Sera que isso daria uma visao melhor?
- *  - Sera que pode me ajudar na manutencao no futuro?
  *
  * What about a tutorial on the menu? quick one
  *
