@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+		<import type="android.arch.lifecycle.LifecycleOwner"/>
+		<variable
+			name="viewModel"
+			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
+	</data>
+
+	<LinearLayout
+		android:id="@+id/menuBotton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal">
+
+		<android.support.design.widget.FloatingActionButton
+			android:id="@+id/bClear"
+			android:onClick="@{() -> viewModel.requestClearRequestedByUser()}"
+			android:src="@android:drawable/ic_menu_close_clear_cancel"
+			style="@style/buttonsOnButtonBar"/>
+
+		<android.support.design.widget.FloatingActionButton
+			android:id="@+id/bMyLocation"
+			android:onClick="@{() -> viewModel.setStartAsCurrentLocationRequestedByUser((LifecycleOwner) context)}"
+			android:src="@android:drawable/ic_menu_mylocation"
+			style="@style/buttonsOnButtonBar"/>
+	</LinearLayout>
+</layout>
