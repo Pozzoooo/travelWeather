@@ -1,6 +1,7 @@
 <layout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools">
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<data>
 		<import type="android.arch.lifecycle.LifecycleOwner"/>
@@ -13,8 +14,6 @@
 		android:id="@+id/drawerLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
-
-		<!--todo Need to re organize this layout-->
 
 		<RelativeLayout
 			android:id="@+id/vgMain"
@@ -29,56 +28,9 @@
 				android:layout_height="match_parent"
 				tools:context=".MapsActivity"/>
 
-			<FrameLayout
-				android:id="@+id/vgTopBar"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:alpha="0"
-				android:background="@drawable/screen_gradient"
-				android:paddingBottom="@dimen/margin_bigger"
-				tools:alpha="0">
-
-				<EditText
-					android:id="@+id/eSearch"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginEnd="70dp"
-					android:layout_marginStart="70dp"
-					android:layout_marginTop="@dimen/margin_bigger"
-					android:hint="@string/search"
-					android:imeOptions="actionGo"
-					android:inputType="text"
-					android:visibility="invisible"
-					tools:visibility="visible"/>
-			</FrameLayout>
-
-			<ImageButton
-				android:id="@+id/bMenu"
-				android:layout_width="@dimen/button_size"
-				android:layout_height="@dimen/button_size"
-				android:layout_alignParentStart="true"
-				android:layout_alignParentTop="true"
-				android:background="@color/colorPrimary"
-				android:onClick="onMenu"
-				android:paddingBottom="@dimen/margin_bigger"
-				android:paddingEnd="@dimen/margin_bigger"
-				android:paddingStart="@dimen/margin_bigger"
-				android:paddingTop="@dimen/margin_bigger"
-				android:contentDescription="@string/menu"
-				android:elevation="@dimen/elevation_floatingButton"
-				android:src="@drawable/ic_drawer"/>
-
-			<ImageButton
-				android:id="@+id/bSearch"
-				android:layout_width="@dimen/button_size"
-				android:layout_height="@dimen/button_size"
-				android:layout_alignParentEnd="true"
-				android:layout_alignParentTop="true"
-				android:background="@color/colorPrimary"
-				android:contentDescription="@android:string/search_go"
-				android:elevation="@dimen/elevation_floatingButton"
-				android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
-				android:src="@android:drawable/ic_menu_search"/>
+			<include
+				layout="@layout/group_top_bar"
+				app:viewModel="@{viewModel}"/>
 
 			<LinearLayout
 				android:id="@+id/menuEnd"

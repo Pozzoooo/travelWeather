@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+		<import type="android.arch.lifecycle.LifecycleOwner"/>
+		<variable
+			name="viewModel"
+			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
+	</data>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<ImageButton
+			android:id="@+id/bMenu"
+			android:layout_width="@dimen/button_size"
+			android:layout_height="@dimen/button_size"
+			android:background="@color/colorPrimary"
+			android:onClick="onMenu"
+			android:paddingBottom="@dimen/margin_bigger"
+			android:paddingEnd="@dimen/margin_bigger"
+			android:paddingStart="@dimen/margin_bigger"
+			android:paddingTop="@dimen/margin_bigger"
+			android:contentDescription="@string/menu"
+			android:elevation="@dimen/elevation_floatingButton"
+			android:src="@drawable/ic_drawer"/>
+
+		<FrameLayout
+			android:id="@+id/vgTopBar"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:alpha="0"
+			android:background="@drawable/screen_gradient"
+			android:paddingBottom="@dimen/margin_big"
+			android:layout_weight="1"
+			tools:alpha="1">
+
+			<EditText
+				android:id="@+id/eSearch"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/margin_big"
+				android:hint="@string/search"
+				android:imeOptions="actionGo"
+				android:inputType="text"
+				android:visibility="invisible"
+				tools:visibility="visible"/>
+		</FrameLayout>
+
+		<ImageButton
+			android:id="@+id/bSearch"
+			android:layout_width="@dimen/button_size"
+			android:layout_height="@dimen/button_size"
+			android:background="@color/colorPrimary"
+			android:contentDescription="@android:string/search_go"
+			android:elevation="@dimen/elevation_floatingButton"
+			android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
+			android:src="@android:drawable/ic_menu_search"/>
+	</LinearLayout>
+</layout>

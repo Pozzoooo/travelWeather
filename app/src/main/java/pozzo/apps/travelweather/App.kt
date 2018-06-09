@@ -9,6 +9,7 @@ import com.splunk.mint.Mint
  *  - Tutorial
  *  - Melhor store, descricao e imagens
  *  - Melhroar design
+ *  - Spinner ao inves do menu
  *
  *
  * Minor bug, select random start position, and then press my current position fab, it will show a

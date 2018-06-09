@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
+import kotlinx.android.synthetic.main.group_top_bar.*
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
@@ -233,13 +234,13 @@ class MapActivity : BaseActivity() {
     }
 
     private fun hideTopBar() {
-        vgTopBar.animate().alpha(0f)
+        vgTopBar.animate().alpha(0F)
         eSearch.visibility = View.INVISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
     }
 
     private fun showTopBar() {
-        vgTopBar.animate().alpha(1f)
+        vgTopBar.animate().alpha(1F)
         eSearch.visibility = View.VISIBLE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
