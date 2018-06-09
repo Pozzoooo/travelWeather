@@ -32,27 +32,12 @@
 				layout="@layout/group_top_bar"
 				app:viewModel="@{viewModel}"/>
 
-			<LinearLayout
-				android:id="@+id/menuEnd"
+			<include
+				layout="@layout/group_flag_shelf"
 				android:layout_width="wrap_content"
-				android:layout_height="match_parent"
-				android:layout_alignParentEnd="true"
-				android:gravity="center_vertical"
-				android:orientation="vertical">
-
-				<ImageView
-					android:id="@+id/startFlag"
-					style="@style/buttonsOnButtonBar"
-					android:src="@drawable/start_flag"
-					android:contentDescription="@string/startPosition"/>
-
-				<ImageView
-					android:id="@+id/finishFlag"
-					style="@style/buttonsOnButtonBar"
-					android:src="@drawable/finish_flag"
-					android:contentDescription="@string/finishPosition"
-					android:alpha=".4"/>
-			</LinearLayout>
+				android:layout_height="wrap_content"
+				android:layout_centerVertical="true"
+				android:layout_alignParentEnd="true"/>
 
 			<LinearLayout
 				android:id="@+id/menuBotton"
