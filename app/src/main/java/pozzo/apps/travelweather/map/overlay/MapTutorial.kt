@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import me.toptas.fancyshowcase.FancyShowCaseView
 import pozzo.apps.travelweather.R
 
+//todo is it a good idea to save the timestamp instead of a boolean? so maybe I can replay is user is not using the app for a long time
 class MapTutorial(context: Context) {
   companion object {
     private const val TUTORIAL_PREFERENCES = "tutorialPreferences"

@@ -16,34 +16,6 @@
 		android:padding="@dimen/margin_bigger"
 		android:background="@drawable/background_window">
 
-		<RadioGroup
-			android:id="@+id/rgDaySelection"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="@dimen/margin_big"
-				android:text="@string/title_forecastDate"/>
-
-			<RadioButton
-				android:id="@+id/rToday"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/today"/>
-			<RadioButton
-				android:id="@+id/rTomorow"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/tomorow"/>
-			<RadioButton
-				android:id="@+id/rAfterTomorow"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:text="@string/afterTomorow"/>
-		</RadioGroup>
-
 		<Button
 			android:id="@+id/bPlayTutorial"
 			android:layout_width="match_parent"

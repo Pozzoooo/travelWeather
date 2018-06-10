@@ -12,8 +12,7 @@ import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -28,6 +27,7 @@ import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
+import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -39,6 +39,7 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
+//todo colocar data da previsao junto ao texto da previsa
 class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
@@ -76,10 +77,21 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupView() {
-      eSearch.setOnEditorActionListener(onSearchGo)
+        eSearch.setOnEditorActionListener(onSearchGo)
 
-      startFlag.setOnTouchListener(startDraggingFinishFlag)
-      finishFlag.setOnTouchListener(startDraggingFinishFlag)
+        startFlag.setOnTouchListener(startDraggingFinishFlag)
+        finishFlag.setOnTouchListener(startDraggingFinishFlag)
+        setupDaySelection()
+    }
+
+    private fun setupDaySelection() {
+        spinnerDaySelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) { }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                preferencesViewModel.setSelectedDay(position)
+            }
+        }
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -96,10 +108,10 @@ class MapActivity : BaseActivity() {
         val flag = resources.getDrawable(flagResource, null)
         if (motionEvent.action == MotionEvent.ACTION_DOWN) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-              startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
+                startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             } else {
-              @Suppress("DEPRECATION")
-              startFlag.startDrag(null, ShadowResByBottomRight(startFlag, flag), null, 0)
+                @Suppress("DEPRECATION")
+                startFlag.startDrag(null, ShadowResByBottomRight(startFlag, flag), null, 0)
             }
         }
 
@@ -107,7 +119,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun observeViewModel() {
-        preferencesViewModel.selectedDay.observe(this, Observer { refreshMarkers() })
+        preferencesViewModel.selectedDay.observe(this, Observer { it?.let { changeSelectedDay(it) } })
 
         viewModel.routeData.observe(this, Observer { updateRoute(it as Route) })
 
@@ -122,14 +134,14 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showOverlay(overlay: Tutorial) {
-      when(overlay) {
-        Tutorial.FULL_TUTORIAL -> showFullTutorial()
-        else -> Mint.logException(Exception("Missing show overlay $overlay"))
-      }
+        when(overlay) {
+            Tutorial.FULL_TUTORIAL -> showFullTutorial()
+            else -> Mint.logException(Exception("Missing show overlay $overlay"))
+        }
     }
 
     private fun showFullTutorial() {
-      MapTutorial(this).playTutorial(this)
+        MapTutorial(this).playTutorial(this)
     }
 
     private fun listenDrawerState() {
@@ -158,36 +170,36 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setStartPoint(startPoint: StartPoint?) {
-      if (startPoint != null) {
-        addMark(startPoint)
-        startFlag.visibility = View.INVISIBLE
-      } else {
-        startFlag.visibility = View.VISIBLE
-      }
+        if (startPoint != null) {
+            addMark(startPoint)
+            startFlag.visibility = View.INVISIBLE
+        } else {
+            startFlag.visibility = View.VISIBLE
+        }
     }
 
-  private fun setFinishPoint(route: Route) {
-    val finishPoint = route.finishPoint
-    if (finishPoint != null) {
-      addMark(finishPoint)
-      finishFlag.visibility = View.INVISIBLE
-      lDragTheFlag.visibility = View.INVISIBLE
-    } else {
-      finishFlag.visibility = View.VISIBLE
-      finishFlag.alpha = if (route.startPoint == null) .4F else 1F
-      finishFlag.isEnabled = route.startPoint != null
+    private fun setFinishPoint(route: Route) {
+        val finishPoint = route.finishPoint
+        if (finishPoint != null) {
+            addMark(finishPoint)
+            finishFlag.visibility = View.INVISIBLE
+            lDragTheFlag.visibility = View.INVISIBLE
+        } else {
+            finishFlag.visibility = View.VISIBLE
+            finishFlag.alpha = if (route.startPoint == null) .4F else 1F
+            finishFlag.isEnabled = route.startPoint != null
+        }
     }
-  }
 
     private fun pointMapToRoute(route: Route) {
         if (route.hasStartAndFinish()) {
             mapFragment.updateCamera(
-              CameraUpdateFactory.newLatLngBounds(
-                  LatLngBounds.builder()
-                      .include(route.startPoint!!.position)
-                      .include(route.finishPoint!!.position).build(), 70))
+                CameraUpdateFactory.newLatLngBounds(
+                    LatLngBounds.builder()
+                        .include(route.startPoint!!.position)
+                        .include(route.finishPoint!!.position).build(), 70))
         } else if (route.startPoint != null) {
-              mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
+            mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
         }
     }
 
@@ -231,11 +243,11 @@ class MapActivity : BaseActivity() {
 
     private fun showError(error: Error) {
         AlertDialog.Builder(this)
-                .setTitle(R.string.warning)
-                .setMessage(error.messageId)
-                .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
-                .setOnDismissListener { viewModel.errorDismissed() }
-                .show()
+            .setTitle(R.string.warning)
+            .setMessage(error.messageId)
+            .setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+            .setOnDismissListener { viewModel.errorDismissed() }
+            .show()
     }
 
     private fun showWarning(warning: Warning) {
@@ -244,22 +256,22 @@ class MapActivity : BaseActivity() {
 
     private fun showActionRequest(actionRequest: ActionRequest) {
         AlertDialog.Builder(this)
-                .setMessage(actionRequest.messageId)
-                .setPositiveButton(R.string.yes) { _, _ -> viewModel.actionRequestAccepted(actionRequest) }
-                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                .setOnDismissListener { viewModel.actionRequestDismissed() }
-                .show()
+            .setMessage(actionRequest.messageId)
+            .setPositiveButton(R.string.yes) { _, _ -> viewModel.actionRequestAccepted(actionRequest) }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .setOnDismissListener { viewModel.actionRequestDismissed() }
+            .show()
     }
 
     private fun hideTopBar() {
-        vgTopBar.animate().alpha(0F)
-        eSearch.visibility = View.INVISIBLE
+        eSearch.visibility = View.GONE
+        weatherSelection.visibility = View.VISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
     }
 
     private fun showTopBar() {
-        vgTopBar.animate().alpha(1F)
         eSearch.visibility = View.VISIBLE
+        weatherSelection.visibility = View.GONE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
     }
@@ -268,17 +280,22 @@ class MapActivity : BaseActivity() {
         drawerLayout.openDrawer(GravityCompat.START)
     }
 
-    private fun refreshMarkers() {
+    private fun changeSelectedDay(newSelection: Day) {
+        spinnerDaySelection.setSelection(newSelection.index)
+        refreshMarkers(newSelection)
+    }
+
+    private fun refreshMarkers(day: Day) {
         val markerWeathers = this.mapMarkerToWeather
         this.mapMarkerToWeather = HashMap()
         markerWeathers.forEach {
             it.key.remove()
-            addMark(it.value)
+            addMark(it.value, day)
         }
     }
 
-    private fun addMark(mapPoint: MapPoint) {
-        mapPoint.day = preferencesViewModel.selectedDay.value!!
+    private fun addMark(mapPoint: MapPoint, day: Day = preferencesViewModel.selectedDay.value!!) {
+        mapPoint.day = day
 
         val marker = mapFragment.addMark(mapPoint)
         if (marker != null) mapMarkerToWeather[marker] = mapPoint

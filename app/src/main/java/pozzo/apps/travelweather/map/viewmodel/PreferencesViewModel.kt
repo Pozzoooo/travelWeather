@@ -19,9 +19,11 @@ class PreferencesViewModel(application: Application) : BaseViewModel(application
         this.selectedDay.value = preferencesBusiness.getSelectedDay()
     }
 
-    fun setSelectedDay(resourceId: Int) {
-        val selection = Day.getByResourceId(resourceId)
-        preferencesBusiness.setSelectedDay(selection)
-        this.selectedDay.value = selection
+    fun setSelectedDay(index: Int) {
+        if (this.selectedDay.value?.index != index) {
+            val selection = Day.getByIndex(index)
+            preferencesBusiness.setSelectedDay(selection)
+            this.selectedDay.value = selection
+        }
     }
 }

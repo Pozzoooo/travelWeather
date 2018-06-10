@@ -12,7 +12,7 @@ class Weather {
         get() = LatLng(address!!.latitude, address!!.longitude)
 
     fun getForecast(day: Day): Forecast {
-        return forecasts!![day.forecastIndex]
+        return forecasts!![day.index]
     }
 
     fun setForecasts(forecasts: List<Forecast>) {

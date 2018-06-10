@@ -11,10 +11,6 @@
 
     <string name="title_activityMaps">Map</string>
 
-    <string name="today">Hoje</string>
-    <string name="tomorow">Amanhã</string>
-    <string name="afterTomorow">Depois de amanhã</string>
-
     <string name="startPosition">Início</string>
     <string name="finishPosition">Final</string>
     <string name="removeAllMarkers">Deseja remover todas as marcações?</string>
@@ -31,4 +27,10 @@
 	<string name="tutorial_replayFull">Tutorial</string>
 	<string name="tutorial_flags">Arraste as bandeiras para criar a rota</string>
 	<string name="tutorial_dragTheFlags">Arraste as bandeiras</string>
+
+	<string-array name="forecastDays">
+		<item>Hoje</item>
+		<item>Amanhã</item>
+		<item>Depois de amanhã</item>
+	</string-array>
 </resources>

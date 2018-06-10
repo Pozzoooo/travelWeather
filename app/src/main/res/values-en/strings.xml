@@ -12,10 +12,6 @@
 
     <string name="title_activityMaps">Map</string>
 
-    <string name="today">Today</string>
-    <string name="tomorow">Tomorow</string>
-    <string name="afterTomorow">After Tomorow</string>
-
     <string name="startPosition">Start</string>
     <string name="finishPosition">Finish</string>
     <string name="removeAllMarkers">Remove all makrs?</string>
@@ -32,4 +28,10 @@
 	<string name="tutorial_replayFull">Tutorial</string>
 	<string name="tutorial_flags">Drag the flags to create a route</string>
 	<string name="tutorial_dragTheFlags">Drag the flags</string>
+
+	<string-array name="forecastDays">
+		<item>Today</item>
+		<item>Tomorow</item>
+		<item>After Tomorow</item>
+	</string-array>
 </resources>

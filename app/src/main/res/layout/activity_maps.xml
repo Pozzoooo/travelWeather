@@ -26,9 +26,11 @@
 				android:name="pozzo.apps.travelweather.map.ui.MapFragment"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
+				android:layout_below="@id/topBar"
 				tools:context=".MapsActivity"/>
 
 			<include
+				android:id="@+id/topBar"
 				layout="@layout/group_top_bar"
 				app:viewModel="@{viewModel}"/>
 

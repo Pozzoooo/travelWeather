@@ -6,22 +6,15 @@ import com.splunk.mint.Mint
 /**
  * TODO
  * Acho que preciso tomar medidas para clarificar as coisas
- *  - Tutorial
  *  - Melhor store, descricao e imagens
  *  - Melhroar design
- *  - Spinner ao inves do menu
- *
  *
  * Minor bug, select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  *
- * The after tomorrow selection was not a bug, but a auto backup feature.
- *  - But this show me more the need to make the day selection more clear, should come soon
- *
  * What about a tutorial on the menu? quick one
  *
  * Build route if it was triggered when no connection was available (job schedule?)
- * Tutorial
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
