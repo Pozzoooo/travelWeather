@@ -171,6 +171,7 @@ class MapActivity : BaseActivity() {
     if (finishPoint != null) {
       addMark(finishPoint)
       finishFlag.visibility = View.INVISIBLE
+      lDragTheFlag.visibility = View.INVISIBLE
     } else {
       finishFlag.visibility = View.VISIBLE
       finishFlag.alpha = if (route.startPoint == null) .4F else 1F

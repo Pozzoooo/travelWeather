@@ -4,7 +4,17 @@
 	android:id="@+id/flagShelf"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
+	android:minWidth="65sp"
+	android:gravity="center_horizontal"
 	android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/lDragTheFlag"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:lines="3"
+		android:gravity="center|bottom"
+		android:text="@string/tutorial_dragTheFlags"/>
 
 	<ImageView
 		android:id="@+id/startFlag"

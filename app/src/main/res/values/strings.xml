@@ -30,4 +30,5 @@
 
 	<string name="tutorial_replayFull">Tutorial</string>
 	<string name="tutorial_flags">Arraste as bandeiras para criar a rota</string>
+	<string name="tutorial_dragTheFlags">Arraste as bandeiras</string>
 </resources>
