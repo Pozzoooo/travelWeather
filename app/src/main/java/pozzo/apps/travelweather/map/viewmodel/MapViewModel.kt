@@ -32,6 +32,8 @@ import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
 import pozzo.apps.travelweather.map.firebase.MapAnalytics
+import pozzo.apps.travelweather.map.overlay.MapTutorial
+import pozzo.apps.travelweather.map.overlay.Tutorial
 import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
 import java.io.IOException
@@ -57,16 +59,19 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val warning = MutableLiveData<Warning>()
     val actionRequest = MutableLiveData<ActionRequest>()
     val permissionRequest = MutableLiveData<PermissionRequest>()
+    val overlay = MutableLiveData<Tutorial>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
+        //todo would a background initialization improve some performance?
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
         routeData.value = route
+        playInitialTutorialOnce(Tutorial.FULL_TUTORIAL)
     }
 
     private fun setRoute(route: Route) {
@@ -351,4 +356,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
+
+    private fun playInitialTutorialOnce(tutorial: Tutorial) {
+      val mapTutorial = MapTutorial(getApplication())
+      if (!mapTutorial.hasPlayed(tutorial)) {
+        playFullTutorial(tutorial)
+        mapTutorial.setTutorialPlayed(tutorial)
+      }
+    }
+
+    fun playFullTutorial(tutorial: Tutorial) {
+      overlay.postValue(tutorial)
+    }
 }

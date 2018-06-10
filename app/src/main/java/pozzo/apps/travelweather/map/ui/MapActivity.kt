@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
+import com.splunk.mint.Mint
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
@@ -32,6 +33,8 @@ import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
+import pozzo.apps.travelweather.map.overlay.MapTutorial
+import pozzo.apps.travelweather.map.overlay.Tutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
@@ -115,6 +118,18 @@ class MapActivity : BaseActivity() {
         viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
         viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
         viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
+        viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
+    }
+
+    private fun showOverlay(overlay: Tutorial) {
+      when(overlay) {
+        Tutorial.FULL_TUTORIAL -> showFullTutorial()
+        else -> Mint.logException(Exception("Missing show overlay $overlay"))
+      }
+    }
+
+    private fun showFullTutorial() {
+      MapTutorial(this).playTutorial(this)
     }
 
     private fun listenDrawerState() {

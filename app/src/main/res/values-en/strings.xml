@@ -24,8 +24,11 @@
 	<string name="error_addressNotFound">Address not found</string>
 	<string name="error_needsConnection">Check internet connection</string>
 	<string name="error_cantReach">Can\'t reach internet, check connection or try again later</string>
-    <string name="error_pathNotFound">Could not found a route</string>
+    <string name="error_pathNotFound">Could not find a route, try adjusting the flags closer to roads</string>
 	<string name="error_currentLocationNotFound">Not able to find your current location</string>
 
 	<string name="warning_permissionDenied">Permission has been denied</string>
+
+	<string name="tutorial_replayFull">Tutorial</string>
+	<string name="tutorial_flags">Drag the flags to create a route</string>
 </resources>

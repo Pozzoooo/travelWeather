@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="true"
-    android:padding="@dimen/margin_bigger"
-    android:background="@drawable/background_window">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RadioGroup
-        android:id="@+id/rgDaySelection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_big"
-            android:text="@string/title_forecastDate"/>
+	<data>
+		<import type="android.arch.lifecycle.LifecycleOwner"/>
+		<import type="pozzo.apps.travelweather.map.overlay.Tutorial"/>
+		<variable
+			name="viewModel"
+			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
+	</data>
 
-        <RadioButton
-            android:id="@+id/rToday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/today"/>
-        <RadioButton
-            android:id="@+id/rTomorow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tomorow"/>
-        <RadioButton
-            android:id="@+id/rAfterTomorow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/afterTomorow"/>
-    </RadioGroup>
-</LinearLayout>
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/margin_bigger"
+		android:background="@drawable/background_window">
+
+		<RadioGroup
+			android:id="@+id/rgDaySelection"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="@dimen/margin_big"
+				android:text="@string/title_forecastDate"/>
+
+			<RadioButton
+				android:id="@+id/rToday"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/today"/>
+			<RadioButton
+				android:id="@+id/rTomorow"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/tomorow"/>
+			<RadioButton
+				android:id="@+id/rAfterTomorow"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/afterTomorow"/>
+		</RadioGroup>
+
+		<Button
+			android:id="@+id/bPlayTutorial"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAllCaps="false"
+			android:text="@string/tutorial_replayFull"
+			android:onClick="@{() -> viewModel.playFullTutorial(Tutorial.FULL_TUTORIAL)}"/>
+	</LinearLayout>
+</layout>

@@ -35,7 +35,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Mint.initAndStartSession(this, "c315b759")
+        if (!BuildConfig.DEBUG) Mint.initAndStartSession(this, "c315b759")
     }
 }
 
