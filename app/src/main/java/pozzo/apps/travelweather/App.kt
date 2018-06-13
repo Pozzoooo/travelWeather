@@ -11,8 +11,9 @@ import com.splunk.mint.Mint
  *
  * Minor bug, select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
+ * Fix animation of the flag going back to the right
  *
- * What about a tutorial on the menu? quick one
+ * Translate to Spanish
  *
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem

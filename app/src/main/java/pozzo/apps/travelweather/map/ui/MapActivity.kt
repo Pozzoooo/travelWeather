@@ -39,7 +39,7 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
 import java.util.*
 
-//todo colocar data da previsao junto ao texto da previsa
+//todo colocar data da previsao junto ao texto da previsao
 class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
