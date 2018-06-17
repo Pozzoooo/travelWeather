@@ -29,6 +29,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
         bundle.putLong(FirebaseAnalytics.Param.VALUE, dragTime)
+        bundle.putLong("tenthOfSeconds", dragTime / 100L)
         firebaseAnalytics.logEvent("dragDuration", bundle)
     }
 
