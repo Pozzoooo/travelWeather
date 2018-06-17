@@ -27,6 +27,7 @@ object ForecastHelper {
     private const val SNOW = "snow"
     private const val RAIN_SNOW = "rain and snow"
     private const val BREEZY = "breezy"
+    private const val WINDY = "windy"
 
     private val iconIdMap : Map<String, Int>
     private val bitmapCache = HashMap<String?, BitmapDescriptor?>()
@@ -45,7 +46,8 @@ object ForecastHelper {
                 Pair(MOSTLY_CLOUDY, R.drawable.mostly_cloudy),
                 Pair(SNOW, R.drawable.snow),
                 Pair(RAIN_SNOW, R.drawable.snow),
-                Pair(BREEZY, R.drawable.cloudy_moon))
+                Pair(WINDY, R.drawable.wind),
+                Pair(BREEZY, R.drawable.wind))
     }
 
     fun forecastIcon(forecast: Forecast): BitmapDescriptor? {
