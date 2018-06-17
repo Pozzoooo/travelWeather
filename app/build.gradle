@@ -13,7 +13,7 @@ android {
     minSdkVersion 21
     targetSdkVersion 27
     versionCode 15
-    versionName "1.2.1-SNAPSHOT"
+    versionName "1.2.1"
   }
 
   signingConfigs {
