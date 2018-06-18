@@ -297,16 +297,22 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun flagDragActionFinished(latLng: LatLng) {
         addPoint(latLng)
-        mapAnalytics.sendDragDurationEvent("finishFlag", System.currentTimeMillis() - dragStart)
     }
 
     fun addPoint(latLng: LatLng) {
         hideTopBar()
         if (route.startPoint == null) {
             setStartPosition(latLng)
+            logDragEvent("startFlag")
         } else {
             setFinishPosition(latLng)
+            logDragEvent("finishFlag")
         }
+    }
+
+    private fun logDragEvent(flagName: String) {
+        val dragTime = System.currentTimeMillis() - dragStart
+        mapAnalytics.sendDragDurationEvent(flagName, dragTime)
     }
 
     fun searchAddress(string: String) {

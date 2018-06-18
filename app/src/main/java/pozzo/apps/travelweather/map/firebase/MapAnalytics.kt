@@ -28,9 +28,18 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
     fun sendDragDurationEvent(eventName: String, dragTime: Long) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
-        bundle.putLong(FirebaseAnalytics.Param.VALUE, dragTime)
-        bundle.putLong("tenthOfSeconds", dragTime / 100L)
+        bundle.putLong("milliseconds", dragTime)
+        bundle.putString("dragLevel", dragLevel(dragTime))
         firebaseAnalytics.logEvent("dragDuration", bundle)
+    }
+
+    private fun dragLevel(dragTime: Long) : String {
+        return when {
+            dragTime < 300L -> "0.3"
+            dragTime < 700L -> "0.7"
+            dragTime < 2000L-> "2.0"
+            else -> "2+"
+        }
     }
 
     fun sendDrawerOpened() {
