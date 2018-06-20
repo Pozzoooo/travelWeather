@@ -134,14 +134,12 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showOverlay(overlay: Tutorial) {
+        val mapTutorial = MapTutorial(this)
         when(overlay) {
-            Tutorial.FULL_TUTORIAL -> showFullTutorial()
+            Tutorial.FULL_TUTORIAL -> mapTutorial.playTutorial(this)
+            Tutorial.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
             else -> Mint.logException(Exception("Missing show overlay $overlay"))
         }
-    }
-
-    private fun showFullTutorial() {
-        MapTutorial(this).playTutorial(this)
     }
 
     private fun listenDrawerState() {

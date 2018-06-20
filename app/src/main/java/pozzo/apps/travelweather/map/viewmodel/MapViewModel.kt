@@ -71,7 +71,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingTopBar.value = false
         shouldFinish.value = false
         routeData.value = route
-        playInitialTutorialOnce(Tutorial.FULL_TUTORIAL)
+        playIfNotPlayed(Tutorial.FULL_TUTORIAL)
     }
 
     private fun setRoute(route: Route) {
@@ -207,6 +207,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         removeLocationObserver()
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
+            playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
         } else {
             setRoute(Route(startPoint = route.startPoint))
         }
@@ -222,21 +223,21 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
         showProgress()
 
-        routeExecutor.execute({
+        routeExecutor.execute {
             try {
                 val direction = locationBusiness.getDirections(startPosition, finishPosition)
                 if (direction?.isEmpty() == false) {
-                  val directionLine = setDirectionLine(direction)
-                  val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
-                  setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
+                    val directionLine = setDirectionLine(direction)
+                    val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
+                    setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
                 } else {
-                  postError(Error.CANT_FIND_ROUTE)
+                    postError(Error.CANT_FIND_ROUTE)
                 }
             } catch (e: IOException) {
                 handleConnectionError(e)
             }
             hideProgress()
-        })
+        }
     }
 
     private fun setDirectionLine(direction: List<LatLng>) : PolylineOptions =
@@ -363,15 +364,15 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
 
-    private fun playInitialTutorialOnce(tutorial: Tutorial) {
+    private fun playIfNotPlayed(tutorial: Tutorial) {
       val mapTutorial = MapTutorial(getApplication())
       if (!mapTutorial.hasPlayed(tutorial)) {
-        playFullTutorial(tutorial)
+        playTutorial(tutorial)
         mapTutorial.setTutorialPlayed(tutorial)
       }
     }
 
-    fun playFullTutorial(tutorial: Tutorial) {
+    fun playTutorial(tutorial: Tutorial) {
       overlay.postValue(tutorial)
     }
 }

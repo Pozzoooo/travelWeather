@@ -22,6 +22,6 @@
 			android:layout_height="wrap_content"
 			android:textAllCaps="false"
 			android:text="@string/tutorial_replayFull"
-			android:onClick="@{() -> viewModel.playFullTutorial(Tutorial.FULL_TUTORIAL)}"/>
+			android:onClick="@{() -> viewModel.playTutorial(Tutorial.FULL_TUTORIAL)}"/>
 	</LinearLayout>
 </layout>
