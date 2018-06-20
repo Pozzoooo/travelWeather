@@ -66,7 +66,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
-        //todo would a background initialization improve some performance?
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
