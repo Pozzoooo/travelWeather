@@ -21,10 +21,6 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         sendFirebaseFab("clearRoute")
     }
 
-    fun sendDragFinishEvent() {
-        sendFirebaseFab("finish")
-    }
-
     fun sendDragDurationEvent(eventName: String, dragTime: Long) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)

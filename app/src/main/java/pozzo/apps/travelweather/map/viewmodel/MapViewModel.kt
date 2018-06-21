@@ -278,8 +278,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             displayTopBar()
         } else {
             hideTopBar()
-            if (text.isNotBlank())
-                searchAddress(text)
+            if (text.isNotBlank()) searchAddress(text)
         }
     }
 
@@ -290,8 +289,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun hideTopBar() = isShowingTopBar.postValue(false)
 
-    fun finishFlagDragActionStarted() {
-        mapAnalytics.sendDragFinishEvent()
+    fun dragStarted() {
         dragStart = System.currentTimeMillis()
     }
 

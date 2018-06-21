@@ -89,7 +89,7 @@ class MapFragment : SupportMapFragment() {
 
     private fun addDragListener() {
         view?.apply {
-            setOnDragListener(draggingFinishFlag)
+            setOnDragListener(dragListener)
         } ?: Mint.logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
@@ -123,7 +123,7 @@ class MapFragment : SupportMapFragment() {
                 }
     }
 
-    private val draggingFinishFlag = View.OnDragListener { _, event ->
+    private val dragListener = View.OnDragListener { _, event ->
         return@OnDragListener when(event.action) {
             DragEvent.ACTION_DROP -> {
                 getProjection()?.let {
@@ -132,7 +132,7 @@ class MapFragment : SupportMapFragment() {
                 false
             }
             DragEvent.ACTION_DRAG_STARTED -> {
-                viewModel.finishFlagDragActionStarted()
+                viewModel.dragStarted()
                 true
             }
             else -> false
