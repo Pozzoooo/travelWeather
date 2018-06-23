@@ -349,10 +349,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.actionRequest.value = null
     }
 
-    fun drawerMenuOpened() {
-        mapAnalytics.sendDrawerOpened()
-    }
-
     private fun handleConnectionError(ioException: IOException) {
       if (error.value != null) return //there is a popup showing already, so no botherr
       if (notConnected()) postError(Error.NO_CONNECTION)

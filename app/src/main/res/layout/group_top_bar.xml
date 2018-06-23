@@ -17,20 +17,6 @@
 		android:layout_height="wrap_content"
 		android:background="@color/colorPrimary">
 
-		<ImageButton
-			android:id="@+id/bMenu"
-			android:layout_width="@dimen/button_size"
-			android:layout_height="@dimen/button_size"
-			android:background="@null"
-			android:onClick="onMenu"
-			android:paddingBottom="@dimen/margin_bigger"
-			android:paddingEnd="@dimen/margin_bigger"
-			android:paddingStart="@dimen/margin_bigger"
-			android:paddingTop="@dimen/margin_bigger"
-			android:contentDescription="@string/menu"
-			android:elevation="@dimen/elevation_floatingButton"
-			android:src="@drawable/ic_drawer"/>
-
 		<FrameLayout
 			android:id="@+id/vgTopBar"
 			android:layout_width="0dp"

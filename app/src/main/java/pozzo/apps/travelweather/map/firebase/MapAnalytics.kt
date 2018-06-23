@@ -38,10 +38,6 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         }
     }
 
-    fun sendDrawerOpened() {
-        firebaseAnalytics.logEvent("drawerOpened", null)
-    }
-
     fun sendDaySelectionChanged(day: Day) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, day.name)

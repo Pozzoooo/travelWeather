@@ -7,12 +7,12 @@ import android.databinding.DataBindingUtil
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.TextView
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -59,7 +59,6 @@ class MapActivity : BaseActivity() {
         setupMapFragment()
         setupView()
         observeViewModel()
-        listenDrawerState()
     }
 
     private fun setupViewModel() {
@@ -140,17 +139,6 @@ class MapActivity : BaseActivity() {
             Tutorial.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
             else -> Mint.logException(Exception("Missing show overlay $overlay"))
         }
-    }
-
-    private fun listenDrawerState() {
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerStateChanged(newState: Int) {}
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-            override fun onDrawerClosed(drawerView: View) {}
-            override fun onDrawerOpened(drawerView: View) {
-                viewModel.drawerMenuOpened()
-            }
-        })
     }
 
     private fun updateRoute(route: Route) {
@@ -272,10 +260,6 @@ class MapActivity : BaseActivity() {
         weatherSelection.visibility = View.GONE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
-    }
-
-    fun onMenu(view: View) {
-        drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun changeSelectedDay(newSelection: Day) {

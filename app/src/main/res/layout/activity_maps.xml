@@ -10,61 +10,47 @@
 			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
 	</data>
 
-	<android.support.v4.widget.DrawerLayout
-		android:id="@+id/drawerLayout"
+	<RelativeLayout
+		android:id="@+id/vgMain"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
-
-		<RelativeLayout
-			android:id="@+id/vgMain"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:clipToPadding="false">
-
-			<fragment
-				android:id="@+id/map"
-				android:name="pozzo.apps.travelweather.map.ui.MapFragment"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:layout_below="@id/topBar"
-				tools:context=".MapsActivity"/>
-
-			<include
-				android:id="@+id/topBar"
-				layout="@layout/group_top_bar"
-				app:viewModel="@{viewModel}"/>
-
-			<include
-				layout="@layout/group_flag_shelf"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_centerVertical="true"
-				android:layout_alignParentEnd="true"/>
-
-			<include
-				layout="@layout/group_bottom_bar"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_alignParentBottom="true"
-				android:layout_centerHorizontal="true"
-				app:viewModel="@{viewModel}"/>
-
-			<ProgressBar
-				android:id="@+id/progressBar"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:indeterminate="true"
-				android:layout_alignParentBottom="true"
-				android:layout_alignParentEnd="true"
-				style="?android:attr/progressBarStyle"/>
-		</RelativeLayout>
+		android:layout_height="match_parent"
+		android:clipToPadding="false">
 
 		<fragment
-			android:id="@+id/navigationDrawer"
-			android:name="pozzo.apps.travelweather.map.ui.SideMenuFragment"
-			android:layout_width="@dimen/width_navigationDrawer"
+			android:id="@+id/map"
+			android:name="pozzo.apps.travelweather.map.ui.MapFragment"
+			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:layout_gravity="start"
-			tools:layout="@layout/fragment_side_menu"/>
-	</android.support.v4.widget.DrawerLayout>
+			android:layout_below="@id/topBar"
+			tools:context=".MapsActivity"/>
+
+		<include
+			android:id="@+id/topBar"
+			layout="@layout/group_top_bar"
+			app:viewModel="@{viewModel}"/>
+
+		<include
+			layout="@layout/group_flag_shelf"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerVertical="true"
+			android:layout_alignParentEnd="true"/>
+
+		<include
+			layout="@layout/group_bottom_bar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+			app:viewModel="@{viewModel}"/>
+
+		<ProgressBar
+			android:id="@+id/progressBar"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:indeterminate="true"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentEnd="true"
+			style="?android:attr/progressBarStyle"/>
+	</RelativeLayout>
 </layout>
