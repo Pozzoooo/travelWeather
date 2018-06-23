@@ -251,13 +251,15 @@ class MapActivity : BaseActivity() {
 
     private fun hideTopBar() {
         eSearch.visibility = View.GONE
-        weatherSelection.visibility = View.VISIBLE
+        lDaySelection.visibility = View.VISIBLE
+        spinnerDaySelection.visibility = View.VISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
     }
 
     private fun showTopBar() {
         eSearch.visibility = View.VISIBLE
-        weatherSelection.visibility = View.GONE
+        lDaySelection.visibility = View.GONE
+        spinnerDaySelection.visibility = View.GONE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
     }

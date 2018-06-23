@@ -10,7 +10,6 @@
 			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>
 	</data>
 
-	<!--todo I really need to improve this top bar design-->
 	<LinearLayout
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
@@ -36,25 +35,20 @@
 				android:visibility="invisible"
 				tools:visibility="visible"/>
 
-			<LinearLayout
-				android:id="@+id/weatherSelection"
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/button_size"
-				android:orientation="vertical"
-				android:gravity="center_vertical">
+			<TextView
+				android:id="@+id/lDaySelection"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="3dp"
+				android:textSize="12sp"
+				android:text="@string/title_forecastDate"/>
 
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="12sp"
-					android:text="@string/title_forecastDate"/>
-
-				<Spinner
-					android:id="@+id/spinnerDaySelection"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:entries="@array/forecastDays"/>
-			</LinearLayout>
+			<Spinner
+				android:id="@+id/spinnerDaySelection"
+				android:layout_width="wrap_content"
+				android:layout_height="38dp"
+				android:layout_marginTop="18dp"
+				android:entries="@array/forecastDays"/>
 		</FrameLayout>
 
 		<ImageButton
