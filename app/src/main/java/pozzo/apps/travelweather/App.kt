@@ -5,16 +5,14 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
- * Acho que preciso tomar medidas para clarificar as coisas
- *  - Melhor store, descricao e imagens
- *  - Melhroar design
- *
  * Minor bug, select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  * Fix animation of the flag going back to the right
  *
  * Translate to Spanish
  *
+ * Feedback Lisa: Developer, please add departure times to this app
+ * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
