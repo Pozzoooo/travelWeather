@@ -9,10 +9,9 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import pozzo.apps.travelweather.R
 
-
 class Notifier {
 
-    fun linkedNotification(context: Context, notificationVo: NotificationVo) {
+    fun notify(context: Context, notificationVo: NotificationVo) {
         val notificationBuilder =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = context.getString(R.string.notificationChannel_linked)
             createNotificationChannel(context, channel)
