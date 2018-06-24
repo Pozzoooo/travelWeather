@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="default_notification_channel">default</string>
+	<string name="notificationChannel_default">default</string>
+	<string name="notificationChannel_linked">linked</string>
 </resources>
