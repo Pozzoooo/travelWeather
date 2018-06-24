@@ -31,6 +31,8 @@ import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
+import pozzo.apps.travelweather.map.action.RateMeActionRequest
+import pozzo.apps.travelweather.map.business.PreferencesBusiness
 import pozzo.apps.travelweather.map.firebase.MapAnalytics
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
@@ -39,9 +41,11 @@ import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
+//todo I need to break it apart, this is crazy big!
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val locationBusiness = LocationBusiness()
     private val forecastBusiness = ForecastBusiness()
+    private val preferencesBusiness = PreferencesBusiness(getApplication())
     private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
     private val directionWeatherFilter = DirectionWeatherFilter()
@@ -51,6 +55,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private var dragStart = 0L
     private val locationLiveData = LocationLiveData(getApplication())
     private var locationObserver: Observer<Location>? = null
+    private val mapTutorial = MapTutorial(getApplication())
 
     private var route = Route()
     val routeData = MutableLiveData<Route>()
@@ -358,14 +363,20 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
 
     private fun playIfNotPlayed(tutorial: Tutorial) {
-      val mapTutorial = MapTutorial(getApplication())
       if (!mapTutorial.hasPlayed(tutorial)) {
         playTutorial(tutorial)
         mapTutorial.setTutorialPlayed(tutorial)
       }
     }
 
-    fun playTutorial(tutorial: Tutorial) {
+    private fun playTutorial(tutorial: Tutorial) {
       overlay.postValue(tutorial)
+    }
+
+    fun selectedDayChanged() {
+        val selectionCount = preferencesBusiness.getDaySelectionCount()
+        if (selectionCount == 3 && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
+            actionRequest.postValue(RateMeActionRequest(getApplication()))
+        }
     }
 }

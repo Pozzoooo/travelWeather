@@ -9,6 +9,7 @@ import pozzo.apps.travelweather.map.firebase.MapAnalytics
 class PreferencesBusiness(private val application: Application) {
     companion object {
         private const val KEY_SELECTED_DAY = "selectedDay"
+        private const val KEY_DAY_SELECTION_COUNT = "daySelectionCount"
     }
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
     private val preferences = PreferenceManager.getDefaultSharedPreferences(application)
@@ -19,9 +20,13 @@ class PreferencesBusiness(private val application: Application) {
     }
 
     fun setSelectedDay(day: Day) {
+        val count = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
         val edit = preferences.edit()
-        edit.putInt(KEY_SELECTED_DAY, day.index).apply()
+        edit.putInt(KEY_SELECTED_DAY, day.index)
+        edit.putInt(KEY_DAY_SELECTION_COUNT, count + 1)
         edit.apply()
         mapAnalytics.sendDaySelectionChanged(day)
     }
+
+    fun getDaySelectionCount() : Int = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
 }

@@ -11,6 +11,7 @@ import com.splunk.mint.Mint
  *
  * Translate to Spanish
  *
+ * I believe with my current implementation I could make much more use of background work, what about try coroutines?
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Build route if it was triggered when no connection was available (job schedule?)

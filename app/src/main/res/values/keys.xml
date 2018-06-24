@@ -2,4 +2,5 @@
 <resources>
 	<string name="notificationChannel_default">default</string>
 	<string name="notificationChannel_linked">linked</string>
+	<string name="googlePlay">https://play.google.com/store/apps/details?id=pozzo.apps.travelweather</string>
 </resources>

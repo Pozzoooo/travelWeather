@@ -16,6 +16,7 @@
     <string name="finishPosition">Finish</string>
     <string name="removeAllMarkers">Remove all makrs?</string>
     <string name="title_forecastDate">Forecast for</string>
+	<string name="rateMe">Are you enjoying the app? Pleas leave us your feedback on Google Play</string>
 
 	<string name="error_addressNotFound">Address not found</string>
 	<string name="error_needsConnection">Check internet connection</string>
