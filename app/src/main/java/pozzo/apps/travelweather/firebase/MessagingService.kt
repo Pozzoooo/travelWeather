@@ -3,8 +3,8 @@ package pozzo.apps.travelweather.firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.splunk.mint.Mint
-import pozzo.apps.travelweather.common.notification.NotificationHandler
-import pozzo.apps.travelweather.common.notification.NotificationVo
+import pozzo.apps.travelweather.common.notification.NotificationLinked
+import pozzo.apps.travelweather.common.notification.Notifier
 
 //todo how much should I split this class?
 class MessagingService : FirebaseMessagingService() {
@@ -32,8 +32,7 @@ class MessagingService : FirebaseMessagingService() {
         val customMessage = data["customMessage"]
 
         if (url != null && customMessage != null) {
-            val notification = NotificationVo(url, customMessage)
-            NotificationHandler().linkedNotification(this, notification)
+            Notifier().linkedNotification(this, NotificationLinked(url, customMessage))
         } else {
             Mint.logException(Exception("Missing pieces: $url and $customMessage"))
         }

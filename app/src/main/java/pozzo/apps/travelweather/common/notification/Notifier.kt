@@ -2,10 +2,7 @@ package pozzo.apps.travelweather.common.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
@@ -13,7 +10,7 @@ import android.support.v4.app.NotificationManagerCompat
 import pozzo.apps.travelweather.R
 
 
-class NotificationHandler {
+class Notifier {
 
     fun linkedNotification(context: Context, notificationVo: NotificationVo) {
         val notificationBuilder =  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -24,12 +21,8 @@ class NotificationHandler {
             NotificationCompat.Builder(context)
         }
 
-        //todo need to assert intent availability
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notificationVo.link))
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-
         val notification = notificationBuilder
-                .setContentIntent(pendingIntent)
+                .setContentIntent(notificationVo.getPendingIntent(context))
                 .setContentText(notificationVo.message)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_drawer)//todo need to find a proper notification icon
