@@ -5,9 +5,15 @@ import com.splunk.mint.Mint
 
 /**
  * TODO
+ *
+ * Huge bug, if you choose exactly 3 day selection, it keep showing the rateMe dialog
+ *
  * Minor bug, select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  * Fix animation of the flag going back to the right
+ *
+ * Minor bug: Multiples clicks on curret location make it request multiple times even if the last one
+ *  has not finished yet
  *
  * Translate to Spanish
  *

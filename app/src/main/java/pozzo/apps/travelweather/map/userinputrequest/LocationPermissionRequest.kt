@@ -2,15 +2,22 @@ package pozzo.apps.travelweather.map.userinputrequest
 
 import android.Manifest
 import android.arch.lifecycle.LifecycleOwner
-import pozzo.apps.travelweather.core.Warning
-import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
-class LocationPermissionRequest(private val mapViewModel: MapViewModel) : PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+class LocationPermissionRequest(private val callback: Callback) : PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+    companion object {
+        interface Callback {
+            fun granted(lifeCycleOwner: LifecycleOwner)
+            fun denied()
+        }
+    }
+
     override fun granted(lifeCycleOwner: LifecycleOwner) {
-        mapViewModel.setCurrentLocationAsStartPosition(lifeCycleOwner)
+        callback.granted(lifeCycleOwner)
     }
 
     override fun denied() {
-        mapViewModel.warn(Warning.PERMISSION_DENIED)
+        callback.denied()
     }
+
+    override fun code() = 0x1
 }

@@ -1,14 +1,9 @@
 package pozzo.apps.travelweather.map.viewmodel
 
-import android.Manifest
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
-import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -26,8 +21,8 @@ import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
+import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
-import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.action.ActionRequest
 import pozzo.apps.travelweather.map.action.ClearActionRequest
@@ -49,12 +44,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
     private val directionWeatherFilter = DirectionWeatherFilter()
+    private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
 
     private var dragStart = 0L
-    private val locationLiveData = LocationLiveData(getApplication())
-    private var locationObserver: Observer<Location>? = null
     private val mapTutorial = MapTutorial(getApplication())
 
     private var route = Route()
@@ -84,49 +78,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
-        if (route.startPoint == null)
-            setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
+        if (route.startPoint == null) {
+            currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
+        }
     }
 
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
-        setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner)
+        currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
         mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
-    }
-
-    private fun setCurrentLocationAsStartPositionRequestingPermission(lifecycleOwner: LifecycleOwner) {
-        if (hasLocationPermission()) {
-            setCurrentLocationAsStartPosition(lifecycleOwner)
-        } else {
-            requestLocationPermission()
-        }
-    }
-
-    private fun hasLocationPermission() : Boolean = ContextCompat.checkSelfPermission(
-                getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-    private fun requestLocationPermission() {
-        permissionRequest.postValue(LocationPermissionRequest(this))
-    }
-
-    fun setCurrentLocationAsStartPosition(lifecycleOwner: LifecycleOwner) {
-        val currentLocation = getCurrentKnownLocation()
-        if (currentLocation != null) {
-            setStartPosition(currentLocation)
-        } else {
-            updateCurrentLocation(lifecycleOwner)
-        }
-    }
-
-    private fun getCurrentKnownLocation(): LatLng? {
-        try {
-            val location = locationBusiness.getCurrentKnownLocation(getApplication())
-            return if (location != null) LatLng(location.latitude, location.longitude) else null
-        } catch (e: SecurityException) {
-            //we might not have permission, we leave the system try to activate the gps before any message
-        } catch (e: Exception) {
-            Mint.logException(e)
-        }
-        return null
     }
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
@@ -141,28 +100,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun warn(warning: Warning) {
         this.warning.postValue(warning)
-    }
-
-    private fun updateCurrentLocation(lifecycleOwner: LifecycleOwner) {
-        showProgress()
-
-        val locationObserver = Observer<Location> { location ->
-            removeLocationObserver()
-            if (location != null) {
-                setStartPosition(LatLng(location.latitude, location.longitude))
-            } else {
-                postError(Error.CANT_FIND_CURRENT_LOCATION)
-            }
-        }
-        locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
-        this.locationObserver = locationObserver
-    }
-
-    private fun removeLocationObserver() {
-        hideProgress()
-        locationObserver?.let {
-            locationLiveData.removeObserver(it)
-        }
     }
 
     private fun postError(error: Error) {
@@ -208,7 +145,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (weather.address != null) WeatherPoint(weather) else null
 
     fun setFinishPosition(finishPosition: LatLng?) {
-        removeLocationObserver()
         if (finishPosition != null) {
             createFinishPoint(finishPosition)
             playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
@@ -253,7 +189,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setStartPosition(startPosition: LatLng?) {
-        removeLocationObserver()
         if (startPosition != null) {
             createStartPoint(startPosition)
         } else {
@@ -377,6 +312,31 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val selectionCount = preferencesBusiness.getDaySelectionCount()
         if (selectionCount == 3 && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
             actionRequest.postValue(RateMeActionRequest(getApplication()))
+        }
+    }
+
+    private inner class CurrentLocationCallback : CurrentLocationRequester.Companion.Callback {
+        override fun onCurrentLocation(latLng: LatLng) {
+            setStartPosition(latLng)
+            currentLocationRequester.removeLocationObserver()
+        }
+
+        override fun onNotFound() {
+            postError(Error.CANT_FIND_CURRENT_LOCATION)
+        }
+
+        override fun onPermissionDenied() {
+            permissionRequest.postValue(LocationPermissionRequest(LocationPermissionRequestCallback()))
+        }
+    }
+
+    private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Companion.Callback {
+        override fun granted(lifeCycleOwner: LifecycleOwner) {
+            currentLocationRequester.requestCurrentLocationRequestingPermission(lifeCycleOwner)
+        }
+
+        override fun denied() {
+            warn(Warning.PERMISSION_DENIED)
         }
     }
 }
