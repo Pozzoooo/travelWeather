@@ -1,9 +1,9 @@
-package pozzo.apps.travelweather.firebase
+package pozzo.apps.travelweather.notification.firebase
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import pozzo.apps.travelweather.common.notification.Notifier
-import pozzo.apps.travelweather.firebase.handler.NotificationParserFactory
+import pozzo.apps.travelweather.notification.Notifier
+import pozzo.apps.travelweather.notification.parser.NotificationParserFactory
 
 class MessagingService : FirebaseMessagingService() {
     private val notificationParserFactory = NotificationParserFactory()

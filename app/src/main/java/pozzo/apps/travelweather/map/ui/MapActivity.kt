@@ -31,12 +31,12 @@ import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.map.action.ActionRequest
+import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
-import pozzo.apps.travelweather.map.viewmodel.PreferencesViewModel
+import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
 import java.util.*
 
 //todo colocar data da previsao junto ao texto da previsao

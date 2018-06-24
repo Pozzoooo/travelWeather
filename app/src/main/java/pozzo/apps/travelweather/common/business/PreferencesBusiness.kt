@@ -1,10 +1,10 @@
-package pozzo.apps.travelweather.map.business
+package pozzo.apps.travelweather.common.business
 
 import android.app.Application
 import android.preference.PreferenceManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import pozzo.apps.travelweather.forecast.model.Day
-import pozzo.apps.travelweather.map.firebase.MapAnalytics
+import pozzo.apps.travelweather.analytics.MapAnalytics
 
 class PreferencesBusiness(private val application: Application) {
     companion object {

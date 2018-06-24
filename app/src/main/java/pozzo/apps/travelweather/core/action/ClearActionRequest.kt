@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map.action
+package pozzo.apps.travelweather.core.action
 
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel

@@ -45,14 +45,14 @@
         </activity>
 
 		<service
-			android:name=".firebase.MessagingService"
+			android:name="pozzo.apps.travelweather.notification.firebase.MessagingService"
 			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT"/>
 			</intent-filter>
 		</service>
 		<service
-			android:name=".firebase.InstanceIdService"
+			android:name="pozzo.apps.travelweather.notification.firebase.InstanceIdService"
 			android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>

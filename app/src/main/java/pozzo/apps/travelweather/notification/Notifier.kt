@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.common.notification
+package pozzo.apps.travelweather.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.notification.model.NotificationVo
 
 class Notifier {
 

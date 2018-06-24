@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map.firebase
+package pozzo.apps.travelweather.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics

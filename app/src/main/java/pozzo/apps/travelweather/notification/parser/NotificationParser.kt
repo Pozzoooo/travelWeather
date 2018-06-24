@@ -1,7 +1,7 @@
-package pozzo.apps.travelweather.firebase.handler
+package pozzo.apps.travelweather.notification.parser
 
 import com.google.firebase.messaging.RemoteMessage
-import pozzo.apps.travelweather.common.notification.NotificationVo
+import pozzo.apps.travelweather.notification.model.NotificationVo
 
 interface NotificationParser {
 

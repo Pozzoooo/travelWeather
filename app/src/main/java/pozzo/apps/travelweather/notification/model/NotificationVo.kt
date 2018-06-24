@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.common.notification
+package pozzo.apps.travelweather.notification.model
 
 import android.app.PendingIntent
 import android.content.Context

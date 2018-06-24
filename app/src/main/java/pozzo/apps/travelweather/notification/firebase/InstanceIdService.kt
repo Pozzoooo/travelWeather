@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.firebase
+package pozzo.apps.travelweather.notification.firebase
 
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService

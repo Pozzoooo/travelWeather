@@ -24,15 +24,15 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
-import pozzo.apps.travelweather.map.action.ActionRequest
-import pozzo.apps.travelweather.map.action.ClearActionRequest
-import pozzo.apps.travelweather.map.action.RateMeActionRequest
-import pozzo.apps.travelweather.map.business.PreferencesBusiness
-import pozzo.apps.travelweather.map.firebase.MapAnalytics
+import pozzo.apps.travelweather.core.action.ActionRequest
+import pozzo.apps.travelweather.core.action.ClearActionRequest
+import pozzo.apps.travelweather.core.action.RateMeActionRequest
+import pozzo.apps.travelweather.common.business.PreferencesBusiness
+import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
-import pozzo.apps.travelweather.map.userinputrequest.LocationPermissionRequest
-import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
+import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
+import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -114,6 +114,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private fun hideProgress() {
         isShowingProgress.postValue(false)
     }
+
+    //todo my class review has paused here
 
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
         val weathers = ArrayList<Weather>()
@@ -315,6 +317,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    //todo so is coroutines gonna be able to make me get rid of these callbacks!?
     private inner class CurrentLocationCallback : CurrentLocationRequester.Companion.Callback {
         override fun onCurrentLocation(latLng: LatLng) {
             setStartPosition(latLng)

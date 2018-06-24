@@ -1,10 +1,10 @@
-package pozzo.apps.travelweather.map.viewmodel
+package pozzo.apps.travelweather.common.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.MutableLiveData
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.forecast.model.Day
-import pozzo.apps.travelweather.map.business.PreferencesBusiness
+import pozzo.apps.travelweather.common.business.PreferencesBusiness
 
 class PreferencesViewModel(application: Application) : BaseViewModel(application) {
     val selectedDay = MutableLiveData<Day>()

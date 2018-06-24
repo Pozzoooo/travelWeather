@@ -5,11 +5,14 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import com.splunk.mint.Mint
 import pozzo.apps.travelweather.map.ui.MapActivity
-import pozzo.apps.travelweather.map.userinputrequest.PermissionRequest
+import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 /**
  * Manages permission requests and results.
+ *
+ *
+ * todo we need a dependency inversion to remove MapActivity dependency
  */
 class PermissionManager(private val mapActivity: MapActivity) {
     private val viewModel: MapViewModel = ViewModelProviders.of(mapActivity).get(MapViewModel::class.java)

@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.map.action
+package pozzo.apps.travelweather.core.action
 
 import android.content.Context
 import com.splunk.mint.Mint
