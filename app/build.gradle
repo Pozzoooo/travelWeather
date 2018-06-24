@@ -5,83 +5,84 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion 27
-  buildToolsVersion '27.0.3'
+	compileSdkVersion 27
+	buildToolsVersion '27.0.3'
 
-  defaultConfig {
-    applicationId "pozzo.apps.travelweather"
-    minSdkVersion 21
-    targetSdkVersion 27
-    versionCode 17
-    versionName "1.2.3-SNAPSHOT"
-  }
+	defaultConfig {
+		applicationId "pozzo.apps.travelweather"
+		minSdkVersion 21
+		targetSdkVersion 27
+		versionCode 17
+		versionName "1.2.3-SNAPSHOT"
+	}
 
-  signingConfigs {
-    release
-  }
+	signingConfigs {
+		release
+	}
 
-  allprojects {
-    afterEvaluate { project ->
-      def propsFile = rootProject.file("../../keystore/keystore.properties")
-      def configName = 'release'
+	allprojects {
+		afterEvaluate { project ->
+			def propsFile = rootProject.file("../../keystore/keystore.properties")
+			def configName = 'release'
 
-		def props = new Properties()
-		props.load(new FileInputStream(propsFile))
-		android.signingConfigs[configName].storeFile = file(props['storeFile'])
-		android.signingConfigs[configName].storePassword = props['storePassword']
-		android.signingConfigs[configName].keyAlias = props['keyAlias']
-		android.signingConfigs[configName].keyPassword = props['keyPassword']
-    }
-  }
+			def props = new Properties()
+			props.load(new FileInputStream(propsFile))
+			android.signingConfigs[configName].storeFile = file(props['storeFile'])
+			android.signingConfigs[configName].storePassword = props['storePassword']
+			android.signingConfigs[configName].keyAlias = props['keyAlias']
+			android.signingConfigs[configName].keyPassword = props['keyPassword']
+		}
+	}
 
-  buildTypes {
-    release {
-      debuggable false
-      signingConfig signingConfigs.release
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-      project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
-      + '-' + android.defaultConfig.versionCode);
-    }
-    debug {
-      debuggable true
-      signingConfig signingConfigs.release
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-    }
-  }
+	buildTypes {
+		release {
+			debuggable false
+			signingConfig signingConfigs.release
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+			project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
+					+ '-' + android.defaultConfig.versionCode);
+		}
+		debug {
+			debuggable true
+			signingConfig signingConfigs.release
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
 
-  sourceSets {
-    test.java.srcDirs += 'src/test/kotlin'
-  }
+	sourceSets {
+		test.java.srcDirs += 'src/test/kotlin'
+	}
 
-  dataBinding {
-    enabled = true
-  }
+	dataBinding {
+		enabled = true
+	}
 }
 
 dependencies {
-  //Google
-  implementation 'com.android.support:design:27.1.1'
-  implementation "android.arch.lifecycle:runtime:1.1.1"
-  implementation "android.arch.lifecycle:extensions:1.1.1"
-  implementation 'com.google.firebase:firebase-core:16.0.0'
-  implementation "com.google.firebase:firebase-perf:16.0.0"
-  implementation 'com.google.android.gms:play-services-maps:15.0.1'
-  implementation 'com.google.android.gms:play-services-location:15.0.1'
-  kapt "android.arch.lifecycle:compiler:1.1.1"
-  //Web requests
-  implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-  implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-  //Mint
-  implementation "com.splunk.mint:mint:5.0.0"
-  //Custom libraries
-  implementation 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
-  implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
-  //Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+	//Google
+	implementation 'com.android.support:design:27.1.1'
+	implementation "android.arch.lifecycle:runtime:1.1.1"
+	implementation "android.arch.lifecycle:extensions:1.1.1"
+	implementation 'com.google.firebase:firebase-core:16.0.0'
+	implementation "com.google.firebase:firebase-perf:16.0.0"
+	implementation 'com.google.firebase:firebase-messaging:17.0.0'
+	implementation 'com.google.android.gms:play-services-maps:15.0.1'
+	implementation 'com.google.android.gms:play-services-location:15.0.1'
+	kapt "android.arch.lifecycle:compiler:1.1.1"
+	//Web requests
+	implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+	//Mint
+	implementation "com.splunk.mint:mint:5.0.0"
+	//Custom libraries
+	implementation 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
+	implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
+	//Kotlin
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 
-  testImplementation 'junit:junit:4.12'
+	testImplementation 'junit:junit:4.12'
 }
 
 apply plugin: 'com.google.gms.google-services'
