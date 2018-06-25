@@ -29,6 +29,7 @@ import com.splunk.mint.Mint
  * Outra fonte para busca de previsao do tempo
  * Unit test :)
  * Animar as flags voltando para a lateral quando apertar o clear
+ * I need to make my dependencies more explicity, I guess unit test and dagger will help me on that
  */
 class App : Application() {
 

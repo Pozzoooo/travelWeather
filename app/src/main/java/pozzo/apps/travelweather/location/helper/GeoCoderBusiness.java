@@ -13,10 +13,10 @@ import java.util.Locale;
 /**
  * Helps in location.
  */
-public class GeoCoderHelper {
+public class GeoCoderBusiness {
 	private Context ctx;
 
-	public GeoCoderHelper(Context ctx) {
+	public GeoCoderBusiness(Context ctx) {
 		this.ctx = ctx;
 	}
 

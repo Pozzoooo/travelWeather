@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -23,8 +24,7 @@ public class LocationBusiness {
      * @return Posicao atual do usuario.
      */
     public Location getCurrentKnownLocation(Context context) throws SecurityException {
-        LocationManager locationManager = (LocationManager)
-                context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
 			String bestProvider = locationManager.getBestProvider(new Criteria(), false);
 			if (bestProvider == null)
@@ -38,13 +38,9 @@ public class LocationBusiness {
     /**
      * Rota para o dado destino.
      */
-    public ArrayList<LatLng> getDirections(LatLng startPosition, LatLng finishPosition) throws IOException {
-        if(startPosition == null || finishPosition == null)
-            return null;
-
+    public ArrayList<LatLng> getDirections(@NonNull LatLng startPosition, @NonNull LatLng finishPosition) throws IOException {
         GMapV2Direction md = new GMapV2Direction();
-        Document doc = md.getDocument(
-                startPosition, finishPosition, GMapV2Direction.MODE_DRIVING);
+        Document doc = md.getDocument(startPosition, finishPosition, GMapV2Direction.MODE_DRIVING);
         return doc == null ? null : md.getDirection(doc);
     }
 }

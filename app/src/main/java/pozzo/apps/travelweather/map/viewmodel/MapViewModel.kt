@@ -3,9 +3,7 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
-import android.graphics.Color
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.analytics.FirebaseAnalytics
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.App
@@ -19,33 +17,27 @@ import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
-import pozzo.apps.travelweather.direction.DirectionWeatherFilter
-import pozzo.apps.travelweather.forecast.ForecastBusiness
+import pozzo.apps.travelweather.direction.DirectionNotFoundException
+import pozzo.apps.travelweather.direction.RouteBusiness
 import pozzo.apps.travelweather.forecast.model.Route
-import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
-import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
-import pozzo.apps.travelweather.location.LocationBusiness
-import pozzo.apps.travelweather.location.helper.GeoCoderHelper
+import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
-import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import java.io.IOException
 import java.util.concurrent.Executors
 
 //todo I need to break it apart, this is crazy big!
 class MapViewModel(application: Application) : BaseViewModel(application) {
-    private val locationBusiness = LocationBusiness()
-    private val forecastBusiness = ForecastBusiness()
-    private val preferencesBusiness = PreferencesBusiness(getApplication())
-    private val geoCoderHelper = GeoCoderHelper(application)
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
-    private val directionWeatherFilter = DirectionWeatherFilter()
-    private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
-    private val weatherToMapPointParser = WeatherToMapPointParser()
 
+    private val preferencesBusiness = PreferencesBusiness(getApplication())
+    private val geoCoderBusiness = GeoCoderBusiness(application)
+    private val routeBusiness = RouteBusiness(mapAnalytics)
+
+    private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
     private val routeExecutor = Executors.newSingleThreadExecutor()
 
     private var dragStart = 0L
@@ -115,18 +107,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    private fun requestWeathersFor(weatherPoints: List<LatLng>) : List<Weather> {
-        val weathers = try {
-            forecastBusiness.from(weatherPoints)
-        } catch (e: IOException) {
-            handleConnectionError(e)
-            emptyList<Weather>()
-        }
-
-        if (weathers.size != weatherPoints.size) mapAnalytics.weatherMiss(weatherPoints.size, weathers.size)
-        return weathers
-    }
-
     fun clearStartPosition() {
         setRoute(Route(finishPoint = route.finishPoint))
     }
@@ -146,8 +126,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
     }
 
-    //todo here now - better test it before going further
-
     private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
         setRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
         if (startPoint == null || finishPoint == null) return
@@ -155,28 +133,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         showProgress()
         routeExecutor.execute {
             try {
-                val direction = locationBusiness.getDirections(startPoint.position, finishPoint.position)
-                if (direction?.isEmpty() == false) {
-                    val directionLine = setDirectionLine(direction)
-                    val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
-                    setRoute(Route(route, polyline = directionLine, mapPoints = mapPoints))
-                } else {
-                    postError(Error.CANT_FIND_ROUTE)
-                }
+                val route = routeBusiness.createRoute(startPoint, finishPoint)
+                setRoute(route)
+            } catch (e: DirectionNotFoundException) {
+                postError(Error.CANT_FIND_ROUTE)
             } catch (e: IOException) {
                 handleConnectionError(e)
             } finally {
                 hideProgress()
             }
         }
-    }
-
-    private fun setDirectionLine(direction: List<LatLng>) : PolylineOptions =
-            PolylineOptions().width(7F).color(Color.BLUE).addAll(direction)
-
-    private fun toMapPoints(weatherPoints: List<LatLng>) : List<MapPoint> {
-        val weathers = requestWeathersFor(weatherPoints)
-        return weatherToMapPointParser.parse(weathers)
     }
 
     fun back() {
@@ -212,6 +178,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         addPoint(latLng)
     }
 
+    //todo review paused here
+
     fun addPoint(latLng: LatLng) {
         hideTopBar()
         if (route.startPoint == null) {
@@ -231,7 +199,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun searchAddress(string: String) {
         try {
             mapAnalytics.sendSearchAddress()
-            val addressLatLng = geoCoderHelper.getPositionFromFirst(string)
+            val addressLatLng = geoCoderBusiness.getPositionFromFirst(string)
             if (addressLatLng != null)
                 addPoint(addressLatLng)
             else
