@@ -127,30 +127,35 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return weathers
     }
 
-    //todo here now
-
-    fun setFinishPosition(finishPosition: LatLng?) {
-        if (finishPosition != null) {
-            createFinishPoint(finishPosition)
-            playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
-        } else {
-            setRoute(Route(startPoint = route.startPoint))
-        }
+    fun clearStartPosition() {
+        setRoute(Route(finishPoint = route.finishPoint))
     }
 
-    private fun createFinishPoint(finishPosition: LatLng) {
-        val startPoint = route.startPoint!!
-        val mapPoint = FinishPoint(getApplication<App>().resources, finishPosition)
-        setRoute(Route(startPoint = startPoint, finishPoint = mapPoint))
-        updateRoute(startPoint.position, finishPosition)
+    fun setStartPosition(startPosition: LatLng) {
+        val startPoint = StartPoint(getApplication<App>().resources, startPosition)
+        updateRoute(startPoint = startPoint)
     }
 
-    private fun updateRoute(startPosition: LatLng, finishPosition: LatLng) {
+    fun clearFinishPosition() {
+        setRoute(Route(startPoint = route.startPoint))
+    }
+
+    fun setFinishPosition(finishPosition: LatLng) {
+        val finishPoint = FinishPoint(getApplication<App>().resources, finishPosition)
+        updateRoute(finishPoint = finishPoint)
+        playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
+    }
+
+    //todo here now - better test it before going further
+
+    private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
+        setRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
+        if (startPoint == null || finishPoint == null) return
+
         showProgress()
-
         routeExecutor.execute {
             try {
-                val direction = locationBusiness.getDirections(startPosition, finishPosition)
+                val direction = locationBusiness.getDirections(startPoint.position, finishPoint.position)
                 if (direction?.isEmpty() == false) {
                     val directionLine = setDirectionLine(direction)
                     val mapPoints = toMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
@@ -160,8 +165,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 }
             } catch (e: IOException) {
                 handleConnectionError(e)
+            } finally {
+                hideProgress()
             }
-            hideProgress()
         }
     }
 
@@ -173,27 +179,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return weatherToMapPointParser.parse(weathers)
     }
 
-    fun setStartPosition(startPosition: LatLng?) {
-        if (startPosition != null) {
-            createStartPoint(startPosition)
-        } else {
-            setRoute(Route())
-        }
-    }
-
-    private fun createStartPoint(startPosition: LatLng) {
-        val finishPoint = route.finishPoint
-        val mapPoint = StartPoint(getApplication<App>().resources, startPosition)
-        val route = Route(startPoint = mapPoint, finishPoint = finishPoint)
-        setRoute(route)
-        finishPoint?.let { updateRoute(startPosition, it.position) }
-    }
-
     fun back() {
         when {
             isShowingTopBar.value == true -> hideTopBar()
-            route.finishPoint != null -> setFinishPosition(null)
-            route.startPoint != null -> setStartPosition(null)
+            route.finishPoint != null -> clearFinishPosition()
+            route.startPoint != null -> clearStartPosition()
             else -> shouldFinish.postValue(true)
         }
     }

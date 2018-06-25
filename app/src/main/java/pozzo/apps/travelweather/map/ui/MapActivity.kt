@@ -14,6 +14,7 @@ import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.splunk.mint.Mint
@@ -23,20 +24,20 @@ import kotlinx.android.synthetic.main.group_top_bar.*
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
+import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
 import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
+import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
-import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
 import java.util.*
 
 //todo colocar data da previsao junto ao texto da previsao
@@ -217,10 +218,8 @@ class MapActivity : BaseActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState != null) {
-            viewModel.setStartPosition(savedInstanceState.getParcelable("startPosition"))
-            viewModel.setFinishPosition(savedInstanceState.getParcelable("finishPosition"))
-        }
+        savedInstanceState?.getParcelable<LatLng?>("startPosition")?.let { viewModel.setStartPosition(it) }
+        savedInstanceState?.getParcelable<LatLng?>("finishPosition")?.let { viewModel.setFinishPosition(it) }
     }
 
     override fun onBackPressed() {
