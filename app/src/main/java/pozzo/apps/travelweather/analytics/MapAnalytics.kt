@@ -57,4 +57,14 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
     fun sendSearchAddress() {
         firebaseAnalytics.logEvent("searchAddress", null)
     }
+
+    fun weatherMiss(expected: Int, received: Int) {
+        val difference = expected - received
+
+        val bundle = Bundle()
+        bundle.putInt(FirebaseAnalytics.Param.VALUE, difference)
+        bundle.putInt("received", received)
+        bundle.putInt("expected", expected)
+        firebaseAnalytics.logEvent("weatherMiss", bundle)
+    }
 }

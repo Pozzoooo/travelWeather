@@ -1,8 +1,10 @@
 package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
+import com.splunk.mint.Mint
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
+import java.io.IOException
 
 class ForecastBusiness {
     companion object {
@@ -10,6 +12,24 @@ class ForecastBusiness {
     }
 
     private val forecastClient = ForecastClientFactory.instance.getForecastClient()
+
+    fun from(weatherPoints: List<LatLng>) : List<Weather> {
+        var ioException: IOException? = null
+        val weathers = weatherPoints.mapNotNull {
+            try {
+                from(it)
+            } catch (e: IOException) {
+                ioException = e
+                null
+            } catch (e: Exception) {
+                Mint.logException(e)
+                null
+            }
+        }
+
+        if (weathers.isEmpty()) ioException?.let { throw it }
+        return weathers
+    }
 
     fun from(location: LatLng): Weather? {
         return forecastClient.fromCoordinates(location)

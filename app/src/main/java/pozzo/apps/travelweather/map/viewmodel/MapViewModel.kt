@@ -7,12 +7,18 @@ import android.graphics.Color
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.splunk.mint.Mint
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.App
+import pozzo.apps.travelweather.analytics.MapAnalytics
+import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
+import pozzo.apps.travelweather.core.action.ActionRequest
+import pozzo.apps.travelweather.core.action.ClearActionRequest
+import pozzo.apps.travelweather.core.action.RateMeActionRequest
+import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
+import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.Route
@@ -24,15 +30,8 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
-import pozzo.apps.travelweather.core.action.ActionRequest
-import pozzo.apps.travelweather.core.action.ClearActionRequest
-import pozzo.apps.travelweather.core.action.RateMeActionRequest
-import pozzo.apps.travelweather.common.business.PreferencesBusiness
-import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
-import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
-import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -115,25 +114,19 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingProgress.postValue(false)
     }
 
-    //todo my class review has paused here
-
-    private fun requestWeathersFor(weatherPoints: List<LatLng>) : ArrayList<Weather> {
-        val weathers = ArrayList<Weather>()
-        weatherPoints.forEach {
-            try {
-                requestWeatherFor(it)?.let { weathers.add(it) }
-            } catch (e: IOException) {
-                handleConnectionError(e)
-            } catch (e: Exception) {
-                Mint.logException(e)
-            }
+    private fun requestWeathersFor(weatherPoints: List<LatLng>) : List<Weather> {
+        val weathers = try {
+            forecastBusiness.from(weatherPoints)
+        } catch (e: IOException) {
+            handleConnectionError(e)
+            emptyList<Weather>()
         }
+
+        if (weathers.size != weatherPoints.size) mapAnalytics.weatherMiss(weatherPoints.size, weathers.size)
         return weathers
     }
 
-    private fun requestWeatherFor(weatherPoint: LatLng) : Weather? = forecastBusiness.from(weatherPoint)
-
-    private fun parseWeatherIntoMapPoints(weathers: ArrayList<Weather>) : ArrayList<MapPoint> {
+    private fun parseWeatherIntoMapPoints(weathers: List<Weather>) : ArrayList<MapPoint> {
         val mapPoints = ArrayList<MapPoint>()
 
         weathers.forEach {
