@@ -26,12 +26,12 @@ import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.helper.GeoCoderHelper
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
+import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import java.io.IOException
 import java.util.concurrent.Executors
 
@@ -44,6 +44,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
     private val directionWeatherFilter = DirectionWeatherFilter()
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
+    private val weatherToMapPointParser = WeatherToMapPointParser()
 
     private val routeExecutor = Executors.newSingleThreadExecutor()
 
@@ -126,18 +127,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         return weathers
     }
 
-    private fun parseWeatherIntoMapPoints(weathers: List<Weather>) : ArrayList<MapPoint> {
-        val mapPoints = ArrayList<MapPoint>()
-
-        weathers.forEach {
-            parseWeatherIntoMapPoint(it)?.let { mapPoints.add(it) }
-        }
-
-        return mapPoints
-    }
-
-    private fun parseWeatherIntoMapPoint(weather: Weather) : MapPoint? =
-        if (weather.address != null) WeatherPoint(weather) else null
+    //todo here now
 
     fun setFinishPosition(finishPosition: LatLng?) {
         if (finishPosition != null) {
@@ -180,7 +170,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun toMapPoints(weatherPoints: List<LatLng>) : List<MapPoint> {
         val weathers = requestWeathersFor(weatherPoints)
-        return parseWeatherIntoMapPoints(weathers)
+        return weatherToMapPointParser.parse(weathers)
     }
 
     fun setStartPosition(startPosition: LatLng?) {
