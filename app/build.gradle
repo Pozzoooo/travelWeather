@@ -81,6 +81,8 @@ dependencies {
 	implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
 	//Kotlin
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3"
 
 	testImplementation 'junit:junit:4.12'
 }

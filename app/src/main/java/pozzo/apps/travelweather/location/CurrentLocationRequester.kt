@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import com.splunk.mint.Mint
@@ -15,7 +16,6 @@ class CurrentLocationRequester(private val application: Application, private val
         interface Callback {
             fun onCurrentLocation(latLng: LatLng)
             fun onNotFound()
-            fun onPermissionDenied()
         }
     }
 
@@ -24,22 +24,19 @@ class CurrentLocationRequester(private val application: Application, private val
     private val locationLiveData = LocationLiveData(application)
     private var locationObserver: Observer<Location>? = null
 
+    @Throws(PermissionDeniedException::class)
     fun requestCurrentLocationRequestingPermission(lifecycleOwner: LifecycleOwner) {
         if (hasLocationPermission()) {
             requestCurrentLocation(lifecycleOwner)
         } else {
-            requestLocationPermission()
+            throw PermissionDeniedException()
         }
     }
 
-    private fun hasLocationPermission() : Boolean = ContextCompat.checkSelfPermission(
-            application, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    private fun hasLocationPermission() : Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1
+            || ContextCompat.checkSelfPermission(application, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
-    private fun requestLocationPermission() {
-        callback.onPermissionDenied()
-    }
-
-    fun requestCurrentLocation(lifecycleOwner: LifecycleOwner) {
+    private fun requestCurrentLocation(lifecycleOwner: LifecycleOwner) {
         val currentLocation = getCurrentKnownLocation()
         if (currentLocation != null) {
             callback.onCurrentLocation(currentLocation)

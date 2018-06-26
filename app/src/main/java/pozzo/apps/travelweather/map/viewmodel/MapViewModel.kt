@@ -5,6 +5,8 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
 import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
@@ -24,13 +26,12 @@ import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
+import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
 import java.io.IOException
-import java.util.concurrent.Executors
 
-//todo I need to break it apart, this is crazy big!
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
 
@@ -39,9 +40,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val routeBusiness = RouteBusiness(mapAnalytics)
 
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
-    private val routeExecutor = Executors.newSingleThreadExecutor()
 
     private var dragStart = 0L
+    private var job: Job? = null
     private val mapTutorial = MapTutorial(getApplication())
 
     private var route = Route()
@@ -70,15 +71,23 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
       routeData.postValue(route)
     }
 
-    fun onMapReady(lifecycleOwner: LifecycleOwner) {
-        if (route.startPoint == null) {
+    fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
+        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
+        setStartAsCurrentLocation(lifecycleOwner)
+    }
+
+    private fun setStartAsCurrentLocation(lifecycleOwner: LifecycleOwner) {
+        try {
             currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
+        } catch (e: PermissionDeniedException) {
+            permissionRequest.postValue(LocationPermissionRequest(LocationPermissionRequestCallback()))
         }
     }
 
-    fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
-        currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
-        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
+    fun onMapReady(lifecycleOwner: LifecycleOwner) {
+        if (route.startPoint == null) {
+            setStartAsCurrentLocation(lifecycleOwner)
+        }
     }
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
@@ -136,7 +145,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (startPoint == null || finishPoint == null) return
 
         showProgress()
-        routeExecutor.execute {
+        job?.cancel()
+        job = launch {
             try {
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
                 setRoute(route)
@@ -252,7 +262,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    //todo so is coroutines gonna be able to make me get rid of these callbacks!?
     private inner class CurrentLocationCallback : CurrentLocationRequester.Companion.Callback {
         override fun onCurrentLocation(latLng: LatLng) {
             setStartPosition(latLng)
@@ -261,10 +270,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
         override fun onNotFound() {
             postError(Error.CANT_FIND_CURRENT_LOCATION)
-        }
-
-        override fun onPermissionDenied() {
-            permissionRequest.postValue(LocationPermissionRequest(LocationPermissionRequestCallback()))
         }
     }
 
