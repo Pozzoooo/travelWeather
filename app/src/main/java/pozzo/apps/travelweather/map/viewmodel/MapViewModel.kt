@@ -42,7 +42,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
 
     private var dragStart = 0L
-    private var job: Job? = null
+    private var updateRouteJob: Job? = null
     private val mapTutorial = MapTutorial(getApplication())
 
     private var route = Route()
@@ -145,11 +145,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (startPoint == null || finishPoint == null) return
 
         showProgress()
-        job?.cancel()
-        job = launch {
+        updateRouteJob?.cancel()
+        updateRouteJob = launch {
             try {
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
-                setRoute(route)
+                if (isActive) setRoute(route)
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
             } catch (e: IOException) {
