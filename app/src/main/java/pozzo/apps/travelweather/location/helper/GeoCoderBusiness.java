@@ -3,6 +3,7 @@ package pozzo.apps.travelweather.location.helper;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,9 +23,6 @@ public class GeoCoderBusiness {
 
 	/**
 	 * Standard way to convert an address to a String.
-	 * 
-	 * @param addr
-	 * @return
 	 */
 	public String asString(Address addr) {
 		if(addr.getMaxAddressLineIndex() <= 0) {
@@ -43,9 +41,6 @@ public class GeoCoderBusiness {
 
 	/**
 	 * Get related address to the position.
-	 * 
-	 * @param point
-	 * @return
 	 */
 	public String getAddress(LatLng point) {
 		Geocoder geoCoder = new Geocoder(ctx, Locale.getDefault());
@@ -66,9 +61,6 @@ public class GeoCoderBusiness {
 
 	/**
 	 * Get a list of address similar to the source.
-	 * 
-	 * @param address
-	 * @return
 	 */
 	public List<Address> getSimilarAddresses(String address) throws IOException {
 		Geocoder geoCoder = new Geocoder(ctx, Locale.getDefault()); 
@@ -80,9 +72,6 @@ public class GeoCoderBusiness {
 
 	/**
 	 * Get address location used to use at MapView.
-	 * 
-	 * @param address
-	 * @return
 	 */
 	public LatLng getPosition(Address address) {
 		return new LatLng(address.getLatitude(), address.getLongitude());
@@ -90,11 +79,8 @@ public class GeoCoderBusiness {
 
 	/**
 	 * Get first related address.
-	 * 
-	 * @param address
-	 * @return
 	 */
-	public LatLng getPositionFromFirst(String address) throws IOException {
+	public LatLng getPositionFromFirst(@NonNull String address) throws IOException {
 		if (address.isEmpty())
 			return null;
 

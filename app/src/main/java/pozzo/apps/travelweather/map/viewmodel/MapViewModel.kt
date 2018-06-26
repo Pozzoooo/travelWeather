@@ -19,6 +19,7 @@ import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.direction.RouteBusiness
+import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -99,6 +100,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         mapAnalytics.sendErrorMessage(error)
     }
 
+    fun errorDismissed() {
+        error.value = null
+    }
+
     private fun showProgress() {
         isShowingProgress.postValue(true)
     }
@@ -145,6 +150,14 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    private fun handleConnectionError(ioException: IOException) {
+        if (error.value != null) return //there is a popup showing already, so no botherr
+        if (notConnected()) postError(Error.NO_CONNECTION)
+        else postError(Error.CANT_REACH)
+    }
+
+    private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
+
     fun back() {
         when {
             isShowingTopBar.value == true -> hideTopBar()
@@ -178,8 +191,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         addPoint(latLng)
     }
 
-    //todo review paused here
-
     fun addPoint(latLng: LatLng) {
         hideTopBar()
         if (route.startPoint == null) {
@@ -199,27 +210,16 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun searchAddress(string: String) {
         try {
             mapAnalytics.sendSearchAddress()
-            val addressLatLng = geoCoderBusiness.getPositionFromFirst(string)
-            if (addressLatLng != null)
-                addPoint(addressLatLng)
-            else
-                postError(Error.ADDRESS_NOT_FOUND)
+            geoCoderBusiness.getPositionFromFirst(string)?.let {
+                addPoint(it)
+            } ?: postError(Error.ADDRESS_NOT_FOUND)
         } catch (e: IOException) {
             handleConnectionError(e)
         }
     }
 
-    fun errorDismissed() {
-        error.value = null
-    }
-
-    fun requestClearRequestedByUser() {
-        mapAnalytics.sendClearRouteEvent()
-        requestClear()
-    }
-
     fun requestClear() {
-        hideTopBar()
+        mapAnalytics.sendClearRouteEvent()
         actionRequest.postValue(ClearActionRequest(this))
     }
 
@@ -229,16 +229,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun actionRequestDismissed() {
-        this.actionRequest.value = null
+        actionRequest.value = null
     }
-
-    private fun handleConnectionError(ioException: IOException) {
-      if (error.value != null) return //there is a popup showing already, so no botherr
-      if (notConnected()) postError(Error.NO_CONNECTION)
-      else postError(Error.CANT_REACH)
-    }
-
-    private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
 
     private fun playIfNotPlayed(tutorial: Tutorial) {
       if (!mapTutorial.hasPlayed(tutorial)) {
@@ -251,10 +243,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
       overlay.postValue(tutorial)
     }
 
-    fun selectedDayChanged() {
+    fun selectedDayChanged(newSelection: Day) {
         val selectionCount = preferencesBusiness.getDaySelectionCount()
-        if (selectionCount == 3 && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
+        if (selectionCount == RateMeActionRequest.AMOUNT_OF_OCCURRENCES
+                && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
             actionRequest.postValue(RateMeActionRequest(getApplication()))
+            preferencesBusiness.setSelectedDay(newSelection)
         }
     }
 

@@ -266,7 +266,7 @@ class MapActivity : BaseActivity() {
     private fun changeSelectedDay(newSelection: Day) {
         spinnerDaySelection.setSelection(newSelection.index)
         refreshMarkers(newSelection)
-        viewModel.selectedDayChanged()
+        viewModel.selectedDayChanged(newSelection)
     }
 
     private fun refreshMarkers(day: Day) {
