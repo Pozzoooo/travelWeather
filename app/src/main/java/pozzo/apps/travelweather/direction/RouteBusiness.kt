@@ -41,7 +41,7 @@ class RouteBusiness(private val mapAnalytics: MapAnalytics) {
 
     private fun requestWeathersFor(weatherPoints: List<LatLng>) : List<Weather> {
         val weathers = forecastBusiness.from(weatherPoints)
-        if (weathers.size != weatherPoints.size) mapAnalytics.weatherMiss(weatherPoints.size, weathers.size)
+        if (weathers.size != weatherPoints.size) mapAnalytics.sendWeatherMiss(weatherPoints.size, weathers.size)
         return weathers
     }
 }

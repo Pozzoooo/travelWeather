@@ -58,7 +58,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         firebaseAnalytics.logEvent("searchAddress", null)
     }
 
-    fun weatherMiss(expected: Int, received: Int) {
+    fun sendWeatherMiss(expected: Int, received: Int) {
         val difference = expected - received
 
         val bundle = Bundle()
@@ -66,5 +66,13 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         bundle.putInt("received", received)
         bundle.putInt("expected", expected)
         firebaseAnalytics.logEvent("weatherMiss", bundle)
+    }
+
+    fun sendRateDialogShown() {
+        firebaseAnalytics.logEvent("rateDialogShown", null)
+    }
+
+    fun sendIWantToRate() {
+        firebaseAnalytics.logEvent("rateDialogClickedYes", null)
     }
 }
