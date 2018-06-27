@@ -2,12 +2,13 @@ package pozzo.apps.travelweather.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.experimental.launch
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.model.Day
 
 class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
 
-    fun sendFirebaseUserRequestedCurrentLocationEvent() {
+    fun sendFirebaseUserRequestedCurrentLocationEvent() = launch {
         sendFirebaseFab("currentLocation")
     }
 
@@ -21,7 +22,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         sendFirebaseFab("clearRoute")
     }
 
-    fun sendDragDurationEvent(eventName: String, dragTime: Long) {
+    fun sendDragDurationEvent(eventName: String, dragTime: Long) = launch {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
         bundle.putLong("milliseconds", dragTime)
@@ -38,27 +39,27 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         }
     }
 
-    fun sendDaySelectionChanged(day: Day) {
+    fun sendDaySelectionChanged(day: Day) = launch {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, day.name)
         firebaseAnalytics.logEvent("daySelection", bundle)
     }
 
-    fun sendErrorMessage(it: Error) {
+    fun sendErrorMessage(it: Error) = launch {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, it.name)
         firebaseAnalytics.logEvent("errorMessage", bundle)
     }
 
-    fun sendDisplayTopBarAction() {
+    fun sendDisplayTopBarAction() = launch {
         firebaseAnalytics.logEvent("displayTopBar", null)
     }
 
-    fun sendSearchAddress() {
+    fun sendSearchAddress() = launch {
         firebaseAnalytics.logEvent("searchAddress", null)
     }
 
-    fun sendWeatherMiss(expected: Int, received: Int) {
+    fun sendWeatherMiss(expected: Int, received: Int) = launch {
         val difference = expected - received
 
         val bundle = Bundle()
@@ -68,11 +69,11 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         firebaseAnalytics.logEvent("weatherMiss", bundle)
     }
 
-    fun sendRateDialogShown() {
+    fun sendRateDialogShown() = launch {
         firebaseAnalytics.logEvent("rateDialogShown", null)
     }
 
-    fun sendIWantToRate() {
-        firebaseAnalytics.logEvent("rateDialogClickedYes", null)
+    fun sendIWantToRate() = launch {
+        firebaseAnalytics.logEvent("rateDialog", null)
     }
 }

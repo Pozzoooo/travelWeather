@@ -202,7 +202,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun addPoint(latLng: LatLng) {
-        hideTopBar()
         if (route.startPoint == null) {
             setStartPosition(latLng)
             logDragEvent("startFlag")
@@ -257,7 +256,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val selectionCount = preferencesBusiness.getDaySelectionCount()
         if (selectionCount == RateMeActionRequest.AMOUNT_OF_OCCURRENCES
                 && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
-            actionRequest.postValue(RateMeActionRequest(getApplication()))
+            actionRequest.postValue(RateMeActionRequest(getApplication(), mapAnalytics))
             preferencesBusiness.setSelectedDay(newSelection)
         }
     }

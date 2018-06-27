@@ -145,9 +145,9 @@ class MapActivity : BaseActivity() {
     private fun updateRoute(route: Route) {
         clearMap()
         route.polyline?.let { mapFragment.plotRoute(it) }
-        showMapPoints(route)
         setStartPoint(route.startPoint)
         setFinishPoint(route)
+        showMapPoints(route)
         pointMapToRoute(route)
     }
 
@@ -204,9 +204,8 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showMapPoints(route: Route) {
-        route.mapPoints.forEach {
-            addMark(it)
-        }
+        //todo is there a nice way to move most of it to background? Or maybe even better, recover that flow approach from the old versions
+        route.mapPoints.forEach { addMark(it) }
     }
 
     public override fun onSaveInstanceState(outState: Bundle?) {
