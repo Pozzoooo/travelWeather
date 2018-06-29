@@ -15,10 +15,6 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
         const val AMOUNT_OF_OCCURRENCES = 2
     }
 
-    init {
-        mapAnalytics.sendRateDialogShown()
-    }
-
     override fun execute() {
         mapAnalytics.sendIWantToRate()
         if (!AndroidUtil.openUrl(context.getString(R.string.googlePlay), context)) {

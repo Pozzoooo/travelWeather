@@ -257,6 +257,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         if (rateMeActionRequest.isTimeToDisplay(mapTutorial, preferencesBusiness.getDaySelectionCount())) {
             actionRequest.postValue(rateMeActionRequest)
             mapTutorial.setTutorialPlayed(Tutorial.RATE_DIALOG)
+            mapAnalytics.sendRateDialogShown()
         }
     }
 
