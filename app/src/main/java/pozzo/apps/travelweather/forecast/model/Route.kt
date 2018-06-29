@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.forecast.model
 
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.experimental.channels.Channel
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -9,18 +10,18 @@ class Route(baseRoute: Route? = null,
         startPoint: StartPoint? = null,
         finishPoint: FinishPoint? = null,
         polyline: PolylineOptions? = null,
-        mapPoints: List<MapPoint>? = null) {
+        mapPoints: Channel<MapPoint>? = null) {
 
     val startPoint: StartPoint?
     val finishPoint: FinishPoint?
     val polyline: PolylineOptions?
-    val mapPoints: List<MapPoint>
+    val mapPoints: Channel<MapPoint>
 
     init {
         this.startPoint = startPoint ?: baseRoute?.startPoint
         this.finishPoint = finishPoint ?: baseRoute?.finishPoint
         this.polyline = polyline ?: baseRoute?.polyline
-        this.mapPoints = mapPoints ?: baseRoute?.mapPoints ?: ArrayList()
+        this.mapPoints = mapPoints ?: baseRoute?.mapPoints ?: Channel(0)
     }
 
   fun hasStartAndFinish() : Boolean = startPoint != null && finishPoint != null

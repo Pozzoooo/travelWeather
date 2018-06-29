@@ -21,6 +21,8 @@ import com.splunk.mint.Mint
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
@@ -204,8 +206,11 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showMapPoints(route: Route) {
-        //todo is there a nice way to move most of it to background? Or maybe even better, recover that flow approach from the old versions
-        route.mapPoints.forEach { addMark(it) }
+        launch(UI) {
+            for (it in route.mapPoints) {
+                addMark(it)
+            }
+        }
     }
 
     public override fun onSaveInstanceState(outState: Bundle?) {

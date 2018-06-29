@@ -1,10 +1,11 @@
 package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.experimental.launch
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.Route
-import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -29,19 +30,21 @@ class RouteBusiness(private val mapAnalytics: MapAnalytics) {
         if (direction?.isEmpty() != false) throw DirectionNotFoundException()
 
         val directionLine = directionLineBusiness.createDirectionLine(direction)
-        val mapPoints = parseToMapPoints(directionWeatherFilter.getWeatherPointsLocations(direction))
+        val mapPoints = requestForecasts(direction)
+
         return Route(startPoint = startPoint, finishPoint = finishPoint, polyline = directionLine, mapPoints = mapPoints)
     }
 
     //todo is it this classes responsability?
-    private fun parseToMapPoints(weatherPoints: List<LatLng>) : List<MapPoint> {
-        val weathers = requestWeathersFor(weatherPoints)
-        return weatherToMapPointParser.parse(weathers)
-    }
-
-    private fun requestWeathersFor(weatherPoints: List<LatLng>) : List<Weather> {
-        val weathers = forecastBusiness.from(weatherPoints)
-        if (weathers.size != weatherPoints.size) mapAnalytics.sendWeatherMiss(weatherPoints.size, weathers.size)
-        return weathers
+    private fun requestForecasts(direction: ArrayList<LatLng>) : Channel<MapPoint> {
+        val mapPoints = Channel<MapPoint>()
+        launch {
+            directionWeatherFilter.getWeatherPointsLocations(direction).asSequence()
+                    .mapNotNull(forecastBusiness::from)
+                    .mapNotNull(weatherToMapPointParser::parse)
+                    .forEach { mapPoints.send(it) }
+            mapPoints.close()
+        }
+        return mapPoints
     }
 }
