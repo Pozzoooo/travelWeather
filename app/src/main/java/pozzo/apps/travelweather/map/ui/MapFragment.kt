@@ -131,7 +131,7 @@ class MapFragment : SupportMapFragment() {
                 getProjection()?.let {
                     viewModel.flagDragActionFinished(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
                 } ?: Mint.logException(IllegalStateException("Trying to drag to the map with map not ready yet"))
-                false
+                true
             }
             DragEvent.ACTION_DRAG_STARTED -> {
                 viewModel.dragStarted()

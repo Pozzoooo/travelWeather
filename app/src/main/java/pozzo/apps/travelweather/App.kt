@@ -15,7 +15,6 @@ import com.splunk.mint.Mint
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Translate to Spanish
- * Fix animation of the flag going back to the right
  *
  * I believe with my current implementation I could make much more use of background work, what about try coroutines?
  * Feedback Lisa: Developer, please add departure times to this app

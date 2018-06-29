@@ -81,8 +81,8 @@ class MapActivity : BaseActivity() {
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
 
-        startFlag.setOnTouchListener(startDraggingFinishFlag)
-        finishFlag.setOnTouchListener(startDraggingFinishFlag)
+        startFlag.setOnTouchListener(startDraggingFlag)
+        finishFlag.setOnTouchListener(startDraggingFlag)
         setupDaySelection()
     }
 
@@ -104,7 +104,7 @@ class MapActivity : BaseActivity() {
         return@OnEditorActionListener true
     }
 
-    private val startDraggingFinishFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+    private val startDraggingFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
         view.visibility = View.INVISIBLE
         val flagResource = if (view.id == R.id.startFlag) R.drawable.start_flag else R.drawable.finish_flag
         val flag = resources.getDrawable(flagResource, null)
