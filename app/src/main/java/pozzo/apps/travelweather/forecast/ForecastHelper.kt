@@ -45,7 +45,7 @@ object ForecastHelper {
                 Pair(CLOUDY, R.drawable.cloudy),
                 Pair(MOSTLY_CLOUDY, R.drawable.mostly_cloudy),
                 Pair(SNOW, R.drawable.snow),
-                Pair(RAIN_SNOW, R.drawable.snow),
+                Pair(RAIN_SNOW, R.drawable.rain_snow),
                 Pair(WINDY, R.drawable.wind),
                 Pair(BREEZY, R.drawable.wind))
     }

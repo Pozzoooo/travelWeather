@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="notificationChannel_default">default</string>
-	<string name="notificationChannel_linked">linked</string>
-	<string name="googlePlay">https://play.google.com/store/apps/details?id=pozzo.apps.travelweather</string>
+	<string translatable="false" name="notificationChannel_default">default</string>
+	<string translatable="false" name="notificationChannel_linked">linked</string>
+	<string translatable="false" name="googlePlay">https://play.google.com/store/apps/details?id=pozzo.apps.travelweather</string>
 </resources>

@@ -5,12 +5,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="warning">Warning</string>
-	<string name="menu">Menu</string>
 
 	<string name="search">Search</string>
-	<string name="clearSearch">Clear Search</string>
-
-    <string name="title_activityMaps">Map</string>
 
     <string name="startPosition">Start</string>
     <string name="finishPosition">Finish</string>
@@ -26,7 +22,6 @@
 
 	<string name="warning_permissionDenied">Permission has been denied</string>
 
-	<string name="tutorial_replayFull">Tutorial</string>
 	<string name="tutorial_flags">Drag the flags to create a route</string>
 	<string name="tutorial_dragTheFlags">Drag the flags</string>
 	<string name="tutorial_longPressToDrag">You can always long press the flags to move it again</string>

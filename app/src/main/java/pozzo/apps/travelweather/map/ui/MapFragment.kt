@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.map.ui
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Point
@@ -107,6 +108,7 @@ class MapFragment : SupportMapFragment() {
         override fun onMarkerDrag(marker: Marker) { }
     }
 
+    @SuppressLint("ObjectAnimatorBinding")
     fun addMark(mapPoint: MapPoint) : Marker? {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
