@@ -37,7 +37,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private val preferencesBusiness = PreferencesBusiness(getApplication())
     private val geoCoderBusiness = GeoCoderBusiness(application)
-    private val routeBusiness = RouteBusiness(mapAnalytics)
+    private val routeBusiness = RouteBusiness()
 
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
 

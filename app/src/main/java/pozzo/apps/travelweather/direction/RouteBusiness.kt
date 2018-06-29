@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.direction
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.launch
-import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
@@ -13,7 +12,7 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import java.io.IOException
 
-class RouteBusiness(private val mapAnalytics: MapAnalytics) {
+class RouteBusiness {
     //todo seems like its time to bring dagger to my project
     private val locationBusiness = LocationBusiness()
     private val directionLineBusiness = DirectionLineBusiness()
