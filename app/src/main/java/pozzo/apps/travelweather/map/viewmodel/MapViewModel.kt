@@ -253,11 +253,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun selectedDayChanged(newSelection: Day) {
-        val selectionCount = preferencesBusiness.getDaySelectionCount()
-        if (selectionCount == RateMeActionRequest.AMOUNT_OF_OCCURRENCES
-                && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)) {
-            actionRequest.postValue(RateMeActionRequest(getApplication(), mapAnalytics))
-            preferencesBusiness.setSelectedDay(newSelection)
+        val rateMeActionRequest = RateMeActionRequest(getApplication(), mapAnalytics)
+        if (rateMeActionRequest.isTimeToDisplay(mapTutorial, preferencesBusiness.getDaySelectionCount())) {
+            actionRequest.postValue(rateMeActionRequest)
+            mapTutorial.setTutorialPlayed(Tutorial.RATE_DIALOG)
         }
     }
 

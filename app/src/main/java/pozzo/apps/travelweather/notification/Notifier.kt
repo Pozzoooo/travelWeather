@@ -18,6 +18,7 @@ class Notifier {
             createNotificationChannel(context, channel)
             NotificationCompat.Builder(context, channel)
         } else {
+            @Suppress("DEPRECATION")
             NotificationCompat.Builder(context)
         }
 
