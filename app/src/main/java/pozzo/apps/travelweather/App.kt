@@ -14,8 +14,6 @@ import com.splunk.mint.Mint
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
- * Translate to Spanish
- *
  * I believe with my current implementation I could make much more use of background work, what about try coroutines?
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.

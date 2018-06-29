@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="appName">Clima del viaje</string>
+	<string name="yes">Si</string>
+	<string name="cancel">Cancelar</string>
+	<string name="ok">OK</string>
+	<string name="warning">Atención</string>
+
+	<string name="search">Buscar</string>
+
+	<string name="startPosition">Primero</string>
+	<string name="finishPosition">Final</string>
+	<string name="removeAllMarkers">Te gustaría eliminar todas las etiquetas?</string>
+	<string name="title_forecastDate">Pronóstico del día</string>
+	<string name="rateMe">¿Disfrutando el App? Deja tu opinión en Google Play</string>
+
+	<string name="error_addressNotFound">Dirección no encontrada</string>
+	<string name="error_needsConnection">Asegúrese de que está conectado</string>
+	<string name="error_cantReach">Sin comunicación con el servidor, asegúrese su conexión a Internet o vuelva a intentarlo más tarde</string>
+	<string name="error_pathNotFound">No conseguimos generar una ruta, intente colocar las banderas más cercanas a las calles</string>
+	<string name="error_currentLocationNotFound">No fue posible determinar su ubicación actual</string>
+
+	<string name="warning_permissionDenied">El permiso fue denegado</string>
+
+	<string name="tutorial_flags">Arrastre las banderas para crear la ruta</string>
+	<string name="tutorial_dragTheFlags">Arrastra las banderas</string>
+	<string name="tutorial_longPressToDrag">Siempre que quieras puedes mover la bandera con un toque largo</string>
+
+	<string-array name="forecastDays">
+		<item>Hoy</item>
+		<item>Mañana</item>
+		<item>Después de mañana</item>
+	</string-array>
+</resources>
