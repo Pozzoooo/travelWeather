@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.forecast.ForecastHelper
+import pozzo.apps.travelweather.forecast.yahoo.ForecastTypeMapperYahoo
 
 /**
  * The idea here is to pick where the weathers are gonna be shown in the direction line.
@@ -51,6 +51,6 @@ class DirectionWeatherFilter {
 
   private fun isGoodFitForWeather(position: Int, latLng: LatLng, lastForecast: LatLng) : Boolean {
     return position % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-        && ForecastHelper.isMinDistanceToForecast(latLng, lastForecast)
+        && ForecastTypeMapperYahoo.isMinDistanceToForecast(latLng, lastForecast)
   }
 }

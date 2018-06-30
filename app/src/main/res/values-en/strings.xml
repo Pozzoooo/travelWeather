@@ -26,6 +26,23 @@
 	<string name="tutorial_dragTheFlags">Drag the flags</string>
 	<string name="tutorial_longPressToDrag">You can always long press the flags to move it again</string>
 
+	<!--todo add translation for forecasts-->
+	<string name="forecast_sunny">sunny</string>
+	<string name="forecast_mostlySunny">mostly sunny</string>
+	<string name="forecast_thunderstorms">thunderstorms</string>
+	<string name="forecast_scatteredThunderstorms">scattered thunderstorms</string>
+	<string name="forecast_rain">rain</string>
+	<string name="forecast_scatteredShowers">scattered showers</string>
+	<string name="forecast_showers">showers</string>
+	<string name="forecast_partlyCloudy">partly cloudy</string>
+	<string name="forecast_mostlyCloudy">mostly cloudy</string>
+	<string name="forecast_cloudy">cloudy</string>
+	<string name="forecast_snow">snow</string>
+	<string name="forecast_rainAndSnow">rain and snow</string>
+	<string name="forecast_breezy">breezy</string>
+	<string name="forecast_windy">windy</string>
+	<string name="forecast_unknown">unknown</string>
+
 	<string-array name="forecastDays">
 		<item>Today</item>
 		<item>Tomorow</item>
