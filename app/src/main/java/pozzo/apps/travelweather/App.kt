@@ -6,6 +6,8 @@ import com.splunk.mint.Mint
 /**
  * TODO
  *
+ * Major bug: I'm not translating the forecast texts
+ *
  * Minor bug: select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  *
@@ -14,9 +16,10 @@ import com.splunk.mint.Mint
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
- * I believe with my current implementation I could make much more use of background work, what about try coroutines?
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
+ *
+ * Add more days, after after tomorrow, but I need to think in a proper way ot display it
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem

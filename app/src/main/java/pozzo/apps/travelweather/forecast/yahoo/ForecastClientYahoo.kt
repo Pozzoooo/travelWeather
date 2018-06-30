@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 import com.splunk.mint.Mint
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.GsonFactory
-import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -20,16 +19,8 @@ import java.lang.RuntimeException
  * Yahoo forecast api client.
  */
 class ForecastClientYahoo : ForecastClient {
-
-    /**
-     * Forecast from given location.
-     */
-    override fun fromAddress(address: String): Weather? {
-        //item = condition + forecast
-        //and u='c' - Celsius temperature
-        val query = "select item from weather.forecast where woeid in " +
-                "(select woeid from geo.places(1) where text=\"" + address + "\") and u='c'"
-        return requestWeather(query)
+    companion object {
+        const val MAX_RETRIES = 3
     }
 
     override fun fromCoordinates(coordinates: LatLng): Weather? {
@@ -45,7 +36,7 @@ class ForecastClientYahoo : ForecastClient {
     }
 
     private fun requestWeather(query: String) : Weather? {
-        return requestWeather(query, ForecastBusiness.MAX_RETRIES)
+        return requestWeather(query, MAX_RETRIES)
     }
 
     private fun requestWeather(query: String, maxRetries: Int): Weather? {
