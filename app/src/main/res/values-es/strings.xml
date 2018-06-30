@@ -26,6 +26,22 @@
 	<string name="tutorial_dragTheFlags">Arrastra las banderas</string>
 	<string name="tutorial_longPressToDrag">Siempre que quieras puedes mover la bandera con un toque largo</string>
 
+	<string name="forecast_sunny">Soleado</string>
+	<string name="forecast_mostlySunny">Soleado</string>
+	<string name="forecast_thunderstorms">Tormenta</string>
+	<string name="forecast_scatteredThunderstorms">Tormentas dispersas</string>
+	<string name="forecast_rain">Lluvia</string>
+	<string name="forecast_scatteredShowers">Chubascos dispersos</string>
+	<string name="forecast_showers">Llovizna</string>
+	<string name="forecast_partlyCloudy">Parcialmente nublado</string>
+	<string name="forecast_mostlyCloudy">Parcialmente nublado</string>
+	<string name="forecast_cloudy">Nublado</string>
+	<string name="forecast_snow">Nieve</string>
+	<string name="forecast_rainAndSnow">Lluvia y nieve</string>
+	<string name="forecast_breezy">Ventoso</string>
+	<string name="forecast_windy">Muy ventoso</string>
+	<string name="forecast_unknown">Desconocido</string>
+
 	<string-array name="forecastDays">
 		<item>Hoy</item>
 		<item>Mañana</item>
