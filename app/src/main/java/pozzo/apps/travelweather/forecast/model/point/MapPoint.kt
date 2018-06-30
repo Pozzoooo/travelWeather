@@ -4,8 +4,9 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.forecast.model.Day
 
+//todo is there a way to remove the nullability on all those fields?
 abstract class MapPoint(open val icon: BitmapDescriptor?,
-                        open val title: String?,
+                        open val title: Int?,
                         open val position: LatLng,
                         open val redirectUrl: String?,
                         val isDraggable: Boolean = false,

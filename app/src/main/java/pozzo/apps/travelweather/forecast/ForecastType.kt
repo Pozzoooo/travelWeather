@@ -27,7 +27,6 @@ enum class ForecastType(@DrawableRes val iconId: Int, @StringRes val stringId: I
 
     fun getIcon() : BitmapDescriptor = bitmapCache[this] ?: createIcon()
 
-    //todo falta ainda usar a string
     private fun createIcon() : BitmapDescriptor {
         val icon = BitmapDescriptorFactory.fromResource(iconId)
         bitmapCache[this] = icon

@@ -8,5 +8,5 @@ class WeatherPoint(private val weather: Weather) :
 
     val forecast : Forecast get() = weather.getForecast(day)
     override val icon get() = forecast.icon
-    override val title get() = forecast.text
+    override val title get() = forecast.forecastType?.stringId
 }

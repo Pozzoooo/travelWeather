@@ -7,4 +7,4 @@ import pozzo.apps.travelweather.R
 
 class StartPoint(res: Resources, position: LatLng) : MapPoint(
         BitmapDescriptorFactory.fromResource(R.drawable.start_flag),
-        res.getString(R.string.startPosition), position, null,true, false)
+        R.string.startPosition, position, null,true, false)

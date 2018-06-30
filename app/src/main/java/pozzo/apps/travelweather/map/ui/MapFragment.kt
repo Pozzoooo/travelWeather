@@ -113,7 +113,7 @@ class MapFragment : SupportMapFragment() {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
                 .anchor(1F, 1F)
-                .title(mapPoint.title)
+                .title(getString(mapPoint.title!!))//todo is it ok to request it all the time?
                 .icon(mapPoint.icon)
                 .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)

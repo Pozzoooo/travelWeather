@@ -7,4 +7,4 @@ import pozzo.apps.travelweather.R
 
 class FinishPoint(res: Resources, position: LatLng) : MapPoint(
         BitmapDescriptorFactory.fromResource(R.drawable.finish_flag),
-        res.getString(R.string.finishPosition), position, null,true, false)
+        R.string.finishPosition, position, null,true, false)
