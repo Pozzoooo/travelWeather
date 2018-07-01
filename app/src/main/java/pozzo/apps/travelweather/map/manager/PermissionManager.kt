@@ -11,7 +11,6 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 /**
  * Manages permission requests and results.
  *
- *
  * todo we need a dependency inversion to remove MapActivity dependency
  */
 class PermissionManager(private val mapActivity: MapActivity) {

@@ -36,6 +36,7 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  * Unit test :)
  * Animar as flags voltando para a lateral quando apertar o clear
  * I need to make my dependencies more explicity, I guess unit test and dagger will help me on that
+ * Finish Dagger refactoring
  */
 class App : Application() {
     companion object {

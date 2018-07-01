@@ -4,7 +4,6 @@ import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import pozzo.apps.tools.NetworkUtil
@@ -35,9 +34,8 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
-    private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
-
     private val geoCoderBusiness = GeoCoderBusiness(application)
+    @Inject protected lateinit var mapAnalytics: MapAnalytics
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
     @Inject protected lateinit var directionBusiness : DirectionBusiness
 
