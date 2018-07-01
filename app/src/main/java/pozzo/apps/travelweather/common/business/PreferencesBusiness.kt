@@ -2,16 +2,15 @@ package pozzo.apps.travelweather.common.business
 
 import android.app.Application
 import android.preference.PreferenceManager
-import com.google.firebase.analytics.FirebaseAnalytics
-import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import pozzo.apps.travelweather.forecast.model.Day
 
-class PreferencesBusiness(private val application: Application) {
+class PreferencesBusiness(application: Application, private val mapAnalytics: MapAnalytics) {
     companion object {
         private const val KEY_SELECTED_DAY = "selectedDay"
         private const val KEY_DAY_SELECTION_COUNT = "daySelectionCount"
     }
-    private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
+
     private val preferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     fun getSelectedDay() : Day {

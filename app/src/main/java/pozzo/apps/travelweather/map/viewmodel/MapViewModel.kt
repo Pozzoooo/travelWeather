@@ -37,8 +37,8 @@ import javax.inject.Inject
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
 
-    private val preferencesBusiness = PreferencesBusiness(getApplication())
     private val geoCoderBusiness = GeoCoderBusiness(application)
+    @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
     @Inject protected lateinit var directionBusiness : DirectionBusiness
 
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())

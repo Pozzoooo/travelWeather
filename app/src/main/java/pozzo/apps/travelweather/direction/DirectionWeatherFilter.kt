@@ -40,7 +40,7 @@ class DirectionWeatherFilter(private val forecastBusiness: ForecastBusiness) {
   }
 
   private fun initialState(directionLine: List<LatLng>) {
-    this.filteredPoints = ArrayList<LatLng>()
+    this.filteredPoints = ArrayList()
     this.directionLine = directionLine
   }
 

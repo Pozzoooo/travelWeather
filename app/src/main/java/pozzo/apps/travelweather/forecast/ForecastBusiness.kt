@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.forecast
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.forecast.model.Weather
 
-//todo I need to isolate models from different layers
 class ForecastBusiness(private val forecastClient : ForecastClient,
                        private val forecastTypeMapper: ForecastTypeMapper) {
 
