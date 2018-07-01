@@ -12,11 +12,9 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import java.io.IOException
 
-class RouteBusiness {
-    //todo seems like its time to bring dagger to my project
+class RouteBusiness(private val forecastBusiness: ForecastBusiness) {
     private val locationBusiness = LocationBusiness()
     private val directionLineBusiness = DirectionLineBusiness()
-    private val forecastBusiness = ForecastBusiness()
 
     private val directionWeatherFilter = DirectionWeatherFilter()
     private val weatherToMapPointParser = WeatherToMapPointParser()

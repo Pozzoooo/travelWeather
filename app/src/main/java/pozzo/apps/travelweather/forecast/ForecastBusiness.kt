@@ -5,8 +5,7 @@ import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.yahoo.ForecastTypeMapperYahoo
 
 //todo I need to isolate models from different layers
-class ForecastBusiness {
-    private val forecastClient = ForecastClientFactory.instance.getForecastClient()
+class ForecastBusiness(private val forecastClient : ForecastClient) {
 
     fun from(location: LatLng): Weather? {
         val weather = forecastClient.fromCoordinates(location)

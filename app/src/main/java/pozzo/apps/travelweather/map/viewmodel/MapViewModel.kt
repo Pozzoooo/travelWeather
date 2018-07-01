@@ -21,6 +21,7 @@ import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.direction.RouteBusiness
+import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
@@ -28,16 +29,19 @@ import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
+import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
 import java.io.IOException
+import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
     private val mapAnalytics = MapAnalytics(FirebaseAnalytics.getInstance(application))
 
     private val preferencesBusiness = PreferencesBusiness(getApplication())
     private val geoCoderBusiness = GeoCoderBusiness(application)
-    private val routeBusiness = RouteBusiness()
+    @Inject protected lateinit var forecastBusiness: ForecastBusiness
+    private val routeBusiness : RouteBusiness
 
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
 
@@ -59,6 +63,12 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
+        DaggerMapComponent.builder()
+                .appComponent(App.component())
+                .build()
+                .inject(this)
+
+        routeBusiness = RouteBusiness(forecastBusiness)
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false

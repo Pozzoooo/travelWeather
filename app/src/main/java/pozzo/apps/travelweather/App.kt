@@ -2,6 +2,11 @@ package pozzo.apps.travelweather
 
 import android.app.Application
 import com.splunk.mint.Mint
+import pozzo.apps.travelweather.core.injection.AppComponent
+import pozzo.apps.travelweather.core.injection.AppModule
+import pozzo.apps.travelweather.core.injection.DaggerAppComponent
+import pozzo.apps.travelweather.core.injection.NetworkModule
+import pozzo.apps.travelweather.forecast.ForecastModule
 
 /**
  * TODO
@@ -32,10 +37,27 @@ import com.splunk.mint.Mint
  * I need to make my dependencies more explicity, I guess unit test and dagger will help me on that
  */
 class App : Application() {
+    companion object {
+        private lateinit var appComponent: AppComponent
+
+        fun component(): AppComponent {
+            return appComponent
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
+
         if (!BuildConfig.DEBUG) Mint.initAndStartSession(this, "c315b759")
+        initComponent()
+    }
+
+    private fun initComponent() {
+        appComponent = DaggerAppComponent.builder()
+                .appModule(AppModule(this))
+                .networkModule(NetworkModule())
+                .forecastModule(ForecastModule())
+                .build()
     }
 }
 
