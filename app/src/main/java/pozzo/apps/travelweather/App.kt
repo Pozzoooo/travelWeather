@@ -6,7 +6,7 @@ import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
 import pozzo.apps.travelweather.core.injection.NetworkModule
-import pozzo.apps.travelweather.forecast.yahoo.ForecastYahooModule
+import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 
 /**
  * TODO
@@ -57,7 +57,7 @@ class App : Application() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule())
-                .forecastModule(ForecastYahooModule())
+                .forecastModule(ForecastModuleYahoo())
                 .build()
     }
 }

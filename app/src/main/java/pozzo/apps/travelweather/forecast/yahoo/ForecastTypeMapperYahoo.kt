@@ -1,12 +1,11 @@
 package pozzo.apps.travelweather.forecast.yahoo
 
-import com.google.android.gms.maps.model.LatLng
 import com.splunk.mint.Mint
 import pozzo.apps.travelweather.forecast.ForecastType
+import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
 
-//todo I need to create an interface, factory and whatever needs to make it cool and reusable
-object ForecastTypeMapperYahoo {
+class ForecastTypeMapperYahoo : ForecastTypeMapper {
     private val forecastTypeMap = mapOf(
             "Sunny" to ForecastType.SUNNY,
             "Mostly Sunny" to ForecastType.MOSTLY_SUNNY,
@@ -23,7 +22,7 @@ object ForecastTypeMapperYahoo {
             "Windy" to ForecastType.WINDY,
             "Breezy" to ForecastType.BREEZY)
 
-    fun getForecastType(forecast: Forecast) : ForecastType {
+    override fun getForecastType(forecast: Forecast) : ForecastType {
         val forecastType = forecastTypeMap[forecast.text]
         return if (forecastType == null) {
             Mint.logException(Exception("Unknown forecast ${forecast.text}"))
@@ -32,14 +31,5 @@ object ForecastTypeMapperYahoo {
             forecastType
         }
 
-    }
-
-    /**
-     * @return true if distance is enough for a new forecast.
-     * todo extract it to appropriate place
-     */
-    fun isMinDistanceToForecast(from: LatLng, to: LatLng): Boolean {
-        val distance = Math.abs(from.latitude - to.latitude) + Math.abs(from.longitude - to.longitude)
-        return distance > 0.5
     }
 }

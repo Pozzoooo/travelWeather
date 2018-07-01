@@ -1,12 +1,12 @@
 package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.forecast.yahoo.ForecastTypeMapperYahoo
+import pozzo.apps.travelweather.forecast.ForecastBusiness
 
 /**
  * The idea here is to pick where the weathers are gonna be shown in the direction line.
  */
-class DirectionWeatherFilter {
+class DirectionWeatherFilter(private val forecastBusiness: ForecastBusiness) {
   companion object {
     private const val MIN_SIZE = 1000
     private const val PADDING = 350
@@ -51,6 +51,6 @@ class DirectionWeatherFilter {
 
   private fun isGoodFitForWeather(position: Int, latLng: LatLng, lastForecast: LatLng) : Boolean {
     return position % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-        && ForecastTypeMapperYahoo.isMinDistanceToForecast(latLng, lastForecast)
+        && forecastBusiness.isMinDistanceToForecast(latLng, lastForecast)
   }
 }

@@ -16,7 +16,7 @@ class DirectionBusiness(private val forecastBusiness: ForecastBusiness) {
     private val locationBusiness = LocationBusiness()
     private val directionLineBusiness = DirectionLineBusiness()
 
-    private val directionWeatherFilter = DirectionWeatherFilter()
+    private val directionWeatherFilter = DirectionWeatherFilter(forecastBusiness)
     private val weatherToMapPointParser = WeatherToMapPointParser()
 
     @Throws(DirectionNotFoundException::class, IOException::class)

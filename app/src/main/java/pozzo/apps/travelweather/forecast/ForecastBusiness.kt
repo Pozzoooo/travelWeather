@@ -2,10 +2,10 @@ package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.forecast.model.Weather
-import pozzo.apps.travelweather.forecast.yahoo.ForecastTypeMapperYahoo
 
 //todo I need to isolate models from different layers
-class ForecastBusiness(private val forecastClient : ForecastClient) {
+class ForecastBusiness(private val forecastClient : ForecastClient,
+                       private val forecastTypeMapper: ForecastTypeMapper) {
 
     fun from(location: LatLng): Weather? {
         val weather = forecastClient.fromCoordinates(location)
@@ -15,7 +15,12 @@ class ForecastBusiness(private val forecastClient : ForecastClient) {
 
     private fun enrich(weather: Weather) {
         weather.forecasts?.forEach {
-            it.forecastType = ForecastTypeMapperYahoo.getForecastType(it)
+            it.forecastType = forecastTypeMapper.getForecastType(it)
         }
+    }
+
+    fun isMinDistanceToForecast(from: LatLng, to: LatLng): Boolean {
+        val distance = Math.abs(from.latitude - to.latitude) + Math.abs(from.longitude - to.longitude)
+        return distance > 0.5
     }
 }
