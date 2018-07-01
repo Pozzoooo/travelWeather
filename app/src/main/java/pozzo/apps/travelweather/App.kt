@@ -11,8 +11,6 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 /**
  * TODO
  *
- * Major bug: I'm not translating the forecast texts
- *
  * Minor bug: select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  *

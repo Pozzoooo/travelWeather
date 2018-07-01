@@ -6,7 +6,7 @@ import pozzo.apps.travelweather.forecast.model.Weather
 class ForecastBusiness(private val forecastClient : ForecastClient,
                        private val forecastTypeMapper: ForecastTypeMapper) {
 
-    fun from(location: LatLng): Weather? {
+    fun forecast(location: LatLng): Weather? {
         val weather = forecastClient.fromCoordinates(location)
         weather?.let { enrich(weather) }
         return weather

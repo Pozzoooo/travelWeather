@@ -37,7 +37,7 @@ class DirectionBusiness(private val forecastBusiness: ForecastBusiness) {
         val mapPoints = Channel<MapPoint>()
         launch {
             directionWeatherFilter.getWeatherPointsLocations(direction).asSequence()
-                    .mapNotNull(forecastBusiness::from)
+                    .mapNotNull(forecastBusiness::forecast)
                     .mapNotNull(weatherToMapPointParser::parse)
                     .forEach { mapPoints.send(it) }
             mapPoints.close()
