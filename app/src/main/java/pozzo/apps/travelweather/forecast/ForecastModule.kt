@@ -2,17 +2,12 @@ package pozzo.apps.travelweather.forecast
 
 import dagger.Module
 import dagger.Provides
+import pozzo.apps.travelweather.forecast.yahoo.ForecastClientYahoo
 
 @Module
-class ForecastModule {
+open class ForecastModule {
 
-    @Provides
-    fun forecastClient() : ForecastClient {
-        return ForecastClientFactory.instance.getForecastClient()
-    }
+    @Provides open fun forecastClient() : ForecastClient = ForecastClientYahoo()
 
-    @Provides
-    fun forecastBusiness(forecastClient: ForecastClient) : ForecastBusiness {
-        return ForecastBusiness(forecastClient)
-    }
+    @Provides fun forecastBusiness(forecastClient: ForecastClient) = ForecastBusiness(forecastClient)
 }

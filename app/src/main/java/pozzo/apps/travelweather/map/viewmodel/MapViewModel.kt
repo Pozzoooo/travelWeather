@@ -19,9 +19,8 @@ import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
+import pozzo.apps.travelweather.direction.DirectionBusiness
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
-import pozzo.apps.travelweather.direction.RouteBusiness
-import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
@@ -40,8 +39,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private val preferencesBusiness = PreferencesBusiness(getApplication())
     private val geoCoderBusiness = GeoCoderBusiness(application)
-    @Inject protected lateinit var forecastBusiness: ForecastBusiness
-    private val routeBusiness : RouteBusiness
+    @Inject protected lateinit var directionBusiness : DirectionBusiness
 
     private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
 
@@ -68,7 +66,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 .build()
                 .inject(this)
 
-        routeBusiness = RouteBusiness(forecastBusiness)
         isShowingProgress.value = false
         isShowingTopBar.value = false
         shouldFinish.value = false
@@ -158,7 +155,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         updateRouteJob?.cancel()
         updateRouteJob = launch {
             try {
-                val route = routeBusiness.createRoute(startPoint, finishPoint)
+                val route = directionBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) setRoute(route)
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)

@@ -6,7 +6,7 @@ import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
 import pozzo.apps.travelweather.core.injection.NetworkModule
-import pozzo.apps.travelweather.forecast.ForecastModule
+import pozzo.apps.travelweather.forecast.yahoo.ForecastYahooModule
 
 /**
  * TODO
@@ -24,6 +24,7 @@ import pozzo.apps.travelweather.forecast.ForecastModule
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  *
+ * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
  * Add more days, after after tomorrow, but I need to think in a proper way ot display it
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem
@@ -56,7 +57,7 @@ class App : Application() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule())
-                .forecastModule(ForecastModule())
+                .forecastModule(ForecastYahooModule())
                 .build()
     }
 }
