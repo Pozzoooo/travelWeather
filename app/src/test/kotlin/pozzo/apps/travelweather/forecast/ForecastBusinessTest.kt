@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
+import org.junit.Assert
 import org.junit.Test
 import pozzo.apps.travelweather.TestInjector
 
@@ -9,11 +10,12 @@ class ForecastBusinessTest {
 
     init {
         val appComponent = TestInjector.getAppComponent()
-        forecastBusiness = appComponent.forecastBusiness()
+        forecastBusiness = ForecastBusiness(
+                appComponent.forecastClient(), appComponent.forecastTypeMapper())
     }
 
     @Test fun requestWeather() {
-        val weather = forecastBusiness.forecast(LatLng(50.0, 50.0))
-        print(weather?.url)
+        val weather = forecastBusiness.forecast(LatLng(40.781579, -74.358705))
+        Assert.assertNotNull(weather!!.forecasts!![0].forecastType!!.iconId)
     }
 }

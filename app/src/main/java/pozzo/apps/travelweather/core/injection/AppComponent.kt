@@ -13,6 +13,7 @@ import pozzo.apps.travelweather.direction.DirectionModule
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastModule
+import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -40,6 +41,7 @@ interface AppComponent {
     //forecast
     fun forecastClient() : ForecastClient
     fun forecastBusiness() : ForecastBusiness
+    fun forecastTypeMapper(): ForecastTypeMapper
 
     //direction
     fun directionBusiness() : DirectionBusiness

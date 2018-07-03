@@ -9,15 +9,30 @@ import pozzo.apps.travelweather.core.injection.AppModule
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
 import pozzo.apps.travelweather.core.injection.NetworkModule
 import pozzo.apps.travelweather.direction.DirectionModule
+import pozzo.apps.travelweather.forecast.ForecastModuleFake
 import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 
 object TestInjector {
 
-    fun getAppComponent() : AppComponent {
+    fun getAppComponent() : AppComponent = getAppComponentFake()
+
+    private fun getAppComponentIntegration() : AppComponent {
         val application = Mockito.mock(Application::class.java)
         return DaggerAppComponent.builder()
                 .appModule(AppModule(application))
                 .forecastModule(ForecastModuleYahoo())
+                .networkModule(NetworkModule())
+                .analyticsModule(AnalyticsModule())
+                .commonModule(CommonModule())
+                .directionModule(DirectionModule())
+                .build()
+    }
+
+    private fun getAppComponentFake() : AppComponent {
+        val application = Mockito.mock(Application::class.java)
+        return DaggerAppComponent.builder()
+                .appModule(AppModule(application))
+                .forecastModule(ForecastModuleFake())
                 .networkModule(NetworkModule())
                 .analyticsModule(AnalyticsModule())
                 .commonModule(CommonModule())
