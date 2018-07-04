@@ -2,13 +2,14 @@ package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import pozzo.apps.travelweather.TestInjector
 
 class ForecastBusinessTest {
-    private val forecastBusiness: ForecastBusiness
+    private lateinit var forecastBusiness: ForecastBusiness
 
-    init {
+    @Before fun setup() {
         val appComponent = TestInjector.getAppComponent()
         forecastBusiness = ForecastBusiness(
                 appComponent.forecastClient(), appComponent.forecastTypeMapper())

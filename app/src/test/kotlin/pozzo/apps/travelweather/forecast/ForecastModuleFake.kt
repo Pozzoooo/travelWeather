@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.JsonParser
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
+import retrofit2.Retrofit
 
 class ForecastModuleFake : ForecastModule() {
 
@@ -13,7 +14,7 @@ class ForecastModuleFake : ForecastModule() {
         }
     }
 
-    override fun forecastClient(): ForecastClient {
+    override fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient {
         return object : ForecastClient {
             override fun fromCoordinates(coordinates: LatLng): Weather? {
                 return JsonParser.fromJson(Weather::class.java, """

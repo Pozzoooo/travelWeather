@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 import com.splunk.mint.Mint
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.GsonFactory
-import pozzo.apps.travelweather.core.injection.NetworkModule
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -15,24 +14,13 @@ import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
 import java.lang.ClassCastException
 import java.lang.RuntimeException
-import javax.inject.Inject
 
 /**
  * Yahoo forecast api client.
  */
-class ForecastClientYahoo : ForecastClient {
+class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClient {
     companion object {
         const val MAX_RETRIES = 3
-    }
-
-    @Inject protected lateinit var yahooWeather: YahooWeather
-
-    init {
-        DaggerYahooComponent.builder()
-                .networkModule(NetworkModule())
-                .yahooModule(YahooModule())
-                .build()
-                .inject(this)
     }
 
     override fun fromCoordinates(coordinates: LatLng): Weather? {

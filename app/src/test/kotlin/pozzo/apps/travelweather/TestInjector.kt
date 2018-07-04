@@ -14,7 +14,8 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 
 object TestInjector {
 
-    fun getAppComponent() : AppComponent = getAppComponentFake()
+    fun getAppComponent() : AppComponent =
+            if (TestSettings.IS_INTEGRATION_TEST) getAppComponentIntegration() else getAppComponentFake()
 
     private fun getAppComponentIntegration() : AppComponent {
         val application = Mockito.mock(Application::class.java)
