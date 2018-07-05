@@ -8,3 +8,6 @@ android:
 
   script:
     - ./gradlew app:clean app:testDebug --continue --no-daemon
+
+  after_success:
+    - bash <(curl -s https://codecov.io/bash)
