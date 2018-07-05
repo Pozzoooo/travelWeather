@@ -22,8 +22,13 @@ android {
 
 	allprojects {
 		afterEvaluate { project ->
-			def propsFile = rootProject.file("../../keystore/keystore.properties")
 			def configName = 'release'
+			def propsFile = rootProject.file("../../keystore/keystore.properties")
+
+			if (!propsFile.exists()) {
+				println("****************** keystore not found, not gonna sign ******************")
+				return
+			}
 
 			def props = new Properties()
 			props.load(new FileInputStream(propsFile))
@@ -45,7 +50,7 @@ android {
 		}
 		debug {
 			debuggable true
-			signingConfig signingConfigs.release
+			if (signingConfigs.release.storeFile != null) signingConfig signingConfigs.release
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
