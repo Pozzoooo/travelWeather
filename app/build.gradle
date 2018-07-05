@@ -16,33 +16,9 @@ android {
 		versionName "1.2.4-SNAPSHOT"
 	}
 
-	signingConfigs {
-		release
-	}
-
-	allprojects {
-		afterEvaluate { project ->
-			def configName = 'release'
-			def propsFile = rootProject.file("../../keystore/keystore.properties")
-
-			if (!propsFile.exists()) {
-				println("****************** keystore not found, not gonna sign ******************")
-				return
-			}
-
-			def props = new Properties()
-			props.load(new FileInputStream(propsFile))
-			android.signingConfigs[configName].storeFile = file(props['storeFile'])
-			android.signingConfigs[configName].storePassword = props['storePassword']
-			android.signingConfigs[configName].keyAlias = props['keyAlias']
-			android.signingConfigs[configName].keyPassword = props['keyPassword']
-		}
-	}
-
 	buildTypes {
 		release {
 			debuggable false
-			signingConfig signingConfigs.release
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 			project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
@@ -50,7 +26,6 @@ android {
 		}
 		debug {
 			debuggable true
-			if (signingConfigs.release.storeFile != null) signingConfig signingConfigs.release
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
