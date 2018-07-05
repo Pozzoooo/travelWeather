@@ -1,4 +1,5 @@
 language: android
+
 android:
   components:
     - tools
@@ -6,8 +7,8 @@ android:
     - android-27
     - extra-android-m2repository
 
-  script:
-    - ./gradlew app:clean app:testDebug jacocoTestReport --continue --no-daemon
+script:
+  - ./gradlew app:clean app:testDebug jacocoTestReport --continue --no-daemon
 
-  after_success:
-    - bash <(curl -s https://codecov.io/bash)
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
