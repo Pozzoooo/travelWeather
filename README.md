@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Pozzoooo/travelWeather.svg?branch=master)](https://travis-ci.org/Pozzoooo/travelWeather)[![codecov](https://codecov.io/gh/Pozzoooo/travelWeather/branch/master/graph/badge.svg)](https://codecov.io/gh/Pozzoooo/travelWeather)
+[![Build Status](https://travis-ci.org/Pozzoooo/travelWeather.svg?branch=master)](https://travis-ci.org/Pozzoooo/travelWeather) [![codecov](https://codecov.io/gh/Pozzoooo/travelWeather/branch/master/graph/badge.svg)](https://codecov.io/gh/Pozzoooo/travelWeather)
 
 Forecast during the travel.
 
