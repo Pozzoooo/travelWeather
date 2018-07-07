@@ -24,6 +24,7 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  *
  * Integrate some continuous integration tool
  * Test coverage over Kotlin?
+ * I might need to better hide some keys? (Google maps, Firebase, Mint)
  * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
  * Add more days, after after tomorrow, but I need to think in a proper way ot display it
  * Build route if it was triggered when no connection was available (job schedule?)
