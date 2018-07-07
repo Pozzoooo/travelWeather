@@ -3,8 +3,8 @@ package pozzo.apps.travelweather.forecast
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.common.android.BitmapCreator
 
 enum class ForecastType(@DrawableRes val iconId: Int, @StringRes val stringId: Int) {
     SUNNY(                  R.drawable.sun,                     R.string.forecast_sunny),
@@ -28,7 +28,7 @@ enum class ForecastType(@DrawableRes val iconId: Int, @StringRes val stringId: I
     fun getIcon() : BitmapDescriptor = bitmapCache[this] ?: createIcon()
 
     private fun createIcon() : BitmapDescriptor {
-        val icon = BitmapDescriptorFactory.fromResource(iconId)
+        val icon = BitmapCreator.get().fromResource(iconId)
         bitmapCache[this] = icon
         return icon
     }
