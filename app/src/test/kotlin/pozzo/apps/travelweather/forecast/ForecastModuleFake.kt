@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.JsonParser
+import pozzo.apps.travelweather.core.JsonParser
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
 import retrofit2.Retrofit

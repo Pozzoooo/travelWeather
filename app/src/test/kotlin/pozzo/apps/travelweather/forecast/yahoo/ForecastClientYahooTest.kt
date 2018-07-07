@@ -7,9 +7,9 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import pozzo.apps.travelweather.JsonParser
-import pozzo.apps.travelweather.TestInjector
-import pozzo.apps.travelweather.TestSettings
+import pozzo.apps.travelweather.core.JsonParser
+import pozzo.apps.travelweather.core.TestInjector
+import pozzo.apps.travelweather.core.TestSettings
 import pozzo.apps.travelweather.forecast.model.Weather
 
 class ForecastClientYahooTest {

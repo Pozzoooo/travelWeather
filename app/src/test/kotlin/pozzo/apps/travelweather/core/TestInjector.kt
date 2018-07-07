@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather
+package pozzo.apps.travelweather.core
 
 import android.app.Application
 import org.mockito.Mockito

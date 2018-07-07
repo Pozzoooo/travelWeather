@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather
+package pozzo.apps.travelweather.core
 
 import javax.inject.Scope
 

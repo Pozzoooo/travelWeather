@@ -1,31 +1,32 @@
 package pozzo.apps.travelweather.forecast.yahoo
 
-import com.splunk.mint.Mint
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastType
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
+import java.util.*
 
 class ForecastTypeMapperYahoo : ForecastTypeMapper {
     private val forecastTypeMap = mapOf(
-            "Sunny" to ForecastType.SUNNY,
-            "Mostly Sunny" to ForecastType.MOSTLY_SUNNY,
-            "Thunderstorms" to ForecastType.THUNDERSTORMS,
-            "Scattered Thunderstorms" to ForecastType.SCATTERED_THUNDERSTORMS,
-            "Rain" to ForecastType.RAIN,
-            "Showers" to ForecastType.SHOWERS,
-            "Scattered Showers" to ForecastType.SCATTERED_SHOWERS,
-            "Partly Cloudy" to ForecastType.PARTLY_CLOUDY,
-            "Cloudy" to ForecastType.CLOUDY,
-            "Mostly Cloudy" to ForecastType.MOSTLY_CLOUDY,
-            "Snow" to ForecastType.SNOW,
-            "Rain and Snow" to ForecastType.RAIN_SNOW,
-            "Windy" to ForecastType.WINDY,
-            "Breezy" to ForecastType.BREEZY)
+            "sunny" to ForecastType.SUNNY,
+            "mostly sunny" to ForecastType.MOSTLY_SUNNY,
+            "thunderstorms" to ForecastType.THUNDERSTORMS,
+            "scattered thunderstorms" to ForecastType.SCATTERED_THUNDERSTORMS,
+            "rain" to ForecastType.RAIN,
+            "showers" to ForecastType.SHOWERS,
+            "scattered showers" to ForecastType.SCATTERED_SHOWERS,
+            "partly cloudy" to ForecastType.PARTLY_CLOUDY,
+            "cloudy" to ForecastType.CLOUDY,
+            "mostly cloudy" to ForecastType.MOSTLY_CLOUDY,
+            "snow" to ForecastType.SNOW,
+            "rain and snow" to ForecastType.RAIN_SNOW,
+            "windy" to ForecastType.WINDY,
+            "breezy" to ForecastType.BREEZY)
 
     override fun getForecastType(forecast: Forecast) : ForecastType {
-        val forecastType = forecastTypeMap[forecast.text]
+        val forecastType = forecastTypeMap[forecast.text?.toLowerCase(Locale.US)]
         return if (forecastType == null) {
-            Mint.logException(Exception("Unknown forecast ${forecast.text}"))
+            Bug.get().logException("Unknown forecast ${forecast.text}")
             ForecastType.UNKNOWN
         } else {
             forecastType

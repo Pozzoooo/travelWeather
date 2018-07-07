@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import pozzo.apps.travelweather.TestInjector
+import pozzo.apps.travelweather.core.TestInjector
 
 class ForecastBusinessTest {
     private lateinit var forecastBusiness: ForecastBusiness
