@@ -17,7 +17,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
-import com.splunk.mint.Mint
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
