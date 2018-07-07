@@ -3,7 +3,7 @@ package pozzo.apps.travelweather.common.android
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
-class BitmapCreator {
+open class BitmapCreator {
     companion object {
         private var instance: BitmapCreator = BitmapCreator()
 
@@ -16,5 +16,5 @@ class BitmapCreator {
         }
     }
 
-    fun fromResource(resourceId: Int) : BitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId)
+    open fun fromResource(resourceId: Int) : BitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId)
 }
