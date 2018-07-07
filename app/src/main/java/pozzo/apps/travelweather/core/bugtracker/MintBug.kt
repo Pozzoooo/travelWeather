@@ -12,4 +12,12 @@ class MintBug(private val key: String) : Bug() {
     override fun logException(exception: Exception) {
         Mint.logException(exception)
     }
+
+    override fun logException(key: String, value: String, exception: Exception) {
+        Mint.logException(key, value, exception)
+    }
+
+    override fun logEvent(event: String) {
+        Mint.logEvent(event)
+    }
 }

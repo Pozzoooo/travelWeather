@@ -14,8 +14,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.splunk.mint.Mint
 import pozzo.apps.tools.AndroidUtil
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -41,7 +41,7 @@ class MapFragment : SupportMapFragment() {
         try {
             MapsInitializer.initialize(context)
         } catch (e: GooglePlayServicesNotAvailableException) {
-            Mint.logException(e)
+            Bug.get().logException(e)
         }
         getMapAsync { onMapReady(it) }
     }
@@ -59,7 +59,7 @@ class MapFragment : SupportMapFragment() {
         try {
             map?.animateCamera(cameraUpdate)
         } catch (e: IllegalStateException) {
-            Mint.logException(e)
+            Bug.get().logException(e)
         }
     }
 
@@ -91,7 +91,7 @@ class MapFragment : SupportMapFragment() {
     private fun addDragListener() {
         view?.apply {
             setOnDragListener(dragListener)
-        } ?: Mint.logException(IllegalStateException("Trying to add drag listener without view"))
+        } ?: Bug.get().logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
@@ -130,7 +130,7 @@ class MapFragment : SupportMapFragment() {
             DragEvent.ACTION_DROP -> {
                 getProjection()?.let {
                     viewModel.flagDragActionFinished(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
-                } ?: Mint.logException(IllegalStateException("Trying to drag to the map with map not ready yet"))
+                } ?: Bug.get().logException(IllegalStateException("Trying to drag to the map with map not ready yet"))
                 true
             }
             DragEvent.ACTION_DRAG_STARTED -> {

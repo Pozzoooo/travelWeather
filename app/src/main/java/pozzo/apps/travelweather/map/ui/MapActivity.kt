@@ -31,6 +31,7 @@ import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
@@ -140,7 +141,7 @@ class MapActivity : BaseActivity() {
         when(overlay) {
             Tutorial.FULL_TUTORIAL -> mapTutorial.playTutorial(this)
             Tutorial.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
-            else -> Mint.logException(Exception("Missing show overlay $overlay"))
+            else -> Bug.get().logException("Missing show overlay $overlay")
         }
     }
 

@@ -1,7 +1,6 @@
 package pozzo.apps.travelweather.location.helper;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.splunk.mint.Mint;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import pozzo.apps.travelweather.core.bugtracker.Bug;
 
 public class GMapV2Direction {
     public final static String MODE_DRIVING = "driving";
@@ -34,7 +35,7 @@ public class GMapV2Direction {
 		} catch (IOException e) {
         	throw e;
         } catch (Exception e) {
-			Mint.logException(e);
+			Bug.get().logException(e);
         }
         return null;
     }

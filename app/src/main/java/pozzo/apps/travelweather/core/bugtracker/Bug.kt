@@ -7,8 +7,10 @@ abstract class Bug {
     companion object {
         private var instance: Bug = NullBug()
 
+        @JvmStatic
         fun get() = instance
 
+        @JvmStatic
         fun setInstance(bug: Bug) {
             this.instance = bug
         }
@@ -20,4 +22,6 @@ abstract class Bug {
 
     abstract fun init(application: Application)
     abstract fun logException(exception: Exception)
+    abstract fun logException(key: String, value: String, exception: Exception)
+    abstract fun logEvent(event: String)
 }

@@ -4,9 +4,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
-import com.splunk.mint.Mint
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.GsonFactory
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -44,7 +44,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
         try {
             response = yahooWeather.forecast(query).execute()
         } catch (e: RuntimeException) {
-            Mint.logException("query", query, e)
+            Bug.get().logException("query", query, e)
             return null
         }
 
@@ -54,7 +54,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
         } catch (e: ClassCastException) {
             if (maxRetries > 0)
                 return requestWeather(query, maxRetries-1)
-            Mint.logEvent("Json null")
+            Bug.get().logEvent("Json null")
             return null
         }
     }

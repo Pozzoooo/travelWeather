@@ -3,9 +3,9 @@ package pozzo.apps.travelweather.map.manager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
-import com.splunk.mint.Mint
-import pozzo.apps.travelweather.map.ui.MapActivity
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
+import pozzo.apps.travelweather.map.ui.MapActivity
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 /**
@@ -28,7 +28,7 @@ class PermissionManager(private val mapActivity: MapActivity) {
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) : Boolean {
         val permissionRequest = onGoingRequests[requestCode]
         if (permissionRequest == null) {
-            Mint.logException(Exception("On going request gone missing $requestCode --- $permissions"))
+            Bug.get().logException("On going request gone missing $requestCode --- $permissions")
             return false
         }
 

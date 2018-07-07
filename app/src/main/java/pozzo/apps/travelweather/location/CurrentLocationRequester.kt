@@ -9,7 +9,7 @@ import android.location.Location
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
-import com.splunk.mint.Mint
+import pozzo.apps.travelweather.core.bugtracker.Bug
 
 class CurrentLocationRequester(private val application: Application, private val callback: Callback) {
     companion object {
@@ -52,7 +52,7 @@ class CurrentLocationRequester(private val application: Application, private val
         } catch (e: SecurityException) {
             //we might not have permission, we leave the system try to activate the gps before any message
         } catch (e: Exception) {
-            Mint.logException(e)
+            Bug.get().logException(e)
         }
         return null
     }
