@@ -68,9 +68,8 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
                     .getAsJsonObject("channel")
             val item = channel.getAsJsonObject("item")
             val forecastArray = item.getAsJsonArray("forecast")
-            val gson = GsonFactory.getGson()
             val forecastType = object : TypeToken<List<Forecast>>() {}.type
-            val forecasts = gson.fromJson<List<Forecast>>(forecastArray, forecastType)
+            val forecasts = GsonFactory.gson.fromJson<List<Forecast>>(forecastArray, forecastType)
             if (forecasts.isEmpty())
                 return null
 

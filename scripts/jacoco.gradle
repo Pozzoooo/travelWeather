@@ -18,6 +18,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 	// UI, "noise", generated classes, platform classes, etc.
 	def excludes = [
 			'**/R.class',
+			'**/App*.class',
 			'**/R$*.class',
 			'**/*$ViewInjector*.*',
 			'**/BuildConfig.*',
