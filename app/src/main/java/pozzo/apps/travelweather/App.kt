@@ -1,7 +1,9 @@
 package pozzo.apps.travelweather
 
 import android.app.Application
-import com.splunk.mint.Mint
+import pozzo.apps.travelweather.core.bugtracker.Bug
+import pozzo.apps.travelweather.core.bugtracker.LogBug
+import pozzo.apps.travelweather.core.bugtracker.MintBug
 import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
@@ -50,9 +52,17 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        if (!BuildConfig.DEBUG) Mint.initAndStartSession(this, "c315b759")
+        initBugTracker()
         initComponent()
+    }
+
+    private fun initBugTracker() {
+        val bugInstance = if (BuildConfig.DEBUG) {
+            LogBug()
+        } else {
+            MintBug("c315b759")
+        }
+        Bug.setInstance(bugInstance)
     }
 
     private fun initComponent() {
