@@ -18,7 +18,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         firebaseAnalytics.logEvent("fab", bundle)
     }
 
-    fun sendClearRouteEvent() {
+    fun sendClearRouteEvent() = launch {
         sendFirebaseFab("clearRoute")
     }
 
