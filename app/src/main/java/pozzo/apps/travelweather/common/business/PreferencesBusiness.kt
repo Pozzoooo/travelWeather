@@ -1,17 +1,14 @@
 package pozzo.apps.travelweather.common.business
 
-import android.app.Application
-import android.preference.PreferenceManager
+import android.content.SharedPreferences
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.forecast.model.Day
 
-class PreferencesBusiness(application: Application, private val mapAnalytics: MapAnalytics) {
+class PreferencesBusiness(private val preferences: SharedPreferences, private val mapAnalytics: MapAnalytics) {
     companion object {
         private const val KEY_SELECTED_DAY = "selectedDay"
         private const val KEY_DAY_SELECTION_COUNT = "daySelectionCount"
     }
-
-    private val preferences = PreferenceManager.getDefaultSharedPreferences(application)
 
     fun getSelectedDay() : Day {
         val selectedDay = preferences.getInt(KEY_SELECTED_DAY, Day.TODAY.index)

@@ -7,9 +7,7 @@ import dagger.Provides
 import pozzo.apps.travelweather.core.injection.AppModule
 
 @Module(includes = [AppModule::class])
-class AnalyticsModule {
-
-    @Provides fun firebaseAnalytics(application: Application) = FirebaseAnalytics.getInstance(application)
-
-    @Provides fun mapAnalytics(firebaseAnalytics: FirebaseAnalytics) = MapAnalytics(firebaseAnalytics)
+open class AnalyticsModule {
+    @Provides open fun firebaseAnalytics(application: Application) = FirebaseAnalytics.getInstance(application)
+    @Provides open fun mapAnalytics(firebaseAnalytics: FirebaseAnalytics) = MapAnalytics(firebaseAnalytics)
 }

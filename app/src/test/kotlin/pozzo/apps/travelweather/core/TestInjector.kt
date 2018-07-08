@@ -3,6 +3,7 @@ package pozzo.apps.travelweather.core
 import android.app.Application
 import org.mockito.Mockito
 import pozzo.apps.travelweather.analytics.AnalyticsModule
+import pozzo.apps.travelweather.analytics.AnalyticsModuleFake
 import pozzo.apps.travelweather.common.CommonModule
 import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
@@ -35,7 +36,7 @@ object TestInjector {
                 .appModule(AppModule(application))
                 .forecastModule(ForecastModuleFake())
                 .networkModule(NetworkModule())
-                .analyticsModule(AnalyticsModule())
+                .analyticsModule(AnalyticsModuleFake())
                 .commonModule(CommonModule())
                 .directionModule(DirectionModule())
                 .build()

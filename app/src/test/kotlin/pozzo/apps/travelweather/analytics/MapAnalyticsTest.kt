@@ -5,7 +5,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
@@ -40,6 +40,6 @@ class MapAnalyticsTest {
             ).forEach { it.join() }
         }
 
-        Mockito.verify(firebaseAnalytics, Mockito.times(9)).logEvent(ArgumentMatchers.any(), ArgumentMatchers.any())
+        Mockito.verify(firebaseAnalytics, Mockito.times(9)).logEvent(any(), any())
     }
 }
