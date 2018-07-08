@@ -24,8 +24,7 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  *
- * Integrate some continuous integration tool
- * Test coverage over Kotlin?
+ * Animar as flags voltando para a lateral quando apertar o clear
  * I might need to better hide some keys? (Google maps, Firebase, Mint)
  * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
  * Add more days, after after tomorrow, but I need to think in a proper way ot display it
@@ -34,12 +33,9 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  * Notificar quando o tempo mudar apos ter agendado uma viagem
  * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
  * Realizar a separacao early, late...
- * A questao do horario de saida e chegada, como fica?
  * Outra fonte para busca de previsao do tempo
- * Unit test :)
- * Animar as flags voltando para a lateral quando apertar o clear
- * I need to make my dependencies more explicity, I guess unit test and dagger will help me on that
  * Finish Dagger refactoring
+ * Increase test coverage
  */
 class App : Application() {
     companion object {
