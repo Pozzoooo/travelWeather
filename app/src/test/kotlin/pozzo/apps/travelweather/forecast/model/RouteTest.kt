@@ -13,10 +13,10 @@ class RouteTest {
         val route = Route(startPoint = Mockito.mock(StartPoint::class.java),
                 finishPoint = Mockito.mock(FinishPoint::class.java))
 
-        assertTrue(route.hasStartAndFinish())
+        assertTrue(route.isComplete())
     }
 
     @Test fun shouldReturnFalseForHasStartAndFinish() {
-        assertFalse(Route().hasStartAndFinish())
+        assertFalse(Route().isComplete())
     }
 }

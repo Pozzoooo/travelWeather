@@ -7,10 +7,10 @@ import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 
 class Route(baseRoute: Route? = null,
-        startPoint: StartPoint? = null,
-        finishPoint: FinishPoint? = null,
-        polyline: PolylineOptions? = null,
-        mapPoints: Channel<MapPoint>? = null) {
+            startPoint: StartPoint? = null,
+            finishPoint: FinishPoint? = null,
+            polyline: PolylineOptions? = null,
+            mapPoints: Channel<MapPoint>? = null) {
 
     val startPoint: StartPoint?
     val finishPoint: FinishPoint?
@@ -24,5 +24,6 @@ class Route(baseRoute: Route? = null,
         this.mapPoints = mapPoints ?: baseRoute?.mapPoints ?: Channel(0)
     }
 
-  fun hasStartAndFinish() : Boolean = startPoint != null && finishPoint != null
+    fun isComplete() : Boolean = startPoint != null && finishPoint != null
+    fun isEmpty() : Boolean = startPoint == null && finishPoint == null
 }

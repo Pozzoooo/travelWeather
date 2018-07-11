@@ -36,6 +36,7 @@ import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.map.ReturnAnimation
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.Tutorial
@@ -47,16 +48,20 @@ class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
     private lateinit var mainThread: Handler
+    private lateinit var returnAnimation: ReturnAnimation
 
     private lateinit var mapFragment: MapFragment
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var permissionManager: PermissionManager
 
+    private var lastDisplayedRoute = Route()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.mainThread = Handler()
         this.permissionManager = PermissionManager(this)
+        this.returnAnimation = ReturnAnimation(resources)
         setupViewModel()
         setupDataBind()
         setupMapFragment()
@@ -145,17 +150,16 @@ class MapActivity : BaseActivity() {
     }
 
     private fun updateRoute(route: Route) {
-        clearMap()
-        route.polyline?.let { mapFragment.plotRoute(it) }
-        setStartPoint(route.startPoint)
-        setFinishPoint(route)
-        showMapPoints(route)
-        pointMapToRoute(route)
-    }
-
-    private fun clearMap() {
-        mapMarkerToWeather.clear()
-        mapFragment.clearMapOverlay()
+        if (!route.isEmpty()) {
+            route.polyline?.let { mapFragment.plotRoute(it) }
+            setStartPoint(route.startPoint)
+            setFinishPoint(route)
+            showMapPoints(route)
+            pointMapToRoute(route)
+        } else {
+            clearMap()
+        }
+        lastDisplayedRoute = route
     }
 
     private fun setStartPoint(startPoint: StartPoint?) {
@@ -181,7 +185,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun pointMapToRoute(route: Route) {
-        if (route.hasStartAndFinish()) {
+        if (route.isComplete()) {
             mapFragment.updateCamera(
                 CameraUpdateFactory.newLatLngBounds(
                     LatLngBounds.builder()
@@ -189,6 +193,18 @@ class MapActivity : BaseActivity() {
                         .include(route.finishPoint!!.position).build(), 70))
         } else if (route.startPoint != null) {
             mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
+        }
+    }
+
+    private fun clearMap() {
+        mapMarkerToWeather.clear()
+        mapFragment.clearMapOverlay()
+
+        val projection = mapFragment.getProjection()
+
+        if (projection != null) {
+            lastDisplayedRoute.startPoint?.marker?.let { returnAnimation.animate(startFlag, projection.toScreenLocation(it.position)) }
+            lastDisplayedRoute.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
         }
     }
 
@@ -273,6 +289,7 @@ class MapActivity : BaseActivity() {
         viewModel.selectedDayChanged(newSelection)
     }
 
+    //todo now that the mapPoint contains the marker, maybe I can find a simpler solution without the cached markers
     private fun refreshMarkers(day: Day) {
         val markerWeathers = this.mapMarkerToWeather
         this.mapMarkerToWeather = HashMap()
@@ -286,6 +303,7 @@ class MapActivity : BaseActivity() {
         mapPoint.day = day
 
         val marker = mapFragment.addMark(mapPoint)
+        mapPoint.marker = marker
         if (marker != null) mapMarkerToWeather[marker] = mapPoint
     }
 

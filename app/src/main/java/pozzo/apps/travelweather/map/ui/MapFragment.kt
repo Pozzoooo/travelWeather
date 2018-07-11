@@ -141,5 +141,5 @@ class MapFragment : SupportMapFragment() {
         }
     }
 
-    private fun getProjection() : Projection? = map?.projection
+    fun getProjection() : Projection? = map?.projection
 }

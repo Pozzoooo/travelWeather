@@ -27,7 +27,7 @@ class MapTutorial(context: Context) {
 
     fun playTutorial(activity: Activity) {
         FancyShowCaseView.Builder(activity)
-                .focusOn(activity.findViewById(R.id.flagShelf))
+                .focusOn(activity.findViewById(R.id.startFlag))
                 .title(activity.getString(R.string.tutorial_flags))
                 .titleGravity(Gravity.TOP)
                 .build()

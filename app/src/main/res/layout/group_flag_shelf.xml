@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<merge
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/flagShelf"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:parentTag="android.widget.RelativeLayout"
 	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:minWidth="65sp"
-	android:gravity="center_horizontal"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
 	<TextView
 		android:id="@+id/lDragTheFlag"
@@ -14,18 +12,25 @@
 		android:layout_height="wrap_content"
 		android:lines="3"
 		android:gravity="center|bottom"
-		android:text="@string/tutorial_dragTheFlags"/>
+		android:text="@string/tutorial_dragTheFlags"
+		android:layout_above="@id/startFlag"
+		android:layout_alignStart="@id/startFlag"/>
 
 	<ImageView
 		android:id="@+id/startFlag"
 		style="@style/buttonsOnButtonBar"
 		android:src="@drawable/start_flag"
-		android:contentDescription="@string/startPosition"/>
+		android:contentDescription="@string/startPosition"
+		android:layout_centerVertical="true"
+		android:layout_alignParentEnd="true"/>
 
 	<ImageView
 		android:id="@+id/finishFlag"
-		style="@style/buttonsOnButtonBar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:src="@drawable/finish_flag"
 		android:contentDescription="@string/finishPosition"
-		android:alpha=".4"/>
-</LinearLayout>
+		android:alpha=".4"
+		android:layout_below="@id/startFlag"
+		android:layout_alignStart="@id/startFlag"/>
+</merge>
