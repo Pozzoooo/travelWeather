@@ -75,7 +75,6 @@ class MapFragment : SupportMapFragment() {
 
         this.map = googleMap
 
-        googleMap.setOnMapClickListener({ latLng -> viewModel.addPoint(latLng) })
         googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
         googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(activity))
         googleMap.setOnMarkerDragListener(markerDragListener)
