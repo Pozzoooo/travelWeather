@@ -150,15 +150,17 @@ class MapActivity : BaseActivity() {
     }
 
     private fun updateRoute(route: Route) {
-        if (!route.isEmpty()) {
+        clearMap()
+        if (route.isEmpty()) {
+            moveFlagsBackToShelf()
+        } else {
             route.polyline?.let { mapFragment.plotRoute(it) }
             setStartPoint(route.startPoint)
             setFinishPoint(route)
             showMapPoints(route)
             pointMapToRoute(route)
-        } else {
-            clearMap()
         }
+
         lastDisplayedRoute = route
     }
 
@@ -200,8 +202,11 @@ class MapActivity : BaseActivity() {
         mapMarkerToWeather.clear()
         mapFragment.clearMapOverlay()
 
-        val projection = mapFragment.getProjection()
+    }
 
+    private fun moveFlagsBackToShelf() {
+        //todo after animation state
+        val projection = mapFragment.getProjection()
         if (projection != null) {
             lastDisplayedRoute.startPoint?.marker?.let { returnAnimation.animate(startFlag, projection.toScreenLocation(it.position)) }
             lastDisplayedRoute.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
