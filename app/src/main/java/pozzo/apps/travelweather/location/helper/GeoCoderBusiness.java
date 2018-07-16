@@ -40,26 +40,6 @@ public class GeoCoderBusiness {
 	}
 
 	/**
-	 * Get related address to the position.
-	 */
-	public String getAddress(LatLng point) {
-		Geocoder geoCoder = new Geocoder(ctx, Locale.getDefault());
-		String addr = "";
-		try {
-			List<Address> addresses = geoCoder.getFromLocation(
-					point.latitude,
-					point.longitude, 1);
-
-			if (addresses.size() > 0)
-				addr = asString(addresses.get(0));
-		}
-		catch (IOException e) {                
-			e.printStackTrace();
-		}
-		return addr;
-	}
-
-	/**
 	 * Get a list of address similar to the source.
 	 */
 	public List<Address> getSimilarAddresses(String address) throws IOException {

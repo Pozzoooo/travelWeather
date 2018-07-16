@@ -40,7 +40,7 @@ public class LocationBusiness {
      */
     public ArrayList<LatLng> getDirections(@NonNull LatLng startPosition, @NonNull LatLng finishPosition) throws IOException {
         GMapV2Direction md = new GMapV2Direction();
-        Document doc = md.getDocument(startPosition, finishPosition, GMapV2Direction.MODE_DRIVING);
+        Document doc = md.getDocument(startPosition, finishPosition);
         return doc == null ? null : md.getDirection(doc);
     }
 }

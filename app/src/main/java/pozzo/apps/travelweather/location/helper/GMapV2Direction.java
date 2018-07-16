@@ -18,10 +18,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import pozzo.apps.travelweather.core.bugtracker.Bug;
 
+/**
+ * https://developers.google.com/maps/documentation/directions/intro
+ */
 public class GMapV2Direction {
-    public final static String MODE_DRIVING = "driving";
-
-    public Document getDocument(LatLng start, LatLng end, String mode) throws IOException {
+    public Document getDocument(LatLng start, LatLng end) throws IOException {
         try {
 			URL url = new URL("http://maps.googleapis.com/maps/api/directions/xml?"
 					+ "origin=" + start.latitude + "," + start.longitude
