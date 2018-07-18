@@ -16,7 +16,7 @@ class GeoCoderBusiness(private val geocoder: Geocoder) {
     fun getPositionFromFirst(address: String?): LatLng? =
             address?.let {
                 geocoder.getFromLocationName(address, 1)
-            }?.first()?.let {
+            }?.firstOrNull()?.let {
                 LatLng(it.latitude, it.longitude)
             }
 }
