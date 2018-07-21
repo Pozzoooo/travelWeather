@@ -28,6 +28,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/*Fragment*',
 			'**/*Activity*',
 			'**/*Adapter*',
+			'**/Dagger*',
 			'**/*_MembersInjector*',
 			'**/*Module*.*'
 	]
