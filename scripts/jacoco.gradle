@@ -25,8 +25,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/Manifest*.*',
 			'**/*Test*.*',
 			'android/**/*.*',
-			'**/*Fragment.*',
-			'**/*Activity.*',
+			'**/*Fragment*',
+			'**/*Activity*',
 			'**/*Module*.*'
 	]
 	// generated classes
