@@ -19,4 +19,9 @@ class ForecastBusinessTest {
         val weather = forecastBusiness.forecast(LatLng(40.781579, -74.358705))
         Assert.assertNotNull(weather!!.forecasts!![0].forecastType!!.iconId)
     }
+
+    @Test fun checkMinDistanceForWeathers() {
+        Assert.assertFalse(forecastBusiness.isMinDistanceToForecast(LatLng(.0, .0), LatLng(.0, .0)))
+        Assert.assertTrue(forecastBusiness.isMinDistanceToForecast(LatLng(.0, .0), LatLng(50.0, 50.0)))
+    }
 }
