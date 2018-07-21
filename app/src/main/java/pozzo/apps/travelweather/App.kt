@@ -39,10 +39,14 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  */
 class App : Application() {
     companion object {
-        private lateinit var appComponent: AppComponent
+        private var appComponent: AppComponent? = null
 
         fun component(): AppComponent {
-            return appComponent
+            return appComponent!!//It should be initiated
+        }
+
+        fun setComponent(component: AppComponent) {
+            appComponent = component
         }
     }
 
@@ -62,11 +66,12 @@ class App : Application() {
     }
 
     private fun initComponent() {
-        appComponent = DaggerAppComponent.builder()
+        setComponent(DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule())
                 .forecastModule(ForecastModuleYahoo())
                 .build()
+        )
     }
 }
 

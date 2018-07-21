@@ -10,11 +10,11 @@ import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.injection.AppModule
 
 @Module(includes = [AppModule::class])
-class CommonModule {
+open class CommonModule {
 
-    @Provides fun preferencesBusiness(preferences: SharedPreferences, mapAnalytics: MapAnalytics) =
+    @Provides open fun preferencesBusiness(preferences: SharedPreferences, mapAnalytics: MapAnalytics) =
             PreferencesBusiness(preferences, mapAnalytics)
 
-    @Provides fun sharedPreferences(application: Application) : SharedPreferences =
+    @Provides open fun sharedPreferences(application: Application) : SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(application)
 }

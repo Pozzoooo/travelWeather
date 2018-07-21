@@ -21,7 +21,7 @@ class PreferencesBusinessTest {
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
-        val appComponent = TestInjector.getAppComponent()
+        val appComponent = TestInjector.getAppComponent().build()
         preferencesBusiness = PreferencesBusiness(preferences, appComponent.mapAnalytics())
     }
 

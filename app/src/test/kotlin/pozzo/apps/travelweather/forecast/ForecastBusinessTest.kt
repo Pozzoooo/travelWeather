@@ -10,7 +10,7 @@ class ForecastBusinessTest {
     private lateinit var forecastBusiness: ForecastBusiness
 
     @Before fun setup() {
-        val appComponent = TestInjector.getAppComponent()
+        val appComponent = TestInjector.getAppComponent().build()
         forecastBusiness = ForecastBusiness(
                 appComponent.forecastClient(), appComponent.forecastTypeMapper())
     }

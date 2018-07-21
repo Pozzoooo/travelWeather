@@ -44,17 +44,18 @@ android {
 }
 
 dependencies {
+	def arch = "1.1.1"
 
 	//Google
 	implementation 'com.android.support:design:27.1.1'
-	implementation "android.arch.lifecycle:runtime:1.1.1"
-	implementation "android.arch.lifecycle:extensions:1.1.1"
+	implementation "android.arch.lifecycle:runtime:$arch"
+	implementation "android.arch.lifecycle:extensions:$arch"
 	implementation 'com.google.firebase:firebase-core:16.0.1'
 	implementation "com.google.firebase:firebase-perf:16.0.0"
 	implementation 'com.google.firebase:firebase-messaging:17.1.0'
 	implementation 'com.google.android.gms:play-services-maps:15.0.1'
 	implementation 'com.google.android.gms:play-services-location:15.0.1'
-	kapt "android.arch.lifecycle:compiler:1.1.1"
+	kapt "android.arch.lifecycle:compiler:$arch"
 
 	//Web requests
 	implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -82,7 +83,8 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'
 	testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
-	testImplementation  'org.robolectric:robolectric:3.8'
+	testImplementation "org.robolectric:robolectric:3.8"
+	testImplementation "android.arch.core:core-testing:$arch"
 }
 
 apply plugin: 'com.google.gms.google-services'

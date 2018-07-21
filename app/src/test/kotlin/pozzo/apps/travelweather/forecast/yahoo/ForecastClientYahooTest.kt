@@ -25,7 +25,7 @@ class ForecastClientYahooTest {
             getUrlFromMockedWebServer()
         }
 
-        val appComponent = TestInjector.getAppComponent()
+        val appComponent = TestInjector.getAppComponent().build()
         val yahooWeather = ForecastModuleYahoo().yahooWeather(
                 appComponent.retrofitBuilder(), baseUrl)
         forecastClientYahoo = ForecastClientYahoo(yahooWeather)
