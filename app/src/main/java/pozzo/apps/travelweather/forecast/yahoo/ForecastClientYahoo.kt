@@ -28,10 +28,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
                 "(select woeid from geo.places where " +
                 "text=\"(" + coordinates.latitude + "," + coordinates.longitude + ")\") and u='c'"
         return requestWeather(query)?.apply {
-            val address = Address()
-            address.latitude = coordinates.latitude
-            address.longitude = coordinates.longitude
-            this.address = address
+            this.address = Address(coordinates.latitude, coordinates.longitude)
         }
     }
 
@@ -73,10 +70,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
             if (forecasts.isEmpty())
                 return null
 
-            val weather = Weather()
-            weather.setForecasts(forecasts)
-            weather.url = getLink(item)
-            return weather
+            return Weather(getLink(item)).apply { this.forecasts = forecasts }
         } catch (e: ClassCastException) {
             //sometime yahoo is sending us a null object, not really sure why, but all we can do for
             //  now is ignore it and keep on going
