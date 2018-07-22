@@ -31,6 +31,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/Dagger*',
 			'**/Shadow*',
 			'**/*_MembersInjector*',
+			'**/*Animation.class',
+			'**/*Bug*',
 			'**/*Module*.*'
 	]
 	// generated classes

@@ -59,10 +59,10 @@ class MapActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.mainThread = Handler()
-        this.permissionManager = PermissionManager(this)
-        this.returnAnimation = ReturnAnimation(resources)
         setupViewModel()
+        this.mainThread = Handler()
+        this.permissionManager = PermissionManager(this, viewModel)
+        this.returnAnimation = ReturnAnimation(resources)
         setupDataBind()
         setupMapFragment()
         setupView()

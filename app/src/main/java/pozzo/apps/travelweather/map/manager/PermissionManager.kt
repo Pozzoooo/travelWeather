@@ -1,25 +1,23 @@
 package pozzo.apps.travelweather.map.manager
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
-import pozzo.apps.travelweather.map.ui.MapActivity
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 /**
  * Manages permission requests and results.
  *
- * todo we need a dependency inversion to remove MapActivity dependency
+ * todo to be able to test this class I need to invert dependencies on ActivityCompat.requestPermissions
  */
-class PermissionManager(private val mapActivity: MapActivity) {
-    private val viewModel: MapViewModel = ViewModelProviders.of(mapActivity).get(MapViewModel::class.java)
+class PermissionManager(private val activity: AppCompatActivity, private val viewModel: MapViewModel) {
     private val onGoingRequests = HashMap<Int, PermissionRequest>()
 
     fun requestPermissions(permissionRequest: PermissionRequest) {
         onGoingRequests[permissionRequest.code()] = permissionRequest
-        ActivityCompat.requestPermissions(mapActivity, permissionRequest.permissions, permissionRequest.code())
+        ActivityCompat.requestPermissions(activity, permissionRequest.permissions, permissionRequest.code())
     }
 
     /**
@@ -33,7 +31,7 @@ class PermissionManager(private val mapActivity: MapActivity) {
         }
 
         if (PackageManager.PERMISSION_GRANTED == grantResults[0])
-            viewModel.onPermissionGranted(permissionRequest, mapActivity)
+            viewModel.onPermissionGranted(permissionRequest, activity)
         else
             viewModel.onPermissionDenied(permissionRequest)
         return true
