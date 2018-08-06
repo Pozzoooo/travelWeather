@@ -66,8 +66,8 @@ dependencies {
 	implementation "com.splunk.mint:mint:5.0.0"
 
 	//Custom libraries
-	implementation 'com.github.pozzoooo:pozzotools:-SNAPSHOT'
-	implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
+	implementation 'com.github.pozzoooo:pozzotools:5243fc9a36'
+	implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.1'
 
 	//Kotlin
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
