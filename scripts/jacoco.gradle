@@ -5,6 +5,16 @@ jacoco {
 	reportsDir = file("$buildDir/reports")
 }
 
+android {
+	testOptions {
+		unitTests.all {
+			jacoco {
+				includeNoLocationClasses = true
+			}
+		}
+	}
+}
+
 task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports for Debug build"
