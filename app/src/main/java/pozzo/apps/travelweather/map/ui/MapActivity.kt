@@ -229,6 +229,8 @@ class MapActivity : BaseActivity() {
     private fun showMapPoints(route: Route) {
         launch(UI) {
             for (it in route.mapPoints) {
+                if (isFinishing) break
+
                 addMark(it)
             }
         }
