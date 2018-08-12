@@ -1,6 +1,9 @@
 ext.getKeys = { keyFileName ->
 	Properties properties = new Properties()
 	File propertiesFile = new File(keyFileName)
-	propertiesFile.withInputStream { properties.load(it) }
+	if (propertiesFile.exists()) {
+		propertiesFile.withInputStream { properties.load(it) }
+	}
+
 	return properties
 }
