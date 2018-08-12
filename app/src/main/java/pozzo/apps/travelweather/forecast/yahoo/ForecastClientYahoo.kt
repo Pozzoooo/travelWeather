@@ -47,22 +47,26 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
 
         val result = response.body()?.string()
         try {
-            return handleResponse(result)
-        } catch (e: ClassCastException) {
-            if (maxRetries > 0)
-                return requestWeather(query, maxRetries-1)
-            Bug.get().logEvent("Json null")
-            return null
+            if (result != null)
+                return handleResponse(result)
+        } catch (e: Exception) {
+            Bug.get().logException("Result", result ?: "", e)
         }
+
+        if (maxRetries > 0)
+            return requestWeather(query, maxRetries-1)
+        return null
     }
 
     private fun handleResponse(body: String?) : Weather? {
+        val jsonResult = JsonParser().parse(body).asJsonObject
+
+        val result = jsonResult
+                .getAsJsonObject("query")
+                .getAsJsonObject("results")
+
         try {
-            val jsonResult = JsonParser().parse(body).asJsonObject
-            val channel = jsonResult
-                    .getAsJsonObject("query")
-                    .getAsJsonObject("results")
-                    .getAsJsonObject("channel")
+            val channel = result.getAsJsonObject("channel")
             val item = channel.getAsJsonObject("item")
             val forecastArray = item.getAsJsonArray("forecast")
             val forecastType = object : TypeToken<List<Forecast>>() {}.type
@@ -72,9 +76,12 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
 
             return Weather(getLink(item)).apply { this.forecasts = forecasts }
         } catch (e: ClassCastException) {
-            //sometime yahoo is sending us a null object, not really sure why, but all we can do for
-            //  now is ignore it and keep on going
-            return null
+            if (result.isJsonNull) {
+                //sometime yahoo is sending us a null object, not really sure why, but all we can do for
+                //  now is ignore it and keep on going
+                return null
+            }
+            throw e
         }
     }
 
