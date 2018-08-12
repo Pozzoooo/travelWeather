@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import pozzo.apps.travelweather.BuildConfig;
 import pozzo.apps.travelweather.core.bugtracker.Bug;
 
 /**
@@ -24,10 +25,11 @@ import pozzo.apps.travelweather.core.bugtracker.Bug;
 public class GMapV2Direction {
     public Document getDocument(LatLng start, LatLng end) throws IOException {
         try {
-			URL url = new URL("http://maps.googleapis.com/maps/api/directions/xml?"
+			URL url = new URL("https://maps.googleapis.com/maps/api/directions/xml?"
 					+ "origin=" + start.latitude + "," + start.longitude
 					+ "&destination=" + end.latitude + "," + end.longitude
-					+ "&sensor=false&units=metric&mode=driving");
+					+ "&sensor=false&units=metric&mode=driving"
+					+ "&key=" + BuildConfig.DIRECTIONS);
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			InputStream in = new BufferedInputStream(connection.getInputStream());

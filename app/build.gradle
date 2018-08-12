@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 apply from: '../scripts/jacoco.gradle'
+apply from: '../scripts/keys.gradle'
 
 android {
 	compileSdkVersion 27
@@ -16,6 +17,9 @@ android {
 		targetSdkVersion 27
 		versionCode 19
 		versionName "1.2.5-SNAPSHOT"
+
+		def googleKeys = getKeys('../../keystore/google.keys')
+		buildConfigField("String", "DIRECTIONS", "\"${googleKeys.directions}\"")
 	}
 
 	buildTypes {
@@ -30,7 +34,6 @@ android {
 			debuggable true
 			minifyEnabled false
 			testCoverageEnabled true
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
 
