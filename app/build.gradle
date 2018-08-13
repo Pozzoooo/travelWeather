@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 27
 		versionCode 19
-		versionName "1.2.5-SNAPSHOT"
+		versionName "1.2.5"
 
 		def googleKeys = getKeys('../../keystore/google.keys')
 		buildConfigField("String", "DIRECTIONS", "\"${googleKeys.directions}\"")
