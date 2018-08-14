@@ -9,6 +9,7 @@ apply from: '../scripts/keys.gradle'
 
 android {
 	compileSdkVersion 28
+	buildToolsVersion '27.0.3'
 
 	defaultConfig {
 		applicationId "pozzo.apps.travelweather"
