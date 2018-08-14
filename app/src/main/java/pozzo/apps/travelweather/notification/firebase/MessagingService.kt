@@ -14,4 +14,7 @@ class MessagingService : FirebaseMessagingService() {
         val notification = notificationHandler.parse(remoteMessage)
         notifier.notify(this, notification)
     }
+
+    override fun onNewToken(token: String) {
+    }
 }

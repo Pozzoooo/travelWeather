@@ -43,7 +43,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/*_MembersInjector*',
 			'**/*Animation.class',
 			'**/*Bug*',
-			'**/*Module*.*'
+			'**/*Module*.*',
+			'**/databinding/**'
 	]
 	// generated classes
 	classDirectories = fileTree(
