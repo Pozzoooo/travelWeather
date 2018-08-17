@@ -13,13 +13,8 @@ class ForecastBusiness(private val forecastClient : ForecastClient,
     }
 
     private fun enrich(weather: Weather) {
-        weather.forecasts?.forEach {
+        weather.forecasts.forEach {
             it.forecastType = forecastTypeMapper.getForecastType(it)
         }
-    }
-
-    fun isMinDistanceToForecast(from: LatLng, to: LatLng): Boolean {
-        val distance = Math.abs(from.latitude - to.latitude) + Math.abs(from.longitude - to.longitude)
-        return distance > 0.5
     }
 }
