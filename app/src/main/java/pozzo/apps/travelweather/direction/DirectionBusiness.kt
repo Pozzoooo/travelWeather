@@ -12,12 +12,13 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import java.io.IOException
 
-class DirectionBusiness(private val forecastBusiness: ForecastBusiness) {
-    private val locationBusiness = LocationBusiness()
-    private val directionLineBusiness = DirectionLineBusiness()
-
-    private val directionWeatherFilter = DirectionWeatherFilter()
-    private val weatherToMapPointParser = WeatherToMapPointParser()
+//todo how does that @Inject constructor works? Can it make this class look a bit simpler?
+class DirectionBusiness(
+        private val forecastBusiness: ForecastBusiness,
+        private val locationBusiness: LocationBusiness,
+        private val directionLineBusiness: DirectionLineBusiness,
+        private val directionWeatherFilter: DirectionWeatherFilter,
+        private val weatherToMapPointParser: WeatherToMapPointParser) {
 
     @Throws(DirectionNotFoundException::class, IOException::class)
     fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {

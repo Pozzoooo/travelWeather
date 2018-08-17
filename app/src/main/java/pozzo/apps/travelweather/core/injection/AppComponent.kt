@@ -9,15 +9,23 @@ import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.CommonModule
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.direction.DirectionBusiness
+import pozzo.apps.travelweather.direction.DirectionLineBusiness
 import pozzo.apps.travelweather.direction.DirectionModule
+import pozzo.apps.travelweather.direction.DirectionWeatherFilter
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastModule
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
+import pozzo.apps.travelweather.location.LocationBusiness
+import pozzo.apps.travelweather.location.LocationModule
+import pozzo.apps.travelweather.map.MapModule
+import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
 /**
+ * todo re organize dependencies, seems to be getting a bit messy
+ *
  * Root component.
  */
 @Singleton
@@ -27,7 +35,9 @@ import javax.inject.Singleton
     ForecastModule::class,
     DirectionModule::class,
     AnalyticsModule::class,
-    CommonModule::class
+    CommonModule::class,
+    LocationModule::class,
+    MapModule::class
 ])
 interface AppComponent {
     //App
@@ -45,10 +55,18 @@ interface AppComponent {
 
     //direction
     fun directionBusiness() : DirectionBusiness
+    fun directionWeatherFilter() : DirectionWeatherFilter
 
     //analytics
     fun mapAnalytics() : MapAnalytics
 
     //common
     fun preferencesBusiness() : PreferencesBusiness
+
+    //location
+    fun locationBusiness() : LocationBusiness
+    fun directionLineBusiness() : DirectionLineBusiness
+
+    //map
+    fun weatherToMapPointParser() : WeatherToMapPointParser
 }
