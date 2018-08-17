@@ -19,6 +19,7 @@ import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationModule
 import pozzo.apps.travelweather.map.MapModule
+import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -69,4 +70,5 @@ interface AppComponent {
 
     //map
     fun weatherToMapPointParser() : WeatherToMapPointParser
+    fun mapPointCreator() : MapPointCreator
 }
