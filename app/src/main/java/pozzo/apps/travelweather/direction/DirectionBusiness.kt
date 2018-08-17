@@ -7,7 +7,6 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import java.io.IOException
 
-//todo how does that @Inject constructor works? Can it make this class look a bit simpler?
 class DirectionBusiness(
         private val locationBusiness: LocationBusiness,
         private val directionLineBusiness: DirectionLineBusiness,

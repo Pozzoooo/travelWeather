@@ -132,7 +132,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setStartPosition(startPosition: LatLng) {
-        val startPoint = StartPoint(getApplication<App>().resources, startPosition)
+        val startPoint = StartPoint(startPosition)
         updateRoute(startPoint = startPoint)
     }
 
@@ -141,7 +141,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun setFinishPosition(finishPosition: LatLng) {
-        val finishPoint = FinishPoint(getApplication<App>().resources, finishPosition)
+        val finishPoint = FinishPoint(finishPosition)
         updateRoute(finishPoint = finishPoint)
         playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
     }

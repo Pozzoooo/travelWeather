@@ -12,7 +12,7 @@ class MapPointCreator(
         private val directionWeatherFilter: DirectionWeatherFilter,
         private val weatherToMapPointParser: WeatherToMapPointParser) {
 
-    fun createMapPointsAsync(direction: ArrayList<LatLng>) : Channel<MapPoint> {
+    fun createMapPointsAsync(direction: List<LatLng>) : Channel<MapPoint> {
         val mapPoints = Channel<MapPoint>()
         launch {
             directionWeatherFilter.getWeatherPointsLocations(direction).asSequence()

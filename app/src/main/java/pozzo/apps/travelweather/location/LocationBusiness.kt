@@ -7,7 +7,6 @@ import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.location.helper.GMapV2Direction
 import java.io.IOException
-import java.util.*
 
 /**
  * Controla regra de negocio de localizacao.
@@ -28,7 +27,7 @@ class LocationBusiness {
      * Rota para o dado destino.
      */
     @Throws(IOException::class)
-    fun getDirections(startPosition: LatLng, finishPosition: LatLng): ArrayList<LatLng>? {
+    fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {
         val directionV2 = GMapV2Direction()
         return directionV2.getDocument(startPosition, finishPosition)?.let { directionV2.getDirection(it) }
     }
