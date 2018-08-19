@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,7 +44,7 @@ public class GMapV2Direction {
         return null;
     }
 
-    public ArrayList<LatLng> getDirection(Document doc) {
+    public List<LatLng> getDirection(Document doc) {
         NodeList nl1, nl2, nl3;
         ArrayList<LatLng> listGeopoints = new ArrayList<LatLng>();
         nl1 = doc.getElementsByTagName("step");

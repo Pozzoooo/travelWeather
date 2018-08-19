@@ -18,6 +18,7 @@ import pozzo.apps.travelweather.forecast.ForecastModule
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationModule
+import pozzo.apps.travelweather.location.helper.GMapV2Direction
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
@@ -67,6 +68,7 @@ interface AppComponent {
     //location
     fun locationBusiness() : LocationBusiness
     fun directionLineBusiness() : DirectionLineBusiness
+    fun directionParser() : GMapV2Direction
 
     //map
     fun weatherToMapPointParser() : WeatherToMapPointParser

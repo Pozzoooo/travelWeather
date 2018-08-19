@@ -11,7 +11,7 @@ import java.io.IOException
 /**
  * Controla regra de negocio de localizacao.
  */
-class LocationBusiness {
+class LocationBusiness(private val directionParser: GMapV2Direction) {
 
     /**
      * @return Posicao atual do usuario.
@@ -28,7 +28,6 @@ class LocationBusiness {
      */
     @Throws(IOException::class)
     fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {
-        val directionV2 = GMapV2Direction()
-        return directionV2.getDocument(startPosition, finishPosition)?.let { directionV2.getDirection(it) }
+        return directionParser.getDocument(startPosition, finishPosition)?.let { directionParser.getDirection(it) }
     }
 }

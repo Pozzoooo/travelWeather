@@ -13,6 +13,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
+//todo I need to refactor this class and make  it testable
 class LocationLiveData constructor(context: Context) : LiveData<Location>() {
     private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private val timeoutExecutor = Executors.newSingleThreadScheduledExecutor()

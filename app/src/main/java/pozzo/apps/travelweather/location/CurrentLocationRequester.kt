@@ -10,6 +10,7 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.core.bugtracker.Bug
+import pozzo.apps.travelweather.location.helper.GMapV2Direction
 
 class CurrentLocationRequester(private val application: Application, private val callback: Callback) {
     companion object {
@@ -19,7 +20,7 @@ class CurrentLocationRequester(private val application: Application, private val
         }
     }
 
-    private val locationBusiness = LocationBusiness()
+    private val locationBusiness = LocationBusiness(GMapV2Direction())
 
     private val locationLiveData = LocationLiveData(application)
     private var locationObserver: Observer<Location>? = null
