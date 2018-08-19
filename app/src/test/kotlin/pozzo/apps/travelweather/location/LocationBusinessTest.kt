@@ -1,6 +1,5 @@
 package pozzo.apps.travelweather.location
 
-import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng
@@ -18,7 +17,6 @@ class LocationBusinessTest {
     private lateinit var locationBusiness: LocationBusiness
 
     @Mock private lateinit var directionParser: GMapV2Direction
-    @Mock private lateinit var context: Context
     @Mock private lateinit var locationManager: LocationManager
     @Mock private lateinit var document: Document
 
@@ -29,28 +27,24 @@ class LocationBusinessTest {
     }
 
     @Test fun shouldReturnNothingWhenNoServiceIsAvailable() {
-        assertNull(locationBusiness.getCurrentKnownLocation(context))
+        assertNull(locationBusiness.getCurrentKnownLocation(null))
     }
 
     @Test fun shouldThrowWhenNoProviderIsAvailable() {
-        whenever(context.getSystemService(any())).thenReturn(locationManager)
-
         try {
-            locationBusiness.getCurrentKnownLocation(context)
+            locationBusiness.getCurrentKnownLocation(locationManager)
             fail()
         } catch (e: SecurityException) { /* success */ }
     }
 
-    //todo eu to achando que eu posso mudar um pouco a arvore de dependencias dessa classe
     @Test fun shouldReturnSomeLocation() {
         val location = Location("bla")
         val provider = "provider"
 
-        whenever(context.getSystemService(any())).thenReturn(locationManager)
         whenever(locationManager.getBestProvider(any(), any())).thenReturn(provider)
         whenever(locationManager.getLastKnownLocation(provider)).thenReturn(location)
 
-        assertEquals(location, locationBusiness.getCurrentKnownLocation(context))
+        assertEquals(location, locationBusiness.getCurrentKnownLocation(locationManager))
     }
 
     @Test fun shouldReturnDirections() {

@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
@@ -48,7 +50,8 @@ class CurrentLocationRequester(private val application: Application, private val
 
     private fun getCurrentKnownLocation(): LatLng? {
         try {
-            val location = locationBusiness.getCurrentKnownLocation(application)
+            val location = locationBusiness.getCurrentKnownLocation(
+                    application.getSystemService(Context.LOCATION_SERVICE) as LocationManager?)
             return if (location != null) LatLng(location.latitude, location.longitude) else null
         } catch (e: SecurityException) {
             //we might not have permission, we leave the system try to activate the gps before any message

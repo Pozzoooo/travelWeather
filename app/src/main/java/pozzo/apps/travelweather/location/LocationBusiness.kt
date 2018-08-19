@@ -1,6 +1,5 @@
 package pozzo.apps.travelweather.location
 
-import android.content.Context
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
@@ -17,8 +16,8 @@ class LocationBusiness(private val directionParser: GMapV2Direction) {
      * @return Posicao atual do usuario.
      */
     @Throws(SecurityException::class)
-    fun getCurrentKnownLocation(context: Context): Location? =
-            (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?)?.let {
+    fun getCurrentKnownLocation(locationManager: LocationManager?): Location? =
+            locationManager?.let {
                 val bestProvider = it.getBestProvider(Criteria(), false) ?: throw SecurityException("No providers found")
                 it.getLastKnownLocation(bestProvider)
             }
