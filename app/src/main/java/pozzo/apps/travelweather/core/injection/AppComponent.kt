@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.core.injection
 
 import android.app.Application
+import android.location.LocationManager
 import com.google.gson.Gson
 import dagger.Component
 import okhttp3.OkHttpClient
@@ -16,7 +17,9 @@ import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastModule
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
+import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
+import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.LocationModule
 import pozzo.apps.travelweather.location.helper.GMapV2Direction
 import pozzo.apps.travelweather.map.MapModule
@@ -69,6 +72,9 @@ interface AppComponent {
     fun locationBusiness() : LocationBusiness
     fun directionLineBusiness() : DirectionLineBusiness
     fun directionParser() : GMapV2Direction
+    fun currentLocationRequester() : CurrentLocationRequester
+    fun locationManager() : LocationManager?
+    fun locationLiveData() : LocationLiveData
 
     //map
     fun weatherToMapPointParser() : WeatherToMapPointParser

@@ -38,9 +38,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private val geoCoderBusiness = GeoCoderBusiness(Geocoder(application))
     @Inject protected lateinit var mapAnalytics: MapAnalytics
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
-    @Inject protected lateinit var directionBusiness : DirectionBusiness
-
-    private var currentLocationRequester = CurrentLocationRequester(getApplication(), CurrentLocationCallback())
+    @Inject protected lateinit var directionBusiness: DirectionBusiness
+    @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
@@ -69,6 +68,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         isShowingTopBar.value = false
         shouldFinish.value = false
         routeData.value = route
+        //todo it must be a better solution to make this dependency clear with injection
+        currentLocationRequester.callback = CurrentLocationCallback()
         playIfNotPlayed(Tutorial.FULL_TUTORIAL)
     }
 

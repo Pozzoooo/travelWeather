@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -12,9 +11,11 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.core.bugtracker.Bug
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
 
-class CurrentLocationRequester(private val application: Application, private val callback: Callback) {
+class CurrentLocationRequester(private val application: Application,
+                               private val locationBusiness: LocationBusiness,
+                               private val locationManager: LocationManager?,
+                               private val locationLiveData: LocationLiveData) {
     companion object {
         interface Callback {
             fun onCurrentLocation(latLng: LatLng)
@@ -22,10 +23,8 @@ class CurrentLocationRequester(private val application: Application, private val
         }
     }
 
-    private val locationBusiness = LocationBusiness(GMapV2Direction())
-
-    private val locationLiveData = LocationLiveData(application)
     private var locationObserver: Observer<Location>? = null
+    var callback: Callback? = null
 
     @Throws(PermissionDeniedException::class)
     fun requestCurrentLocationRequestingPermission(lifecycleOwner: LifecycleOwner) {
@@ -42,7 +41,7 @@ class CurrentLocationRequester(private val application: Application, private val
     private fun requestCurrentLocation(lifecycleOwner: LifecycleOwner) {
         val currentLocation = getCurrentKnownLocation()
         if (currentLocation != null) {
-            callback.onCurrentLocation(currentLocation)
+            callback?.onCurrentLocation(currentLocation)
         } else {
             updateCurrentLocation(lifecycleOwner)
         }
@@ -50,8 +49,7 @@ class CurrentLocationRequester(private val application: Application, private val
 
     private fun getCurrentKnownLocation(): LatLng? {
         try {
-            val location = locationBusiness.getCurrentKnownLocation(
-                    application.getSystemService(Context.LOCATION_SERVICE) as LocationManager?)
+            val location = locationBusiness.getCurrentKnownLocation(locationManager)
             return if (location != null) LatLng(location.latitude, location.longitude) else null
         } catch (e: SecurityException) {
             //we might not have permission, we leave the system try to activate the gps before any message
@@ -65,9 +63,9 @@ class CurrentLocationRequester(private val application: Application, private val
         val locationObserver = Observer<Location> { location ->
             removeLocationObserver()
             if (location != null)
-                callback.onCurrentLocation(LatLng(location.latitude, location.longitude))
+                callback?.onCurrentLocation(LatLng(location.latitude, location.longitude))
             else
-                callback.onNotFound()
+                callback?.onNotFound()
         }
         locationLiveData.observeWithTimeout(lifecycleOwner, locationObserver, 30000L)
         this.locationObserver = locationObserver

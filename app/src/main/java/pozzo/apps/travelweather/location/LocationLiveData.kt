@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -14,8 +13,7 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 //todo I need to refactor this class and make  it testable
-class LocationLiveData constructor(context: Context) : LiveData<Location>() {
-    private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+class LocationLiveData constructor(private val locationManager: LocationManager?) : LiveData<Location>() {
     private val timeoutExecutor = Executors.newSingleThreadScheduledExecutor()
     private val timeoutScheduleByObserver = HashMap<Observer<*>, ScheduledFuture<*>>()
 
@@ -31,12 +29,12 @@ class LocationLiveData constructor(context: Context) : LiveData<Location>() {
 
     @SuppressLint("MissingPermission")
     override fun onActive() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
+        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
     }
 
     override fun onInactive() {
-        locationManager.removeUpdates(listener)
+        locationManager?.removeUpdates(listener)
     }
 
     fun observeWithTimeout(owner: LifecycleOwner, observer: Observer<Location>, timeoutMillis: Long) {
