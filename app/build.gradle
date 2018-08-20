@@ -39,6 +39,7 @@ android {
 
 	sourceSets {
 		test.java.srcDirs += 'src/test/kotlin'
+		main.java.srcDirs += 'src/main/kotlin'
 	}
 
 	dataBinding {
