@@ -1,26 +1,21 @@
 package pozzo.apps.travelweather.location
 
 import android.Manifest
-import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.os.Build
-import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.model.LatLng
+import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
 
-class CurrentLocationRequester(private val application: Application,
+class CurrentLocationRequester(private val permissionChecker: PermissionChecker,
                                private val locationBusiness: LocationBusiness,
                                private val locationManager: LocationManager?,
                                private val locationLiveData: LocationLiveData) {
-    companion object {
-        interface Callback {
-            fun onCurrentLocation(latLng: LatLng)
-            fun onNotFound()
-        }
+    interface Callback {
+        fun onCurrentLocation(latLng: LatLng)
+        fun onNotFound()
     }
 
     private var locationObserver: Observer<Location>? = null
@@ -28,15 +23,12 @@ class CurrentLocationRequester(private val application: Application,
 
     @Throws(PermissionDeniedException::class)
     fun requestCurrentLocationRequestingPermission(lifecycleOwner: LifecycleOwner) {
-        if (hasLocationPermission()) {
+        if (permissionChecker.hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             requestCurrentLocation(lifecycleOwner)
         } else {
             throw PermissionDeniedException()
         }
     }
-
-    private fun hasLocationPermission() : Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1
-            || ContextCompat.checkSelfPermission(application, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun requestCurrentLocation(lifecycleOwner: LifecycleOwner) {
         val currentLocation = getCurrentKnownLocation()

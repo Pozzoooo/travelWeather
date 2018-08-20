@@ -268,7 +268,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private inner class CurrentLocationCallback : CurrentLocationRequester.Companion.Callback {
+    private inner class CurrentLocationCallback : CurrentLocationRequester.Callback {
         override fun onCurrentLocation(latLng: LatLng) {
             setStartPosition(latLng)
             currentLocationRequester.removeLocationObserver()
@@ -279,7 +279,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Companion.Callback {
+    private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Callback {
         override fun granted(lifeCycleOwner: LifecycleOwner) {
             currentLocationRequester.requestCurrentLocationRequestingPermission(lifeCycleOwner)
         }

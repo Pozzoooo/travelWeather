@@ -34,7 +34,7 @@ class DirectionBusinessTest {
         assertFalse(directionBusiness.createRoute(null, FinishPoint(LatLng(0.0, 0.0))).isComplete())
     }
 
-    @Test fun shouldThrowWhenDirectionIsNotFound() {
+    @Test(expected = DirectionNotFoundException::class) fun shouldThrowWhenDirectionIsNotFound() {
         val startPoint = StartPoint(LatLng(0.0, 0.0))
         val finishPoint = FinishPoint(LatLng(0.0, 0.0))
 
@@ -44,10 +44,7 @@ class DirectionBusinessTest {
         } catch (e : DirectionNotFoundException) { /*success*/ }
 
         whenever(locationBusiness.getDirections(startPoint.position, finishPoint.position)).thenReturn(emptyList())
-        try {
-            directionBusiness.createRoute(startPoint, finishPoint)
-            fail()
-        } catch (e : DirectionNotFoundException) { /*success*/ }
+        directionBusiness.createRoute(startPoint, finishPoint)
     }
 
     @Test fun shouldCreateAProperRoute() {

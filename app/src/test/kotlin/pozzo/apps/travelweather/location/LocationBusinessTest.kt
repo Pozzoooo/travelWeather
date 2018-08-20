@@ -30,11 +30,8 @@ class LocationBusinessTest {
         assertNull(locationBusiness.getCurrentKnownLocation(null))
     }
 
-    @Test fun shouldThrowWhenNoProviderIsAvailable() {
-        try {
-            locationBusiness.getCurrentKnownLocation(locationManager)
-            fail()
-        } catch (e: SecurityException) { /* success */ }
+    @Test(expected = SecurityException::class) fun shouldThrowWhenNoProviderIsAvailable() {
+        locationBusiness.getCurrentKnownLocation(locationManager)
     }
 
     @Test fun shouldReturnSomeLocation() {

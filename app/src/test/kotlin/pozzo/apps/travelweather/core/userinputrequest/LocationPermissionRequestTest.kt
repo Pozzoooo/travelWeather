@@ -9,7 +9,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 class LocationPermissionRequestTest {
-    @Mock private lateinit var callback: LocationPermissionRequest.Companion.Callback
+    @Mock private lateinit var callback: LocationPermissionRequest.Callback
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var locationPermissionRequest: LocationPermissionRequest

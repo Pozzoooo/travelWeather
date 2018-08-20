@@ -9,6 +9,7 @@ import pozzo.apps.travelweather.analytics.AnalyticsModule
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.CommonModule
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
+import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.direction.DirectionBusiness
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
 import pozzo.apps.travelweather.direction.DirectionModule
@@ -47,6 +48,7 @@ import javax.inject.Singleton
 interface AppComponent {
     //App
     fun app(): Application
+    fun permissionManager(): PermissionChecker
 
     //Network
     fun gson(): Gson
