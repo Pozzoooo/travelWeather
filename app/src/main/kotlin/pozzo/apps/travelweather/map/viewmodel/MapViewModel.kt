@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
-import android.location.Geocoder
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
@@ -35,15 +34,15 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
-    private val geoCoderBusiness = GeoCoderBusiness(Geocoder(application))
+    @Inject protected lateinit var geoCoderBusiness: GeoCoderBusiness
     @Inject protected lateinit var mapAnalytics: MapAnalytics
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
     @Inject protected lateinit var directionBusiness: DirectionBusiness
     @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
+    @Inject protected lateinit var mapTutorial: MapTutorial
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
-    private val mapTutorial = MapTutorial(getApplication())
 
     private var route = Route()
     val routeData = MutableLiveData<Route>()

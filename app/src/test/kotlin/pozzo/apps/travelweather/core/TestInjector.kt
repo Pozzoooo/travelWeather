@@ -11,6 +11,9 @@ import pozzo.apps.travelweather.core.injection.NetworkModule
 import pozzo.apps.travelweather.direction.DirectionModule
 import pozzo.apps.travelweather.forecast.ForecastModuleFake
 import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
+import pozzo.apps.travelweather.location.LocationModule
+import pozzo.apps.travelweather.map.MapModule
+import pozzo.apps.travelweather.map.MapModuleFake
 
 object TestInjector {
 
@@ -26,6 +29,8 @@ object TestInjector {
                 .analyticsModule(AnalyticsModuleFake())
                 .commonModule(CommonModule())
                 .directionModule(DirectionModule())
+                .locationModule(LocationModule())
+                .mapModule(MapModule())
     }
 
     private fun getAppComponentFake() : DaggerAppComponent.Builder {
@@ -37,5 +42,7 @@ object TestInjector {
                 .analyticsModule(AnalyticsModuleFake())
                 .commonModule(CommonModuleFake())
                 .directionModule(DirectionModule())
+                .locationModule(LocationModule())
+                .mapModule(MapModuleFake())
     }
 }

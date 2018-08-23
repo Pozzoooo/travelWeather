@@ -23,7 +23,9 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.LocationModule
 import pozzo.apps.travelweather.location.helper.GMapV2Direction
+import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 import pozzo.apps.travelweather.map.MapModule
+import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import retrofit2.Retrofit
@@ -77,8 +79,10 @@ interface AppComponent {
     fun currentLocationRequester() : CurrentLocationRequester
     fun locationManager() : LocationManager?
     fun locationLiveData() : LocationLiveData
+    fun geoCoderBusiness() : GeoCoderBusiness
 
     //map
     fun weatherToMapPointParser() : WeatherToMapPointParser
     fun mapPointCreator() : MapPointCreator
+    fun mapTutorial() : MapTutorial
 }
