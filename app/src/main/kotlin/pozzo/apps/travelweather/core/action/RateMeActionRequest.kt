@@ -4,9 +4,10 @@ import android.content.Context
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.bugtracker.Bug
-import pozzo.apps.travelweather.map.overlay.MapTutorial
-import pozzo.apps.travelweather.map.overlay.Tutorial
+import pozzo.apps.travelweather.map.overlay.MapTutorialScript
+import pozzo.apps.travelweather.map.overlay.LastRunKey
 
 class RateMeActionRequest(private val context: Context, private val mapAnalytics: MapAnalytics)
     : ActionRequest(R.string.rateMe) {
@@ -22,9 +23,9 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
         }
     }
 
-    fun isTimeToDisplay(mapTutorial: MapTutorial, daySelectionCount: Int) : Boolean {
-        return !mapTutorial.hasPlayed(Tutorial.RATE_DIALOG)
+    fun isTimeToDisplay(mapTutorialScript: MapTutorialScript, lastRunRepository: LastRunRepository, daySelectionCount: Int) : Boolean {
+        return !lastRunRepository.hasRun(LastRunKey.RATE_DIALOG.key)
                 && daySelectionCount > RateMeActionRequest.AMOUNT_OF_OCCURRENCES
-                && mapTutorial.hasPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
+                && mapTutorialScript.hasPlayed(LastRunKey.ROUTE_CREATED_TUTORIAL)
     }
 }

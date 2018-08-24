@@ -6,6 +6,7 @@ import pozzo.apps.travelweather.analytics.AnalyticsModuleFake
 import pozzo.apps.travelweather.common.CommonModule
 import pozzo.apps.travelweather.common.CommonModuleFake
 import pozzo.apps.travelweather.core.injection.AppModule
+import pozzo.apps.travelweather.core.injection.AppModuleFake
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
 import pozzo.apps.travelweather.core.injection.NetworkModule
 import pozzo.apps.travelweather.direction.DirectionModule
@@ -34,9 +35,8 @@ object TestInjector {
     }
 
     private fun getAppComponentFake() : DaggerAppComponent.Builder {
-        val application = Mockito.mock(Application::class.java)
         return DaggerAppComponent.builder()
-                .appModule(AppModule(application))
+                .appModule(AppModuleFake())
                 .forecastModule(ForecastModuleFake())
                 .networkModule(NetworkModule())
                 .analyticsModule(AnalyticsModuleFake())

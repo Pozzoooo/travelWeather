@@ -39,7 +39,7 @@ import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.ReturnAnimation
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.MapTutorial
-import pozzo.apps.travelweather.map.overlay.Tutorial
+import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import java.util.*
 
@@ -140,11 +140,11 @@ class MapActivity : BaseActivity() {
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
     }
 
-    private fun showOverlay(overlay: Tutorial) {
-        val mapTutorial = MapTutorial(this)
+    private fun showOverlay(overlay: LastRunKey) {
+        val mapTutorial = MapTutorial()
         when(overlay) {
-            Tutorial.FULL_TUTORIAL -> mapTutorial.playTutorial(this)
-            Tutorial.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
+            LastRunKey.FULL_TUTORIAL -> mapTutorial.playFullTutorial(this)
+            LastRunKey.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
             else -> Bug.get().logException("Missing show overlay $overlay")
         }
     }

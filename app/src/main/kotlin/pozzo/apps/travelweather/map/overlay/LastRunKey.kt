@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.map.overlay
 
-//todo make it a bit more generic, for example, an overlay abstraction
-enum class Tutorial(val tutorialName: String) {
+//todo still not confident that this is right
+enum class LastRunKey(val key: String) {
   FULL_TUTORIAL("fullTutorial"),
   ROUTE_CREATED_TUTORIAL("routeCreatedTutorial"),
   RATE_DIALOG("rateDialog")

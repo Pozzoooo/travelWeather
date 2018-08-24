@@ -12,6 +12,7 @@ import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
@@ -28,8 +29,8 @@ import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 import pozzo.apps.travelweather.map.DaggerMapComponent
-import pozzo.apps.travelweather.map.overlay.MapTutorial
-import pozzo.apps.travelweather.map.overlay.Tutorial
+import pozzo.apps.travelweather.map.overlay.LastRunKey
+import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import java.io.IOException
 import javax.inject.Inject
 
@@ -39,7 +40,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
     @Inject protected lateinit var directionBusiness: DirectionBusiness
     @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
-    @Inject protected lateinit var mapTutorial: MapTutorial
+    @Inject protected lateinit var mapTutorialScript: MapTutorialScript
+    @Inject protected lateinit var lastRunRepository: LastRunRepository
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
@@ -51,7 +53,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val warning = MutableLiveData<Warning>()
     val actionRequest = MutableLiveData<ActionRequest>()
     val permissionRequest = MutableLiveData<PermissionRequest>()
-    val overlay = MutableLiveData<Tutorial>()
+    val overlay = MutableLiveData<LastRunKey>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingTopBar = MutableLiveData<Boolean>()
@@ -69,7 +71,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         routeData.value = route
         //todo it must be a better solution to make this dependency clear with injection
         currentLocationRequester.callback = CurrentLocationCallback()
-        playIfNotPlayed(Tutorial.FULL_TUTORIAL)
+        mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
+        mapTutorialScript.onAppStart()
     }
 
     private fun setRoute(route: Route) {
@@ -143,7 +146,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setFinishPosition(finishPosition: LatLng) {
         val finishPoint = FinishPoint(finishPosition)
         updateRoute(finishPoint = finishPoint)
-        playIfNotPlayed(Tutorial.ROUTE_CREATED_TUTORIAL)
+        mapTutorialScript.onFinishPositionSet()
     }
 
     private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
@@ -247,22 +250,11 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         actionRequest.value = null
     }
 
-    private fun playIfNotPlayed(tutorial: Tutorial) {
-      if (!mapTutorial.hasPlayed(tutorial)) {
-        playTutorial(tutorial)
-        mapTutorial.setTutorialPlayed(tutorial)
-      }
-    }
-
-    private fun playTutorial(tutorial: Tutorial) {
-      overlay.postValue(tutorial)
-    }
-
     fun selectedDayChanged(newSelection: Day) {
         val rateMeActionRequest = RateMeActionRequest(getApplication(), mapAnalytics)
-        if (rateMeActionRequest.isTimeToDisplay(mapTutorial, preferencesBusiness.getDaySelectionCount())) {
+        if (rateMeActionRequest.isTimeToDisplay(mapTutorialScript, lastRunRepository, preferencesBusiness.getDaySelectionCount())) {
             actionRequest.postValue(rateMeActionRequest)
-            mapTutorial.setTutorialPlayed(Tutorial.RATE_DIALOG)
+            lastRunRepository.setRun(LastRunKey.RATE_DIALOG.key)
             mapAnalytics.sendRateDialogShown()
         }
     }
