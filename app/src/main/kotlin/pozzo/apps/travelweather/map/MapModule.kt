@@ -10,6 +10,7 @@ import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 
+//todo I believe this one doesn't need to be for all application, I need to isolate it to map flow only
 @Module
 open class MapModule {
     @Provides open fun weatherToMapPointParser() = WeatherToMapPointParser()

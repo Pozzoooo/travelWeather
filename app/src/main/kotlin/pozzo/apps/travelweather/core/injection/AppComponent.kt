@@ -27,6 +27,7 @@ import pozzo.apps.travelweather.location.helper.GMapV2Direction
 import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.overlay.MapTutorial
+import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import retrofit2.Retrofit
@@ -87,4 +88,5 @@ interface AppComponent {
     fun weatherToMapPointParser() : WeatherToMapPointParser
     fun mapPointCreator() : MapPointCreator
     fun mapTutorial() : MapTutorial
+    fun mapTutorialScript() : MapTutorialScript
 }
