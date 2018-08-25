@@ -75,14 +75,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         mapTutorialScript.onAppStart()
     }
 
-    private fun setRoute(route: Route) {
-      this.route = route
-      routeData.postValue(route)
-    }
-
-    fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
-        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
-        setStartAsCurrentLocation(lifecycleOwner)
+    fun onMapReady(lifecycleOwner: LifecycleOwner) {
+        if (route.startPoint == null) setStartAsCurrentLocation(lifecycleOwner)
     }
 
     private fun setStartAsCurrentLocation(lifecycleOwner: LifecycleOwner) {
@@ -93,10 +87,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
-    fun onMapReady(lifecycleOwner: LifecycleOwner) {
-        if (route.startPoint == null) {
-            setStartAsCurrentLocation(lifecycleOwner)
-        }
+    fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
+        mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
+        setStartAsCurrentLocation(lifecycleOwner)
     }
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {
@@ -113,40 +106,26 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         this.warning.postValue(warning)
     }
 
-    private fun postError(error: Error) {
-        this.error.postValue(error)
-        mapAnalytics.sendErrorMessage(error)
-    }
-
     fun errorDismissed() {
         error.value = null
-    }
-
-    private fun showProgress() {
-        isShowingProgress.postValue(true)
-    }
-
-    private fun hideProgress() {
-        isShowingProgress.postValue(false)
     }
 
     fun clearStartPosition() {
         setRoute(Route(finishPoint = route.finishPoint))
     }
 
-    fun setStartPosition(startPosition: LatLng) {
-        val startPoint = StartPoint(startPosition)
-        updateRoute(startPoint = startPoint)
+    private fun setRoute(route: Route) {
+      this.route = route
+      routeData.postValue(route)
     }
 
     fun clearFinishPosition() {
         setRoute(Route(startPoint = route.startPoint))
     }
 
-    fun setFinishPosition(finishPosition: LatLng) {
-        val finishPoint = FinishPoint(finishPosition)
-        updateRoute(finishPoint = finishPoint)
-        mapTutorialScript.onFinishPositionSet()
+    fun setStartPosition(startPosition: LatLng) {
+        val startPoint = StartPoint(startPosition)
+        updateRoute(startPoint = startPoint)
     }
 
     private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
@@ -167,6 +146,25 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 hideProgress()
             }
         }
+    }
+
+    fun setFinishPosition(finishPosition: LatLng) {
+        val finishPoint = FinishPoint(finishPosition)
+        updateRoute(finishPoint = finishPoint)
+        mapTutorialScript.onFinishPositionSet()
+    }
+
+    private fun postError(error: Error) {
+        this.error.postValue(error)
+        mapAnalytics.sendErrorMessage(error)
+    }
+
+    private fun showProgress() {
+        isShowingProgress.postValue(true)
+    }
+
+    private fun hideProgress() {
+        isShowingProgress.postValue(false)
     }
 
     private fun handleConnectionError(ioException: IOException) {
