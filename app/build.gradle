@@ -51,7 +51,7 @@ dependencies {
 	def arch = "1.1.1"
 
 	//Google
-	implementation 'com.android.support:design:27.1.1'
+	implementation "com.android.support:design:27.1.1"
 	implementation "android.arch.lifecycle:runtime:$arch"
 	implementation "android.arch.lifecycle:extensions:$arch"
 	implementation 'com.google.firebase:firebase-core:16.0.1'
@@ -75,8 +75,8 @@ dependencies {
 
 	//Kotlin
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0"
 
 	//di
 	implementation 'com.google.dagger:dagger:2.11'
