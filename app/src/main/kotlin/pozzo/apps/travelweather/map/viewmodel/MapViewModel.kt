@@ -11,6 +11,7 @@ import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.BaseViewModel
+import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.Warning
@@ -134,7 +135,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
         showProgress()
         updateRouteJob?.cancel()
-        updateRouteJob = launch {
+        updateRouteJob = launch(background) {
             try {
                 val route = directionBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) setRoute(route)

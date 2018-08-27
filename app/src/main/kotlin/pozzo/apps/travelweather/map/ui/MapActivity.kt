@@ -20,13 +20,13 @@ import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
 import pozzo.apps.travelweather.core.BaseActivity
+import pozzo.apps.travelweather.core.CoroutineSettings.ui
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
@@ -38,8 +38,8 @@ import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.ReturnAnimation
 import pozzo.apps.travelweather.map.manager.PermissionManager
-import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.LastRunKey
+import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import java.util.*
 
@@ -227,7 +227,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showMapPoints(route: Route) {
-        launch(UI) {
+        launch(ui) {
             for (it in route.mapPoints) {
                 if (isFinishing) break
 
