@@ -6,12 +6,11 @@ import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 
 @Module
-class DirectionModule {
-
-    @Provides fun directionBusiness(locationBusiness: LocationBusiness,
+open class DirectionModule {
+    @Provides open fun directionBusiness(locationBusiness: LocationBusiness,
                                     directionLineBusiness: DirectionLineBusiness,
                                     mapPointCreator: MapPointCreator) =
             DirectionBusiness(locationBusiness, directionLineBusiness, mapPointCreator)
 
-    @Provides fun directionWeatherFilter() = DirectionWeatherFilter()
+    @Provides open fun directionWeatherFilter() = DirectionWeatherFilter()
 }

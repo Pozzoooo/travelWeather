@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.experimental.Unconfined
@@ -22,7 +23,8 @@ import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
-import pozzo.apps.travelweather.location.CurrentLocationRequester
+import pozzo.apps.travelweather.direction.DirectionModuleFake
+import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.location.PermissionDeniedException
 
@@ -30,7 +32,8 @@ class MapViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var mapViewModel: MapViewModel
-    private lateinit var currentLocationRequester: CurrentLocationRequester
+    private lateinit var locationModuleFake: LocationModuleFake
+    private lateinit var directionModuleFake: DirectionModuleFake
 
     @Mock private lateinit var application: Application
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
@@ -46,9 +49,10 @@ class MapViewModelTest {
 
     private fun mockInjectors() {
         val appComponent = TestInjector.getAppComponent()
-        val locationModule = LocationModuleFake()
-        currentLocationRequester = locationModule.currentLocationRequester
-        appComponent.locationModule(locationModule)
+        locationModuleFake = LocationModuleFake()
+        directionModuleFake = DirectionModuleFake()
+        appComponent.locationModule(locationModuleFake)
+        appComponent.directionModule(directionModuleFake)
         App.setComponent(appComponent.build())
     }
 
@@ -59,16 +63,16 @@ class MapViewModelTest {
 
     @Test fun assetMapReadyFlow() {
         mapViewModel.onMapReady(lifecycleOwner)
-        verify(currentLocationRequester).requestCurrentLocationRequestingPermission(lifecycleOwner)
+        verify(locationModuleFake.currentLocationRequester).requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 
     @Test fun startAsCurrentLocation() {
         mapViewModel.setStartAsCurrentLocationRequestedByUser(lifecycleOwner)
-        verify(currentLocationRequester).requestCurrentLocationRequestingPermission(lifecycleOwner)
+        verify(locationModuleFake.currentLocationRequester).requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 
     @Test fun startAsCurrentLocationShouldHandlePermissionException() {
-        whenever(currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner))
+        whenever(locationModuleFake.currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner))
                 .thenThrow(PermissionDeniedException())
         mapViewModel.setStartAsCurrentLocationRequestedByUser(lifecycleOwner)
         assertTrue(mapViewModel.permissionRequest.value is LocationPermissionRequest)
@@ -114,4 +118,16 @@ class MapViewModelTest {
         mapViewModel.setFinishPosition(finishPosition)
         assertEquals(finishPosition, mapViewModel.routeData.value!!.finishPoint!!.position)
     }
+
+    @Test fun assertRouteWillBeUpdated() {
+        val route = Route()
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(route)
+
+        mapViewModel.setStartPosition(LatLng(1.0, 1.0))
+        mapViewModel.setFinishPosition(LatLng(2.0, 2.0))
+
+        assertFalse(mapViewModel.isShowingProgress.value!!)
+        assertEquals(route, mapViewModel.routeData.value)
+    }
+    //todo any other scenarios about this one?
 }

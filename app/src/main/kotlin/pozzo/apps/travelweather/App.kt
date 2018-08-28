@@ -1,6 +1,9 @@
 package pozzo.apps.travelweather
 
 import android.app.Application
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.bugtracker.LogBug
 import pozzo.apps.travelweather.core.bugtracker.MintBug
@@ -54,6 +57,7 @@ class App : Application() {
         super.onCreate()
         initBugTracker()
         initComponent()
+        initCoroutines()
     }
 
     private fun initBugTracker() {
@@ -72,6 +76,11 @@ class App : Application() {
                 .forecastModule(ForecastModuleYahoo())
                 .build()
         )
+    }
+
+    private fun initCoroutines() {
+        CoroutineSettings.background = CommonPool
+        CoroutineSettings.ui = UI
     }
 }
 
