@@ -13,6 +13,7 @@ import pozzo.apps.travelweather.direction.DirectionModule
 import pozzo.apps.travelweather.forecast.ForecastModuleFake
 import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 import pozzo.apps.travelweather.location.LocationModule
+import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.MapModuleFake
 
@@ -42,7 +43,7 @@ object TestInjector {
                 .analyticsModule(AnalyticsModuleFake())
                 .commonModule(CommonModuleFake())
                 .directionModule(DirectionModule())
-                .locationModule(LocationModule())
+                .locationModule(LocationModuleFake())
                 .mapModule(MapModuleFake())
     }
 }

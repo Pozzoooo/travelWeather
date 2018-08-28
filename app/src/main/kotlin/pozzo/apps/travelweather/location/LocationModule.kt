@@ -12,17 +12,17 @@ import pozzo.apps.travelweather.location.helper.GMapV2Direction
 import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
 
 @Module
-class LocationModule {
-    @Provides fun locationBusiness(directionParser: GMapV2Direction) = LocationBusiness(directionParser)
-    @Provides fun directionLineBusiness() = DirectionLineBusiness()
-    @Provides fun directionParser() = GMapV2Direction()
-    @Provides fun locationLiveData(locationManager: LocationManager?) = LocationLiveData(locationManager)
-    @Provides fun geoCoderBusiness(application: Application) = GeoCoderBusiness(Geocoder(application))
+open class LocationModule {
+    @Provides open fun locationBusiness(directionParser: GMapV2Direction) = LocationBusiness(directionParser)
+    @Provides open fun directionLineBusiness() = DirectionLineBusiness()
+    @Provides open fun directionParser() = GMapV2Direction()
+    @Provides open fun locationLiveData(locationManager: LocationManager?) = LocationLiveData(locationManager)
+    @Provides open fun geoCoderBusiness(application: Application) = GeoCoderBusiness(Geocoder(application))
 
-    @Provides fun locationManager(application: Application) =
+    @Provides open fun locationManager(application: Application) =
             application.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
 
-    @Provides fun currentLocationRequester(permissionChecker: PermissionChecker,
+    @Provides open fun currentLocationRequester(permissionChecker: PermissionChecker,
                                            locationBusiness: LocationBusiness,
                                            locationManager: LocationManager?,
                                            locationLiveData: LocationLiveData) =

@@ -3,11 +3,10 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.LifecycleOwner
-import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.experimental.Unconfined
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -18,30 +17,23 @@ import org.mockito.MockitoAnnotations
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.common.android.BitmapCreator
 import pozzo.apps.travelweather.common.android.BitmapCreatorTest
+import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
-import pozzo.apps.travelweather.direction.DirectionLineBusiness
-import pozzo.apps.travelweather.location.*
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
-import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
+import pozzo.apps.travelweather.location.CurrentLocationRequester
+import pozzo.apps.travelweather.location.LocationModuleFake
+import pozzo.apps.travelweather.location.PermissionDeniedException
 
 class MapViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var mapViewModel: MapViewModel
+    private lateinit var currentLocationRequester: CurrentLocationRequester
 
     @Mock private lateinit var application: Application
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
-    @Mock private lateinit var locationModule: LocationModule
-    @Mock private lateinit var currentLocationRequester: CurrentLocationRequester
-    @Mock private lateinit var locationManager: LocationManager
-    @Mock private lateinit var geoCoderBusiness: GeoCoderBusiness
-    @Mock private lateinit var locationLiveData: LocationLiveData
-    @Mock private lateinit var gMapV2Direction: GMapV2Direction
-    @Mock private lateinit var directionLineBusiness: DirectionLineBusiness
-    @Mock private lateinit var locationBusiness: LocationBusiness
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -54,13 +46,8 @@ class MapViewModelTest {
 
     private fun mockInjectors() {
         val appComponent = TestInjector.getAppComponent()
-        whenever(locationModule.currentLocationRequester(any(), any(), any(), any())).thenReturn(currentLocationRequester)
-        whenever(locationModule.locationManager(any())).thenReturn(locationManager)
-        whenever(locationModule.geoCoderBusiness(any())).thenReturn(geoCoderBusiness)
-        whenever(locationModule.locationLiveData(any())).thenReturn(locationLiveData)
-        whenever(locationModule.directionParser()).thenReturn(gMapV2Direction)
-        whenever(locationModule.directionLineBusiness()).thenReturn(directionLineBusiness)
-        whenever(locationModule.locationBusiness(any())).thenReturn(locationBusiness)
+        val locationModule = LocationModuleFake()
+        currentLocationRequester = locationModule.currentLocationRequester
         appComponent.locationModule(locationModule)
         App.setComponent(appComponent.build())
     }
@@ -127,6 +114,4 @@ class MapViewModelTest {
         mapViewModel.setFinishPosition(finishPosition)
         assertEquals(finishPosition, mapViewModel.routeData.value!!.finishPoint!!.position)
     }
-
-    //todo preciso testar agora tambem a rota completa com start e finish e passar pelo coroutines
 }
