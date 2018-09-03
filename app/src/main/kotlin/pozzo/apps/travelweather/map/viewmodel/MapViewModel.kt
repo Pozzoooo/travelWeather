@@ -6,9 +6,9 @@ import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
-import pozzo.apps.tools.NetworkUtil
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.CoroutineSettings.background
@@ -43,6 +43,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
     @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
+    @Inject protected lateinit var networkHelper: NetworkHelper
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
@@ -170,11 +171,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     private fun handleConnectionError(ioException: IOException) {
         if (error.value != null) return //there is a popup showing already, so no botherr
-        if (notConnected()) postError(Error.NO_CONNECTION)
+        if (!networkHelper.isConnected(getApplication())) postError(Error.NO_CONNECTION)
         else postError(Error.CANT_REACH)
     }
-
-    private fun notConnected() = !NetworkUtil.isNetworkAvailable(getApplication())
 
     fun back() {
         when {

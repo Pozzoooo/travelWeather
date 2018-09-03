@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import pozzo.apps.travelweather.analytics.AnalyticsModule
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.CommonModule
+import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.PermissionChecker
@@ -59,6 +60,7 @@ interface AppComponent {
     fun gson(): Gson
     fun okHttpClient(): OkHttpClient
     fun retrofitBuilder(): Retrofit.Builder
+    fun networkHelper() : NetworkHelper
 
     //forecast
     fun forecastClient() : ForecastClient

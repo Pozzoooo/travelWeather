@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
 import pozzo.apps.travelweather.BuildConfig
+import pozzo.apps.travelweather.common.NetworkHelper
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit.MINUTES
@@ -16,16 +17,12 @@ import javax.inject.Singleton
 @Module
 class NetworkModule {
 
-    @Provides
-    @Singleton
-    fun provideGson(): Gson {
+    @Singleton @Provides fun provideGson(): Gson {
         val gsonBuilder = GsonBuilder()
         return gsonBuilder.create()
     }
 
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    @Singleton @Provides fun provideOkHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = if (BuildConfig.DEBUG) Level.BASIC else Level.NONE
 
@@ -37,10 +34,11 @@ class NetworkModule {
                 .build()
     }
 
-    @Provides
-    fun provideRetrofitBuilder(gson: Gson, okHttpClient: OkHttpClient): Retrofit.Builder {
+    @Provides fun provideRetrofitBuilder(gson: Gson, okHttpClient: OkHttpClient): Retrofit.Builder {
         return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
     }
+
+    @Provides fun networkHelper() = NetworkHelper()
 }

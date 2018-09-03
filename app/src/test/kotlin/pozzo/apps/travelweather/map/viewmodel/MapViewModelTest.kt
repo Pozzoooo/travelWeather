@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.experimental.Unconfined
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -18,15 +17,17 @@ import org.mockito.MockitoAnnotations
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.common.android.BitmapCreator
 import pozzo.apps.travelweather.common.android.BitmapCreatorTest
-import pozzo.apps.travelweather.core.CoroutineSettings
+import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionModuleFake
+import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.location.PermissionDeniedException
+import java.io.IOException
 
 class MapViewModelTest {
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -122,12 +123,29 @@ class MapViewModelTest {
     @Test fun assertRouteWillBeUpdated() {
         val route = Route()
         whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(route)
+        createSampleRoute()
 
+        assertEquals(route, mapViewModel.routeData.value)
+    }
+
+    private fun createSampleRoute() {
         mapViewModel.setStartPosition(LatLng(1.0, 1.0))
         mapViewModel.setFinishPosition(LatLng(2.0, 2.0))
 
         assertFalse(mapViewModel.isShowingProgress.value!!)
-        assertEquals(route, mapViewModel.routeData.value)
     }
-    //todo any other scenarios about this one?
+
+    @Test fun assertRouteNotFindErrorBeingHandled() {
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenThrow(DirectionNotFoundException())
+        createSampleRoute()
+
+        assertEquals(Error.CANT_FIND_ROUTE, mapViewModel.error.value)
+    }
+
+    @Test fun asertInternetErrorBeingHandled() {
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenThrow(IOException())
+        createSampleRoute()
+
+        assertEquals(Error.NO_CONNECTION, mapViewModel.error.value)
+    }
 }
