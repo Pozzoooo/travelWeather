@@ -32,6 +32,9 @@ class MapAnalyticsTest {
         mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
         mapAnalytics.sendClearRouteEvent()
         mapAnalytics.sendDragDurationEvent("untiTest", 1L)
+        mapAnalytics.sendDragDurationEvent("untiTest", 500L)
+        mapAnalytics.sendDragDurationEvent("untiTest", 1000L)
+        mapAnalytics.sendDragDurationEvent("untiTest", 5000L)
         mapAnalytics.sendDaySelectionChanged(Day.TODAY)
         mapAnalytics.sendErrorMessage(Error.CANT_FIND_ROUTE)
         mapAnalytics.sendDisplayTopBarAction()
@@ -39,6 +42,6 @@ class MapAnalyticsTest {
         mapAnalytics.sendRateDialogShown()
         mapAnalytics.sendIWantToRate()
 
-        Mockito.verify(firebaseAnalytics, Mockito.times(9)).logEvent(any(), any())
+        Mockito.verify(firebaseAnalytics, Mockito.times(12)).logEvent(any(), any())
     }
 }
