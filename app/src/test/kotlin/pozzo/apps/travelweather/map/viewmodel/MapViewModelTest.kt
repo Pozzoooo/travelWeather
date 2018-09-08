@@ -5,6 +5,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert.*
@@ -20,10 +21,13 @@ import pozzo.apps.travelweather.common.android.BitmapCreatorTest
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.Warning
+import pozzo.apps.travelweather.core.action.ActionRequest
+import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionModuleFake
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
+import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.location.PermissionDeniedException
@@ -38,6 +42,11 @@ class MapViewModelTest {
 
     @Mock private lateinit var application: Application
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
+
+    val address by lazy { "address" }
+    val start by lazy { LatLng(1.0, 2.0) }
+    val finish by lazy { LatLng(3.0, 4.0) }
+    val emptyRoute by lazy { Route() }
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -109,28 +118,25 @@ class MapViewModelTest {
     }
 
     @Test fun assertStartPosition() {
-        val startPosition = LatLng(1.0, 1.0)
-        mapViewModel.setStartPosition(startPosition)
-        assertEquals(startPosition, mapViewModel.routeData.value!!.startPoint!!.position)
+        mapViewModel.setStartPosition(start)
+        assertEquals(start, mapViewModel.routeData.value!!.startPoint!!.position)
     }
 
     @Test fun assertFinishPosition() {
-        val finishPosition = LatLng(2.0, 2.0)
-        mapViewModel.setFinishPosition(finishPosition)
-        assertEquals(finishPosition, mapViewModel.routeData.value!!.finishPoint!!.position)
+        mapViewModel.setFinishPosition(finish)
+        assertEquals(finish, mapViewModel.routeData.value!!.finishPoint!!.position)
     }
 
     @Test fun assertRouteWillBeUpdated() {
-        val route = Route()
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(route)
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(emptyRoute)
         createSampleRoute()
 
-        assertEquals(route, mapViewModel.routeData.value)
+        assertEquals(emptyRoute, mapViewModel.routeData.value)
     }
 
     private fun createSampleRoute() {
-        mapViewModel.setStartPosition(LatLng(1.0, 1.0))
-        mapViewModel.setFinishPosition(LatLng(2.0, 2.0))
+        mapViewModel.setStartPosition(start)
+        mapViewModel.setFinishPosition(finish)
 
         assertFalse(mapViewModel.isShowingProgress.value!!)
     }
@@ -142,10 +148,75 @@ class MapViewModelTest {
         assertEquals(Error.CANT_FIND_ROUTE, mapViewModel.error.value)
     }
 
-    @Test fun asertInternetErrorBeingHandled() {
+    @Test fun assertInternetErrorBeingHandled() {
         whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenThrow(IOException())
         createSampleRoute()
 
         assertEquals(Error.NO_CONNECTION, mapViewModel.error.value)
+    }
+
+    @Test fun backShouldFinishWhenAllIsEmpty() {
+        mapViewModel.back()
+        assertTrue(mapViewModel.shouldFinish.value!!)
+    }
+
+    @Test fun shouldDisplayTopBarWhenHidden() {
+        mapViewModel.toggleTopBar("")
+        assertTrue(mapViewModel.isShowingTopBar.value!!)
+    }
+
+    @Test fun shouldHideTopBarWhenDisplaing() {
+        mapViewModel.toggleTopBar("")
+        mapViewModel.toggleTopBar("")
+        assertFalse(mapViewModel.isShowingTopBar.value!!)
+    }
+
+    @Test fun assertDragActionAddsAPoint() {
+        mapViewModel.flagDragActionFinished(start)
+        assertEquals(start, mapViewModel.routeData.value!!.startPoint!!.position)
+    }
+
+    @Test fun assertSecondDragAddsFinishPosition() {
+        mapViewModel.dragStarted()
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(emptyRoute)
+        mapViewModel.flagDragActionFinished(LatLng(0.0, 3.0))
+        mapViewModel.flagDragActionFinished(LatLng(1.0, 2.0))
+        assertEquals(emptyRoute, mapViewModel.routeData.value)
+    }
+
+    @Test fun assertSearchIsHappening() {
+        whenever(locationModuleFake.geoCoderBusiness.getPositionFromFirst(address)).thenReturn(start)
+        mapViewModel.searchAddress(address)
+        assertEquals(start, mapViewModel.routeData.value!!.startPoint!!.position)
+    }
+
+    @Test fun assertClearAction() {
+        mapViewModel.requestClear()
+        assertTrue(mapViewModel.actionRequest.value is ClearActionRequest)
+    }
+
+    @Test fun assertActionAcceptsCleanRequest() {
+        val action = Mockito.mock(ActionRequest::class.java)
+        mapViewModel.actionRequestAccepted(action)
+        assertNull(mapViewModel.actionRequest.value)
+
+        mapViewModel.requestClear()
+        mapViewModel.actionRequestAccepted(action)
+        assertNull(mapViewModel.actionRequest.value)
+        verify(action, times(2)).execute()
+    }
+
+    @Test fun assertActionDismissCleanRequest() {
+        mapViewModel.actionRequestDismissed()
+        assertNull(mapViewModel.actionRequest.value)
+
+        mapViewModel.requestClear()
+        mapViewModel.actionRequestDismissed()
+        assertNull(mapViewModel.actionRequest.value)
+    }
+
+    @Test fun assertRateMeDialogIsDisplayed() {
+        mapViewModel.selectedDayChanged(Day.TODAY)
+        assertNull(mapViewModel.actionRequest.value)
     }
 }

@@ -17,7 +17,8 @@ class LocationModuleFake : LocationModule() {
 
     override fun locationLiveData(locationManager: LocationManager?) = Mockito.mock(LocationLiveData::class.java)!!
 
-    override fun geoCoderBusiness(application: Application) = Mockito.mock(GeoCoderBusiness::class.java)!!
+    val geoCoderBusiness by lazy { Mockito.mock(GeoCoderBusiness::class.java)!! }
+    override fun geoCoderBusiness(application: Application) = geoCoderBusiness
 
     override fun locationManager(application: Application) = Mockito.mock(LocationManager::class.java)
 
