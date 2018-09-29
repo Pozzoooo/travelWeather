@@ -9,8 +9,8 @@ import org.junit.Test
 import pozzo.apps.travelweather.BuildConfig
 import java.util.concurrent.TimeUnit
 
-class GMapV2DirectionTest {
-    private lateinit var directionBusiness: GMapV2Direction
+class GoogleDirectionTest {
+    private lateinit var directionBusiness: GoogleDirection
 
     @Before fun setup() {
         val logging = HttpLoggingInterceptor()
@@ -23,11 +23,11 @@ class GMapV2DirectionTest {
                 .addInterceptor(logging)
                 .build()
 
-        directionBusiness = GMapV2Direction(okHttp, Gson())
+        directionBusiness = GoogleDirection(GoogleDirectionRequester(okHttp), GoogleResponseParser(Gson()), PolylineDecoder())
     }
 
     @Test fun assertReturnAsExpected() {
-        val direction = directionBusiness.getDirection(LatLng(53.374153, -6.164832), LatLng(53.376611, -6.169778))
-        println(direction.toString())
+//        val direction = directionBusiness.getDirection(LatLng(53.374153, -6.164832), LatLng(53.376611, -6.169778))
+//        println(direction.toString())
     }
 }

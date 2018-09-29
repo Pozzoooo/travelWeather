@@ -24,7 +24,7 @@ import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.LocationModule
-import pozzo.apps.travelweather.location.google.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GoogleDirection
 import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.overlay.MapTutorial
@@ -80,7 +80,7 @@ interface AppComponent {
     //location
     fun locationBusiness() : LocationBusiness
     fun directionLineBusiness() : DirectionLineBusiness
-    fun directionParser() : GMapV2Direction
+    fun directionParser() : GoogleDirection
     fun currentLocationRequester() : CurrentLocationRequester
     fun locationManager() : LocationManager?
     fun locationLiveData() : LocationLiveData

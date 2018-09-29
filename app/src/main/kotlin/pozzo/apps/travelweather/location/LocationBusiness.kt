@@ -4,13 +4,13 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.location.google.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GoogleDirection
 import java.io.IOException
 
 /**
  * Controla regra de negocio de localizacao.
  */
-class LocationBusiness(private val directionParser: GMapV2Direction) {
+class LocationBusiness(private val googleDirection: GoogleDirection) {
 
     /**
      * @return Posicao atual do usuario.
@@ -27,6 +27,6 @@ class LocationBusiness(private val directionParser: GMapV2Direction) {
      */
     @Throws(IOException::class)
     fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {
-        return directionParser.getDirection(startPosition, finishPosition)
+        return googleDirection.getDirection(startPosition, finishPosition)
     }
 }

@@ -10,12 +10,12 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import pozzo.apps.travelweather.location.google.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GoogleDirection
 
 class LocationBusinessTest {
     private lateinit var locationBusiness: LocationBusiness
 
-    @Mock private lateinit var directionParser: GMapV2Direction
+    @Mock private lateinit var directionParser: GoogleDirection
     @Mock private lateinit var locationManager: LocationManager
 
     @Before fun setup() {

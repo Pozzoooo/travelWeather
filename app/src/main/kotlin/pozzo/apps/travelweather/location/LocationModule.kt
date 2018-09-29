@@ -10,13 +10,19 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
-import pozzo.apps.travelweather.location.google.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GoogleDirection
+import pozzo.apps.travelweather.location.google.GoogleDirectionRequester
+import pozzo.apps.travelweather.location.google.GoogleResponseParser
+import pozzo.apps.travelweather.location.google.PolylineDecoder
 
 @Module
 open class LocationModule {
-    @Provides open fun locationBusiness(directionParser: GMapV2Direction) = LocationBusiness(directionParser)
+    @Provides open fun locationBusiness(directionParser: GoogleDirection) = LocationBusiness(directionParser)
     @Provides open fun directionLineBusiness() = DirectionLineBusiness()
-    @Provides open fun directionParser(okHttpClient: OkHttpClient, gson: Gson) = GMapV2Direction(okHttpClient, gson)
+
+    @Provides open fun directionParser(requester: GoogleDirectionRequester, parser: GoogleResponseParser, decoder: PolylineDecoder) =
+            GoogleDirection(requester, parser, decoder)
+
     @Provides open fun locationLiveData(locationManager: LocationManager?) = LocationLiveData(locationManager)
     @Provides open fun geoCoderBusiness(application: Application) = GeoCoderBusiness(Geocoder(application))
 
@@ -28,4 +34,8 @@ open class LocationModule {
                                            locationManager: LocationManager?,
                                            locationLiveData: LocationLiveData) =
             CurrentLocationRequester(permissionChecker, locationBusiness, locationManager, locationLiveData)
+
+    @Provides open fun polylineDecoder() = PolylineDecoder()
+    @Provides open fun googleResponseParser(gson: Gson) = GoogleResponseParser(gson)
+    @Provides open fun googleDirectionRequester(okHttpClient: OkHttpClient) = GoogleDirectionRequester(okHttpClient)
 }
