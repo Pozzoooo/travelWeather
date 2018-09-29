@@ -9,7 +9,7 @@ class GoogleDirection(private val requester: GoogleDirectionRequester,
 
     fun getDirection(start: LatLng, end: LatLng) : List<LatLng>? {
         val response = requester.request(start, end)
-        val parsedResponse = response?.let { parser.parse(response) }
+        val parsedResponse = response?.body()?.string()?.let { parser.parse(it) }
         //todo need to understand what do I need to loop
         return parsedResponse?.let { polylineDecoder.decode(parsedResponse.routes[0].legs[0].steps[0].polyline.points) }
     }
