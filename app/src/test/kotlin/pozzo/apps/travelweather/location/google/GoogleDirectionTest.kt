@@ -2,32 +2,41 @@ package pozzo.apps.travelweather.location.google
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import pozzo.apps.travelweather.BuildConfig
-import java.util.concurrent.TimeUnit
+import pozzo.apps.travelweather.core.FileLoader
 
 class GoogleDirectionTest {
     private lateinit var directionBusiness: GoogleDirection
+    private lateinit var requester: GoogleDirectionRequester
+    private lateinit var parser: GoogleResponseParser
+    private lateinit var decoder: PolylineDecoder
+
+    private val start = LatLng(53.380555, -6.159761)
+    private val end = LatLng(53.376611, -6.169778)
 
     @Before fun setup() {
-        val logging = HttpLoggingInterceptor()
-        logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        requester = mock()
+        decoder = PolylineDecoder()
+        parser = GoogleResponseParser(Gson())
 
-        val okHttp = OkHttpClient.Builder()
-                .readTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(2, TimeUnit.MINUTES)
-                .addInterceptor(logging)
-                .build()
-
-        directionBusiness = GoogleDirection(GoogleDirectionRequester(okHttp), GoogleResponseParser(Gson()), PolylineDecoder())
+        directionBusiness = GoogleDirection(requester, parser, decoder)
     }
 
     @Test fun assertReturnAsExpected() {
-//        val direction = directionBusiness.getDirection(LatLng(53.374153, -6.164832), LatLng(53.376611, -6.169778))
-//        println(direction.toString())
+        val sample = FileLoader("googleDirectionResponseSample.json").read().string()
+        whenever(requester.request(start, end)).thenReturn(sample)
+
+        val direction = directionBusiness.getDirection(start, end)
+
+        Assert.assertEquals(78, direction!!.size)
+    }
+
+    @Test fun shouldBeHandlingNullResponse() {
+        val direction = directionBusiness.getDirection(start, end)
+        Assert.assertNull(direction)
     }
 }

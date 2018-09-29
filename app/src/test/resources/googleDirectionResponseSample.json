@@ -2,8 +2,8 @@
    "geocoded_waypoints" : [
       {
          "geocoder_status" : "OK",
-         "place_id" : "ChIJMyvoRYgPZ0gRWdde9qSFoGg",
-         "types" : [ "establishment", "point_of_interest" ]
+         "place_id" : "ChIJnTp9AmEFZ0gRN70ximyUiXg",
+         "types" : [ "street_address" ]
       },
       {
          "geocoder_status" : "OK",
@@ -15,56 +15,104 @@
       {
          "bounds" : {
             "northeast" : {
-               "lat" : 53.3766316,
-               "lng" : -6.164782199999999
+               "lat" : 53.380557,
+               "lng" : -6.159754299999999
             },
             "southwest" : {
-               "lat" : 53.3741918,
-               "lng" : -6.169753099999999
+               "lat" : 53.3766316,
+               "lng" : -6.1756806
             }
          },
          "copyrights" : "Map data ©2018 Google",
          "legs" : [
             {
                "distance" : {
-                  "text" : "0.4 km",
-                  "value" : 427
+                  "text" : "1.6 km",
+                  "value" : 1624
                },
                "duration" : {
-                  "text" : "1 min",
-                  "value" : 49
+                  "text" : "4 mins",
+                  "value" : 211
                },
                "end_address" : "1 Watermill Lawn, Donaghmede, Dublin 5, D05 K738, Ireland",
                "end_location" : {
                   "lat" : 53.3766316,
                   "lng" : -6.169753099999999
                },
-               "start_address" : "Watermill Rd, Dublin Northside, Dublin, Co. Dublin, Ireland",
+               "start_address" : "561 R105, Donaghmede, Dublin, Ireland",
                "start_location" : {
-                  "lat" : 53.3741918,
-                  "lng" : -6.164782199999999
+                  "lat" : 53.380557,
+                  "lng" : -6.159754299999999
                },
                "steps" : [
                   {
                      "distance" : {
-                        "text" : "0.4 km",
-                        "value" : 427
+                        "text" : "0.9 km",
+                        "value" : 938
+                     },
+                     "duration" : {
+                        "text" : "2 mins",
+                        "value" : 96
+                     },
+                     "end_location" : {
+                        "lat" : 53.3803727,
+                        "lng" : -6.173692
+                     },
+                     "html_instructions" : "Head \u003cb\u003ewest\u003c/b\u003e on \u003cb\u003eHowth Rd\u003c/b\u003e/\u003cb\u003eR105\u003c/b\u003e toward \u003cb\u003eOrchard Rd\u003c/b\u003e",
+                     "polyline" : {
+                        "points" : "o{xdIlard@P~BF~@JpAHvADv@D`AXvGJbDH|APrDJfCD`B@~@@bBAjA?tAClAE`AGbBKrAMfBKnAGp@MhAOdBAPATCh@Ch@Af@?Z?f@?B?r@"
+                     },
+                     "start_location" : {
+                        "lat" : 53.380557,
+                        "lng" : -6.159754299999999
+                     },
+                     "travel_mode" : "DRIVING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.2 km",
+                        "value" : 215
                      },
                      "duration" : {
                         "text" : "1 min",
-                        "value" : 49
+                        "value" : 54
+                     },
+                     "end_location" : {
+                        "lat" : 53.3788931,
+                        "lng" : -6.1756806
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eMain St\u003c/b\u003e",
+                     "maneuver" : "turn-left",
+                     "polyline" : {
+                        "points" : "izxdIpxtd@~ApDRf@Pj@ZVdCnB"
+                     },
+                     "start_location" : {
+                        "lat" : 53.3803727,
+                        "lng" : -6.173692
+                     },
+                     "travel_mode" : "DRIVING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.5 km",
+                        "value" : 471
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 61
                      },
                      "end_location" : {
                         "lat" : 53.3766316,
                         "lng" : -6.169753099999999
                      },
-                     "html_instructions" : "Head \u003cb\u003enorthwest\u003c/b\u003e on \u003cb\u003eWatermill Rd\u003c/b\u003e toward \u003cb\u003eThe Village\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eDestination will be on the left\u003c/div\u003e",
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eWatermill Rd\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eGo through 1 roundabout\u003c/div\u003e\u003cdiv style=\"font-size:0.9em\"\u003eDestination will be on the right\u003c/div\u003e",
+                     "maneuver" : "turn-left",
                      "polyline" : {
-                        "points" : "uswdIz`sd@a@hAWt@s@jBM\\IRMZ_A~BYn@q@`BQd@Sb@e@jAQb@Qb@O^Sd@Sh@[|@CH"
+                        "points" : "aqxdI~dud@Hi@FU\\wAZkAr@oCj@aCb@gBNg@Rq@b@uAt@}BA??A?AA??A?A?A?A@??A?A@??A@??A@??@@?@E@C@CDOHSRq@dA_D"
                      },
                      "start_location" : {
-                        "lat" : 53.3741918,
-                        "lng" : -6.164782199999999
+                        "lat" : 53.3788931,
+                        "lng" : -6.1756806
                      },
                      "travel_mode" : "DRIVING"
                   }
@@ -74,9 +122,9 @@
             }
          ],
          "overview_polyline" : {
-            "points" : "uswdIz`sd@{BhGqB~EeEdKs@pB"
+            "points" : "o{xdIlard@n@hJp@tPZpGPhFBbDA`DInCSvDYvDUzBWvDEtC?v@rBxEPj@ZVdCnBHi@d@mBnA{EnAiFb@yAxAsEA??AAC?CBGBA@@nBcG"
          },
-         "summary" : "Watermill Rd",
+         "summary" : "Howth Rd/R105 and Watermill Rd",
          "warnings" : [],
          "waypoint_order" : []
       }

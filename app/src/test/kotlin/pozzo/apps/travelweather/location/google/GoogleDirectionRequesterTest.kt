@@ -8,8 +8,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -32,7 +31,7 @@ class GoogleDirectionRequesterTest {
         val response = requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
         val requestUrl = request.value.url().toString()
 
-        assertEquals(fakeResponse, response)
+        assertNull(response)
         assertTrue(requestUrl.contains("origin=0.0,0.0"))
         assertTrue(requestUrl.contains("&destination=1.0,1.0"))
     }
