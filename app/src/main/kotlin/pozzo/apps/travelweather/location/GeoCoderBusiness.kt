@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.location.helper
+package pozzo.apps.travelweather.location
 
 import android.location.Geocoder
 import com.google.android.gms.maps.model.LatLng

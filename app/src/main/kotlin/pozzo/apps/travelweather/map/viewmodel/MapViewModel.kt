@@ -28,7 +28,7 @@ import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.PermissionDeniedException
-import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
+import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript

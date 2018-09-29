@@ -4,18 +4,19 @@ import android.app.Application
 import android.content.Context
 import android.location.Geocoder
 import android.location.LocationManager
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
-import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
+import pozzo.apps.travelweather.location.google.GMapV2Direction
 
 @Module
 open class LocationModule {
     @Provides open fun locationBusiness(directionParser: GMapV2Direction) = LocationBusiness(directionParser)
     @Provides open fun directionLineBusiness() = DirectionLineBusiness()
-    @Provides open fun directionParser() = GMapV2Direction()
+    @Provides open fun directionParser(okHttpClient: OkHttpClient, gson: Gson) = GMapV2Direction(okHttpClient, gson)
     @Provides open fun locationLiveData(locationManager: LocationManager?) = LocationLiveData(locationManager)
     @Provides open fun geoCoderBusiness(application: Application) = GeoCoderBusiness(Geocoder(application))
 

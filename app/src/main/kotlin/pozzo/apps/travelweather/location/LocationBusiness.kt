@@ -4,7 +4,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GMapV2Direction
 import java.io.IOException
 
 /**
@@ -27,6 +27,6 @@ class LocationBusiness(private val directionParser: GMapV2Direction) {
      */
     @Throws(IOException::class)
     fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {
-        return directionParser.getDocument(startPosition, finishPosition)?.let { directionParser.getDirection(it) }
+        return directionParser.getDirection(startPosition, finishPosition)
     }
 }

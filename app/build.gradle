@@ -9,7 +9,6 @@ apply from: '../scripts/keys.gradle'
 
 android {
 	compileSdkVersion 28
-	buildToolsVersion '27.0.3'
 
 	defaultConfig {
 		applicationId "pozzo.apps.travelweather"
@@ -18,7 +17,7 @@ android {
 		versionCode 20
 		versionName "1.2.6-SNAPSHOT"
 
-		def googleKeys = getKeys('../../keystore/google.keys')
+		def googleKeys = getKeys('../keystore/google.keys')
 		buildConfigField("String", "DIRECTIONS", "\"${googleKeys.directions}\"")
 	}
 
@@ -75,8 +74,8 @@ dependencies {
 
 	//Kotlin
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.0"
-	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.0"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.3"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.3"
 
 	//di
 	implementation 'com.google.dagger:dagger:2.11'

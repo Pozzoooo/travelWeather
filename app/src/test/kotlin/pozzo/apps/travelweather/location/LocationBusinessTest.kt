@@ -10,15 +10,13 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.w3c.dom.Document
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
+import pozzo.apps.travelweather.location.google.GMapV2Direction
 
 class LocationBusinessTest {
     private lateinit var locationBusiness: LocationBusiness
 
     @Mock private lateinit var directionParser: GMapV2Direction
     @Mock private lateinit var locationManager: LocationManager
-    @Mock private lateinit var document: Document
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -49,8 +47,7 @@ class LocationBusinessTest {
         val finishPosition = LatLng(0.0, 0.0)
         val direction = listOf(start, finishPosition)
 
-        whenever(directionParser.getDocument(start, finishPosition)).thenReturn(document)
-        whenever(directionParser.getDirection(document)).thenReturn(direction)
+        whenever(directionParser.getDirection(start, finishPosition)).thenReturn(direction)
 
         assertArrayEquals(direction.toTypedArray(),
                 locationBusiness.getDirections(start, finishPosition)?.toTypedArray())

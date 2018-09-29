@@ -24,8 +24,8 @@ import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.location.LocationLiveData
 import pozzo.apps.travelweather.location.LocationModule
-import pozzo.apps.travelweather.location.helper.GMapV2Direction
-import pozzo.apps.travelweather.location.helper.GeoCoderBusiness
+import pozzo.apps.travelweather.location.google.GMapV2Direction
+import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
