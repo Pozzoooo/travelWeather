@@ -13,12 +13,7 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
 
     fun request(start: LatLng, end: LatLng): Response? {
         try {
-            val url = URL("https://maps.googleapis.com/maps/api/directions/json?"
-                    + "origin=" + start.latitude + "," + start.longitude
-                    + "&destination=" + end.latitude + "," + end.longitude
-                    + "&sensor=false&units=metric&mode=driving"
-                    + "&key=" + BuildConfig.DIRECTIONS)
-
+            val url = createUrl(start, end)
             val request = Request.Builder().url(url).build()
             return okHttp.newCall(request).execute()
         } catch (e: IOException) {
@@ -28,5 +23,13 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
         }
 
         return null
+    }
+
+    private fun createUrl(start: LatLng, end: LatLng) : URL {
+        return URL("https://maps.googleapis.com/maps/api/directions/json?"
+             + "origin=" + start.latitude + "," + start.longitude
+             + "&destination=" + end.latitude + "," + end.longitude
+             + "&sensor=false&units=metric&mode=driving"
+             + "&key=" + BuildConfig.DIRECTIONS)
     }
 }
