@@ -7,13 +7,13 @@ import okhttp3.OkHttpClient
 import org.mockito.Mockito
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
-import pozzo.apps.travelweather.location.google.GoogleDirection
-import pozzo.apps.travelweather.location.google.GoogleDirectionRequester
-import pozzo.apps.travelweather.location.google.GoogleResponseParser
-import pozzo.apps.travelweather.location.google.PolylineDecoder
+import pozzo.apps.travelweather.direction.google.GoogleDirection
+import pozzo.apps.travelweather.direction.google.GoogleDirectionRequester
+import pozzo.apps.travelweather.direction.google.GoogleResponseParser
+import pozzo.apps.travelweather.direction.google.PolylineDecoder
 
 class LocationModuleFake : LocationModule() {
-    override fun locationBusiness(directionParser: GoogleDirection) = Mockito.mock(LocationBusiness::class.java)!!
+    override fun locationBusiness() = Mockito.mock(LocationBusiness::class.java)!!
 
     override fun directionLineBusiness() = Mockito.mock(DirectionLineBusiness::class.java)!!
 

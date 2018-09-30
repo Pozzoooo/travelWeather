@@ -1,8 +1,7 @@
-package pozzo.apps.travelweather.location.google
+package pozzo.apps.travelweather.direction.google
 
 import com.google.android.gms.maps.model.LatLng
 
-//todo seems like location and direction packages are a bit mixed, need to fix it
 class GoogleDirection(private val requester: GoogleDirectionRequester,
                       private val parser: GoogleResponseParser,
                       private val polylineDecoder: PolylineDecoder) {

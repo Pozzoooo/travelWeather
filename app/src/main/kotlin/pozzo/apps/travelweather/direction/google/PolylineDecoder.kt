@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.location.google
+package pozzo.apps.travelweather.direction.google
 
 import com.google.android.gms.maps.model.LatLng
 import java.util.ArrayList

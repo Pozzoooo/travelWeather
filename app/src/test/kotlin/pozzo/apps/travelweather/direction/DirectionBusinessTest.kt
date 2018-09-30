@@ -9,15 +9,15 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import pozzo.apps.travelweather.common.android.BitmapCreator
 import pozzo.apps.travelweather.common.android.BitmapCreatorTest
+import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.location.LocationBusiness
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 
 class DirectionBusinessTest {
     private lateinit var directionBusiness: DirectionBusiness
 
-    @Mock private lateinit var locationBusiness: LocationBusiness
+    @Mock private lateinit var googleDirection: GoogleDirection
     @Mock private lateinit var directionLineBusiness: DirectionLineBusiness
     @Mock private lateinit var mapPointCreator: MapPointCreator
 
@@ -25,7 +25,7 @@ class DirectionBusinessTest {
         MockitoAnnotations.initMocks(this)
         BitmapCreator.setInstance(BitmapCreatorTest())
 
-        directionBusiness = DirectionBusiness(locationBusiness, directionLineBusiness, mapPointCreator)
+        directionBusiness = DirectionBusiness(directionLineBusiness, mapPointCreator, googleDirection)
     }
 
     @Test fun incompleteRouteShouldNotCreateRoute() {
@@ -43,7 +43,7 @@ class DirectionBusinessTest {
             fail()
         } catch (e : DirectionNotFoundException) { /*success*/ }
 
-        whenever(locationBusiness.getDirections(startPoint.position, finishPoint.position)).thenReturn(emptyList())
+        whenever(googleDirection.getDirection(startPoint.position, finishPoint.position)).thenReturn(emptyList())
         directionBusiness.createRoute(startPoint, finishPoint)
     }
 
@@ -51,7 +51,7 @@ class DirectionBusinessTest {
         val startPoint = StartPoint(LatLng(0.0, 0.0))
         val finishPoint = FinishPoint(LatLng(0.0, 0.0))
 
-        whenever(locationBusiness.getDirections(startPoint.position, finishPoint.position))
+        whenever(googleDirection.getDirection(startPoint.position, finishPoint.position))
                 .thenReturn(listOf(LatLng(0.0, 1.0), LatLng(2.0, 3.0)))
 
         val route = directionBusiness.createRoute(startPoint, finishPoint)

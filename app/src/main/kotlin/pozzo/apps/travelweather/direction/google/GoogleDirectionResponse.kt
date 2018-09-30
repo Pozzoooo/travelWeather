@@ -1,4 +1,4 @@
-package pozzo.apps.travelweather.location.google
+package pozzo.apps.travelweather.direction.google
 
 data class GoogleDirectionResponse(val routes: List<GoogleRoutes>)
 

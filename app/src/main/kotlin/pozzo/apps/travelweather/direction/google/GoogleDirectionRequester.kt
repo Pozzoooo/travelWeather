@@ -1,9 +1,8 @@
-package pozzo.apps.travelweather.location.google
+package pozzo.apps.travelweather.direction.google
 
 import com.google.android.gms.maps.model.LatLng
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import pozzo.apps.travelweather.BuildConfig
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import java.io.IOException
