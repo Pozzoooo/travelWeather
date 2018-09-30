@@ -21,9 +21,14 @@ class WeatherToMapPointParserTest {
     }
 
     @Test fun assertParsing() {
-        val weather = Weather("", Address(1.0, 2.0, "addr"))
+        val weathers = listOf(
+                Weather("", Address(1.0, 2.0, "addr")),
+                Weather("", Address(1.0, 2.0, null))
+        )
 
-        val point = parser.parse(weather)
-        assertEquals(LatLng(1.0, 2.0), point!!.position)
+        weathers.forEach {
+            val point = parser.parse(it)
+            assertEquals(LatLng(1.0, 2.0), point!!.position)
+        }
     }
 }
