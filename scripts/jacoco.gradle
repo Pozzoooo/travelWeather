@@ -45,7 +45,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/*Bug*',
 			'**/*Module*.*',
 			'**/databinding/**',
-			'**/*Tutorial*'
+			'**/*Tutorial*',
+			'**/*LiveData*'
 	]
 	// generated classes
 	classDirectories = fileTree(

@@ -12,7 +12,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-//todo I dont know how to properly test this class...
 class LocationLiveData constructor(private val locationManager: LocationManager?) : LiveData<Location>() {
     private val timeoutExecutor = Executors.newSingleThreadScheduledExecutor()
     private val timeoutScheduleByObserver = HashMap<Observer<*>, ScheduledFuture<*>>()
