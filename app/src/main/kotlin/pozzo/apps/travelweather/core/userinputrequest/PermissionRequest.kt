@@ -1,6 +1,6 @@
 package pozzo.apps.travelweather.core.userinputrequest
 
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleOwner
 
 /**
  * Dependency inversion would be welcome here

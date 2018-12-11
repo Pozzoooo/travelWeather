@@ -1,6 +1,6 @@
 package pozzo.apps.travelweather.core
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 
 abstract class BaseViewModel(application: Application): AndroidViewModel(application)

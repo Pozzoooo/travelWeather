@@ -1,9 +1,9 @@
 package pozzo.apps.travelweather.location
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -44,7 +44,7 @@ class LocationLiveData constructor(private val locationManager: LocationManager?
         super.observe(owner, observer)
     }
 
-    override fun removeObserver(observer: Observer<Location>) {
+    override fun removeObserver(observer: Observer<in Location>) {
         super.removeObserver(observer)
         timeoutScheduleByObserver[observer]?.cancel(false)
     }

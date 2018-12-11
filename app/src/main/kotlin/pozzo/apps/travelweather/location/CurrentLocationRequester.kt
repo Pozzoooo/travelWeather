@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather.location
 
 import android.Manifest
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import android.location.Location
 import android.location.LocationManager
 import com.google.android.gms.maps.model.LatLng

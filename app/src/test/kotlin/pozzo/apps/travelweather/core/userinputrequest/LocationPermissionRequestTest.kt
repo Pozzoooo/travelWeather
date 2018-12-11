@@ -1,6 +1,6 @@
 package pozzo.apps.travelweather.core.userinputrequest
 
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.Assert
 import org.junit.Before

@@ -1,9 +1,9 @@
 package pozzo.apps.travelweather.map.ui
 
 import android.app.AlertDialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight

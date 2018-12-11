@@ -1,6 +1,6 @@
 package pozzo.apps.travelweather.map.manager
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.junit.Before
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations

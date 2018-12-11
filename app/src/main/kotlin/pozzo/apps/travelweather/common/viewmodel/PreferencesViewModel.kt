@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.common.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.common.DaggerCommonComponent
 import pozzo.apps.travelweather.core.BaseViewModel

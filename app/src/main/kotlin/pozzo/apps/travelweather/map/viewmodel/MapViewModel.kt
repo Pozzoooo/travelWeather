@@ -1,11 +1,12 @@
 package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper

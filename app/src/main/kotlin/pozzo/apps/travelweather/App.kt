@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather
 
 import android.app.Application
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.android.Main
 import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.bugtracker.LogBug
@@ -79,8 +79,8 @@ class App : Application() {
     }
 
     private fun initCoroutines() {
-        CoroutineSettings.background = CommonPool
-        CoroutineSettings.ui = UI
+        CoroutineSettings.background = Dispatchers.Default
+        CoroutineSettings.ui = Dispatchers.Main
     }
 }
 

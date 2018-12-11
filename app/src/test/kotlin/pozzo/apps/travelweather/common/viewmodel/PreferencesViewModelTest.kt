@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.common.viewmodel
 
 import android.app.Application
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times

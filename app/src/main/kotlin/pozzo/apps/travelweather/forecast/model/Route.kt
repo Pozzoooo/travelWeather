@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.forecast.model
 
 import com.google.android.gms.maps.model.PolylineOptions
-import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.channels.Channel
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint

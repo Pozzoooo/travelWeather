@@ -2,7 +2,7 @@ package pozzo.apps.travelweather.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.model.Day

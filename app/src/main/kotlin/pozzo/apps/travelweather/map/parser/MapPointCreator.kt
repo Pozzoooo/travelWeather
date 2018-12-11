@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather.map.parser
 
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
 import pozzo.apps.travelweather.forecast.ForecastBusiness
@@ -15,6 +15,7 @@ class MapPointCreator(
 
     fun createMapPointsAsync(direction: List<LatLng>) : Channel<MapPoint> {
         val mapPoints = Channel<MapPoint>()
+        //TODO need to understand why this got deprecated
         launch(background) {
             directionWeatherFilter.getWeatherPointsLocations(direction).asSequence()
                     .mapNotNull(forecastBusiness::forecast)

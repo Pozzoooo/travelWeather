@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather.map.manager
 
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel

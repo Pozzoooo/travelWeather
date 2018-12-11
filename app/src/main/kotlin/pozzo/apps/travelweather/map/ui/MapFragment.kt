@@ -2,7 +2,7 @@ package pozzo.apps.travelweather.map.ui
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Point
 import android.os.Bundle

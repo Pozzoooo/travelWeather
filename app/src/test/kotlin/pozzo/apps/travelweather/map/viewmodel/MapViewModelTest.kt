@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.LifecycleOwner
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.times

@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
-		<import type="android.arch.lifecycle.LifecycleOwner"/>
+		<import type="androidx.lifecycle.LifecycleOwner"/>
 		<variable
 			name="viewModel"
 			type="pozzo.apps.travelweather.map.viewmodel.MapViewModel"/>

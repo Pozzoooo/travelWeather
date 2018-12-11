@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.forecast
 
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.BitmapDescriptor
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.android.BitmapCreator

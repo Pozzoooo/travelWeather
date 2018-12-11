@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.core.userinputrequest
 
 import android.Manifest
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleOwner
 
 class LocationPermissionRequest(private val callback: Callback) : PermissionRequest(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
     interface Callback {
