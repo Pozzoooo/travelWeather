@@ -50,19 +50,19 @@ dependencies {
 	def arch = "1.1.1"
 
 	//Google
-	implementation "com.android.support:design:27.1.1"
+	implementation "com.android.support:design:28.0.0"
 	implementation "android.arch.lifecycle:runtime:$arch"
 	implementation "android.arch.lifecycle:extensions:$arch"
-	implementation 'com.google.firebase:firebase-core:16.0.1'
-	implementation "com.google.firebase:firebase-perf:16.1.0"
-	implementation 'com.google.firebase:firebase-messaging:17.3.0'
-	implementation 'com.google.android.gms:play-services-maps:15.0.1'
-	implementation 'com.google.android.gms:play-services-location:15.0.1'
+	implementation 'com.google.firebase:firebase-core:16.0.6'
+	implementation "com.google.firebase:firebase-perf:16.2.2"
+	implementation 'com.google.firebase:firebase-messaging:17.3.4'
+	implementation 'com.google.android.gms:play-services-maps:16.0.0'
+	implementation 'com.google.android.gms:play-services-location:16.0.0'
 	kapt "android.arch.lifecycle:compiler:$arch"
 
 	//Web requests
 	implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-	implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+	implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 	implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
 
 	//Mint
@@ -78,9 +78,9 @@ dependencies {
 	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.25.3"
 
 	//di
-	implementation 'com.google.dagger:dagger:2.11'
-	kapt 'com.google.dagger:dagger-compiler:2.11'
-	kaptTest 'com.google.dagger:dagger-compiler:2.11'
+	implementation 'com.google.dagger:dagger:2.16'
+	kapt 'com.google.dagger:dagger-compiler:2.16'
+	kaptTest 'com.google.dagger:dagger-compiler:2.16'
 
 	//unit test
 	testImplementation 'junit:junit:4.12'
