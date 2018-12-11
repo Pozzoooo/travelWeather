@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.analytics
 
 import com.google.firebase.analytics.FirebaseAnalytics
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.Unconfined
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
