@@ -30,7 +30,7 @@
 	<string name="forecast_mostlySunny">Mostly sunny</string>
 	<string name="forecast_thunderstorms">Thunderstorms</string>
 	<string name="forecast_scatteredThunderstorms">Scattered thunderstorms</string>
-	<string name="forecast_rain">Tain</string>
+	<string name="forecast_rain">Rain</string>
 	<string name="forecast_scatteredShowers">Scattered showers</string>
 	<string name="forecast_showers">Showers</string>
 	<string name="forecast_partlyCloudy">Partly cloudy</string>
@@ -42,9 +42,6 @@
 	<string name="forecast_windy">Windy</string>
 	<string name="forecast_unknown">Unknown</string>
 
-	<string-array name="forecastDays">
-		<item>Today</item>
-		<item>Tomorow</item>
-		<item>After Tomorow</item>
-	</string-array>
+	<string name="day_today">Today</string>
+	<string name="day_tomorrow">Tomorrow</string>
 </resources>

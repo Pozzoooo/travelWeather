@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -92,6 +93,9 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupDaySelection() {
+        //TODO may I update when I got the correct value from server, so I could hide the ones its not available
+        val adapter = ArrayAdapter<Day>(this, android.R.layout.simple_list_item_1, Day.values())
+        spinnerDaySelection.adapter = adapter
         spinnerDaySelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) { }
 

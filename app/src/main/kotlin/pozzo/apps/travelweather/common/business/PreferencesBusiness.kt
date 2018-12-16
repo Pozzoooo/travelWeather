@@ -16,13 +16,28 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
     }
 
     fun setSelectedDay(day: Day) {
+        val editor = preferences.edit()
+
+        updateDateSelection(day, editor)
+        incrementDaySelectionCount(editor)
+
+        editor.apply()
+
+        notifyAnalyticsDaySelectionChange(day)
+    }
+
+    private fun updateDateSelection(day: Day, editor: SharedPreferences.Editor) {
+        editor.putInt(KEY_SELECTED_DAY, day.index)
+    }
+
+    private fun incrementDaySelectionCount(editor: SharedPreferences.Editor) {
         val count = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
-        val edit = preferences.edit()
-        edit.putInt(KEY_SELECTED_DAY, day.index)
-        edit.putInt(KEY_DAY_SELECTION_COUNT, count + 1)
-        edit.apply()
-        mapAnalytics.sendDaySelectionChanged(day)
+        editor.putInt(KEY_DAY_SELECTION_COUNT, count + 1)
     }
 
     fun getDaySelectionCount() : Int = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
+
+    private fun notifyAnalyticsDaySelectionChange(day: Day) {
+        mapAnalytics.sendDaySelectionChanged(day)
+    }
 }

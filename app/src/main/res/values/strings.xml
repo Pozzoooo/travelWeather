@@ -42,9 +42,6 @@
 	<string name="forecast_windy">Muito vento</string>
 	<string name="forecast_unknown">Desconhecido</string>
 
-	<string-array name="forecastDays">
-		<item>Hoje</item>
-		<item>Amanhã</item>
-		<item>Depois de amanhã</item>
-	</string-array>
+	<string name="day_today">Hoje</string>
+	<string name="day_tomorrow">Amanhã</string>
 </resources>

@@ -88,9 +88,7 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun addDragListener() {
-        view?.apply {
-            setOnDragListener(dragListener)
-        } ?: Bug.get().logException(IllegalStateException("Trying to add drag listener without view"))
+        view?.setOnDragListener(dragListener) ?: Bug.get().logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {

@@ -28,7 +28,8 @@ class PreferencesViewModel(application: Application) : BaseViewModel(application
     }
 
     fun setSelectedDay(index: Int) {
-        if (this.selectedDay.value?.index != index) {
+        val hasChanged = this.selectedDay.value?.index != index
+        if (hasChanged) {
             val selection = Day.getByIndex(index)
             preferencesBusiness.setSelectedDay(selection)
             this.selectedDay.value = selection

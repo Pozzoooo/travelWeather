@@ -12,5 +12,6 @@ data class Weather(
     val latLng: LatLng
         get() = LatLng(address!!.latitude, address!!.longitude)
 
+    //TODO I need to handle an out of bounds in here
     fun getForecast(day: Day): Forecast = forecasts[day.index]
 }
