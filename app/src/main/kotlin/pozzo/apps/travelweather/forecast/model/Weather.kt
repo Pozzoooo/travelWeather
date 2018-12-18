@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.forecast.model
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.tools.Log
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.map.model.Address
 
 data class Weather(
@@ -16,7 +16,8 @@ data class Weather(
     fun getForecast(day: Day): Forecast {
         val index = day.index
         return if (index < 0 || index >= forecasts.size) {
-            Log.e(ArrayIndexOutOfBoundsException("Forecast out of range, tried: $index, but size was ${forecasts.size}"))
+            Bug.get().logException(ArrayIndexOutOfBoundsException(
+                    "Forecast out of range, tried: $index, but size was ${forecasts.size}"))
             forecasts.last()
         } else {
             forecasts.getOrNull(day.index) ?: forecasts.last()
