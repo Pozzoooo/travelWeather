@@ -32,6 +32,7 @@ import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 import retrofit2.Retrofit
+import java.util.*
 import javax.inject.Singleton
 
 /**
@@ -75,6 +76,7 @@ interface AppComponent {
     fun mapAnalytics() : MapAnalytics
 
     //common
+    fun currentDate() : Calendar
     fun preferencesBusiness() : PreferencesBusiness
 
     //location

@@ -8,6 +8,7 @@ import dagger.Provides
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.injection.AppModule
+import java.util.*
 
 @Module(includes = [AppModule::class])
 open class CommonModule {
@@ -17,4 +18,6 @@ open class CommonModule {
 
     @Provides open fun sharedPreferences(application: Application) : SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(application)
+
+    @Provides open fun currentDate() : Calendar = Calendar.getInstance()
 }

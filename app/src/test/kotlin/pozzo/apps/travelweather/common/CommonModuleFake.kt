@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import org.mockito.Mockito
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
+import java.util.*
 
 class CommonModuleFake : CommonModule() {
 
@@ -13,4 +14,7 @@ class CommonModuleFake : CommonModule() {
 
     override fun sharedPreferences(application: Application): SharedPreferences =
             Mockito.mock(SharedPreferences::class.java)
+
+    override fun currentDate() : Calendar =
+            Calendar.getInstance().apply { set(1990, 10, 24, 0, 45) }
 }
