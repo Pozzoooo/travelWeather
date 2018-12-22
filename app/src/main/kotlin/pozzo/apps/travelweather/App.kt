@@ -16,6 +16,8 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 /**
  * TODO
  *
+ * Should I migrate to Firebase Crashlytics?
+ *
  * Minor bug: select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
  *
