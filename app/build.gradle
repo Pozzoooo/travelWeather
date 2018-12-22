@@ -3,6 +3,7 @@ apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 apply from: '../scripts/jacoco.gradle'
 apply from: '../scripts/keys.gradle'
@@ -50,23 +51,21 @@ dependencies {
 	def arch = "1.1.1"
 
 	//Google
-	implementation "com.google.android.material:material:1.1.0-alpha01"
+	implementation "com.google.android.material:material:1.1.0-alpha02"
 	implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
 	implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 	implementation 'com.google.firebase:firebase-core:16.0.6'
-	implementation "com.google.firebase:firebase-perf:16.2.2"
+	implementation "com.google.firebase:firebase-perf:16.2.3"
 	implementation 'com.google.firebase:firebase-messaging:17.3.4'
 	implementation 'com.google.android.gms:play-services-maps:16.0.0'
 	implementation 'com.google.android.gms:play-services-location:16.0.0'
+	implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
 	//Web requests
 	implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 	implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 	implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-
-	//Mint
-	implementation "com.splunk.mint:mint:5.0.0"
 
 	//Custom libraries
 	implementation 'com.github.pozzoooo:pozzotools:5243fc9a36'

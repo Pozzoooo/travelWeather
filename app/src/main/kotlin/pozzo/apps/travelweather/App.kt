@@ -5,8 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.android.Main
 import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
+import pozzo.apps.travelweather.core.bugtracker.FabricBug
 import pozzo.apps.travelweather.core.bugtracker.LogBug
-import pozzo.apps.travelweather.core.bugtracker.MintBug
 import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
 import pozzo.apps.travelweather.core.injection.DaggerAppComponent
@@ -15,8 +15,6 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
 
 /**
  * TODO
- *
- * Should I migrate to Firebase Crashlytics?
  *
  * Minor bug: select random start position, and then press my current position fab, it will show a
  *  route not found dialog, which it should not.
@@ -66,7 +64,7 @@ class App : Application() {
         val bugInstance = if (BuildConfig.DEBUG) {
             LogBug()
         } else {
-            MintBug("c315b759")
+            FabricBug()
         }
         Bug.setInstance(bugInstance)
     }
