@@ -1,6 +1,6 @@
 package pozzo.apps.travelweather.forecast.model
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.core.TestInjector

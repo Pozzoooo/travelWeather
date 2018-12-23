@@ -24,7 +24,7 @@ enum class Day(val index: Int, val title: Int? = null) {
 
     private fun getTitleFromDate(index: Int): String {
         val date = App.component().currentDate()
-        date.roll(Calendar.DAY_OF_YEAR, index)
+        date.add(Calendar.DAY_OF_YEAR, index)
         return if (index < 7) {
             SimpleDateFormat("EEEE", Locale.getDefault()).format(date.time)
         } else {
