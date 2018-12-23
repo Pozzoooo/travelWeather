@@ -27,6 +27,7 @@ import pozzo.apps.travelweather.forecast.yahoo.ForecastModuleYahoo
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  *
+ * Mover mapa quando estiver arrastando e atinger o canto do mapa
  * Animar as flags voltando para a lateral quando apertar o clear
  * I might need to better hide some keys? (Google maps, Firebase, Mint)
  * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.

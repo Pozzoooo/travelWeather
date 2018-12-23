@@ -6,11 +6,15 @@ class GoogleDirection(private val requester: GoogleDirectionRequester,
                       private val parser: GoogleResponseParser,
                       private val polylineDecoder: PolylineDecoder) {
 
+    //TODO I could understand better the route response, might be useful to plot more information
     fun getDirection(start: LatLng, end: LatLng) : List<LatLng>? {
         val response = requester.request(start, end)
         val parsedResponse = response?.let { parser.parse(it) }
-        return parsedResponse?.let { readAllPolylineFromSteps(it.routes[0].legs[0].steps) }
+        return getFirstLefFromFirstRouteSteps(parsedResponse)?.let { readAllPolylineFromSteps(it) }
     }
+
+    private fun getFirstLefFromFirstRouteSteps(parsedResponse: GoogleDirectionResponse?) =
+            parsedResponse?.routes?.firstOrNull()?.legs?.firstOrNull()?.steps
 
     private fun readAllPolylineFromSteps(steps: List<GoogleSteps>) : List<LatLng> {
         return steps.flatMap {
