@@ -107,6 +107,8 @@ class MapFragment : SupportMapFragment() {
 
     @SuppressLint("ObjectAnimatorBinding")
     fun addMark(mapPoint: MapPoint) : Marker? {
+        if (!this.isAdded) return null
+
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
                 .anchor(1F, 1F)
