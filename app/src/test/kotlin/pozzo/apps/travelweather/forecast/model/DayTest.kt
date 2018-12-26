@@ -23,6 +23,6 @@ class DayTest {
 
         assertEquals("mockString", Day.TODAY.toString())
         assertEquals("Tuesday", Day.IDX_3.toString())
-        assertEquals("Dec 3, 1990", Day.IDX_9.toString())
+        assertEquals("Dec 1, 1990", Day.IDX_7.toString())
     }
 }

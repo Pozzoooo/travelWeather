@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 class ForecastModuleYahoo : ForecastModule() {
 
     override fun forecastClient(retrofitBuilder: Retrofit.Builder, forecastTypeMapper: ForecastTypeMapper): ForecastClient =
-            ForecastClientYahoo(yahooWeather(retrofitBuilder, yahooBaseUrl()))
+            ForecastClientYahoo(yahooWeather(retrofitBuilder, yahooBaseUrl()), forecastTypeMapper)
 
     override fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperYahoo()
 

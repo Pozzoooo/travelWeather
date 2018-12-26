@@ -2,7 +2,6 @@ package pozzo.apps.travelweather.forecast
 
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.core.JsonParser
-import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
 import retrofit2.Retrofit
 
@@ -10,7 +9,7 @@ class ForecastModuleFake : ForecastModule() {
 
     override fun forecastTypeMapper(): ForecastTypeMapper {
         return object : ForecastTypeMapper {
-            override fun getForecastType(forecast: Forecast) = ForecastType.THUNDERSTORMS
+            override fun getForecastType(type: String): ForecastType = ForecastType.THUNDERSTORMS
         }
     }
 

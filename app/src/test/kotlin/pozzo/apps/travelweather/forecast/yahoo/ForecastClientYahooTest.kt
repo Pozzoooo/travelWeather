@@ -26,9 +26,9 @@ class ForecastClientYahooTest {
         }
 
         val appComponent = TestInjector.getAppComponent().build()
-        val yahooWeather = ForecastModuleYahoo().yahooWeather(
-                appComponent.retrofitBuilder(), baseUrl)
-        forecastClientYahoo = ForecastClientYahoo(yahooWeather)
+        val module = ForecastModuleYahoo()
+        val yahooWeather = module.yahooWeather(appComponent.retrofitBuilder(), baseUrl)
+        forecastClientYahoo = ForecastClientYahoo(yahooWeather, module.forecastTypeMapper())
     }
 
     private fun getUrlFromMockedWebServer() : String {
@@ -52,79 +52,81 @@ class ForecastClientYahooTest {
         return JsonParser.fromJson(Weather::class.java, """
 {
   "address": {
-	"latitude": ${coordinates.latitude},
-	"longitude": ${coordinates.longitude}
+    "latLng": {
+      "latitude": ${coordinates.latitude},
+      "longitude": ${coordinates.longitude}
+    }
   },
   "forecasts": [
 	{
 	  "date": "03 Jul 2018",
 	  "text": "Thunderstorms",
 	  "forecastType": "THUNDERSTORMS",
-	  "high": 34,
-	  "low": 22
+	  "high": 31,
+	  "low": 23
 	},
 	{
 	  "date": "04 Jul 2018",
-	  "text": "Thunderstorms",
-	  "forecastType": "THUNDERSTORMS",
-	  "high": 30,
+	  "text": "Mostly Cloudy",
+	  "forecastType": "MOSTLY_CLOUDY",
+	  "high": 31,
 	  "low": 21
 	},
 	{
 	  "date": "05 Jul 2018",
-	  "text": "Scattered Thunderstorms",
-	  "forecastType": "SCATTERED_THUNDERSTORMS",
-	  "high": 31,
+	  "text": "Thunderstorms",
+	  "forecastType": "THUNDERSTORMS",
+	  "high": 26,
 	  "low": 20
 	},
 	{
 	  "date": "06 Jul 2018",
-	  "text": "Thunderstorms",
-	  "forecastType": "THUNDERSTORMS",
-	  "high": 27,
-	  "low": 20
-	},
-	{
-	  "date": "07 Jul 2018",
-	  "text": "Partly Cloudy",
-	  "forecastType": "PARTLY_CLOUDY",
+	  "text": "Sunny",
+	  "forecastType": "SUNNY",
 	  "high": 25,
 	  "low": 15
 	},
 	{
-	  "date": "08 Jul 2018",
-	  "text": "Sunny",
-	  "forecastType": "SUNNY",
+	  "date": "07 Jul 2018",
+	  "text": "Mostly Sunny",
+	  "forecastType": "MOSTLY_SUNNY",
 	  "high": 27,
-	  "low": 12
+	  "low": 13
+	},
+	{
+	  "date": "08 Jul 2018",
+	  "text": "Mostly Sunny",
+	  "forecastType": "MOSTLY_SUNNY",
+	  "high": 30,
+	  "low": 15
 	},
 	{
 	  "date": "09 Jul 2018",
-	  "text": "Mostly Sunny",
-	  "forecastType": "MOSTLY_SUNNY",
-	  "high": 29,
-	  "low": 15
+	  "text": "Rain",
+	  "forecastType": "RAIN",
+	  "high": 31,
+	  "low": 18
 	},
 	{
 	  "date": "10 Jul 2018",
 	  "text": "Partly Cloudy",
 	  "forecastType": "PARTLY_CLOUDY",
 	  "high": 31,
-	  "low": 17
+	  "low": 19
 	},
 	{
 	  "date": "11 Jul 2018",
 	  "text": "Partly Cloudy",
 	  "forecastType": "PARTLY_CLOUDY",
 	  "high": 32,
-	  "low": 19
+	  "low": 18
 	},
 	{
 	  "date": "12 Jul 2018",
 	  "text": "Thunderstorms",
 	  "forecastType": "THUNDERSTORMS",
 	  "high": 31,
-	  "low": 20
+	  "low": 19
 	}
   ],
   "url": "https://weather.yahoo.com/country/state/city-91558663/"

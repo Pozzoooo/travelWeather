@@ -14,20 +14,14 @@ class ForecastTypeMapperYahooTest {
     }
 
     @Test fun assertItsMapping() {
-        val forecast = Forecast().apply { text = "Sunny" }
-
-        assertEquals(ForecastType.SUNNY, mapper.getForecastType(forecast))
+        assertEquals(ForecastType.SUNNY, mapper.getForecastType("Sunny"))
     }
 
     @Test fun assertItCanHandleTheUnknown() {
-        val forecast = Forecast().apply { text = "notEvenTry!" }
-
-        assertEquals(ForecastType.UNKNOWN, mapper.getForecastType(forecast))
+        assertEquals(ForecastType.UNKNOWN, mapper.getForecastType("dontEvenTry!"))
     }
 
     @Test fun assertCaseInsensitive() {
-        val forecast = Forecast().apply { text = "mOStly Sunny" }
-
-        assertEquals(ForecastType.MOSTLY_SUNNY, mapper.getForecastType(forecast))
+        assertEquals(ForecastType.MOSTLY_SUNNY, mapper.getForecastType("mOStly Sunny"))
     }
 }

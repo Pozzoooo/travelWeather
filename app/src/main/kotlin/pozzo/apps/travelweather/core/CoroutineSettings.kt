@@ -14,5 +14,5 @@ todo I need to think about it
  */
 object CoroutineSettings {
     var background: CoroutineDispatcher = Dispatchers.Unconfined
-    var ui: CoroutineDispatcher = Dispatchers.Main
+    var ui: CoroutineDispatcher = Dispatchers.Unconfined
 }

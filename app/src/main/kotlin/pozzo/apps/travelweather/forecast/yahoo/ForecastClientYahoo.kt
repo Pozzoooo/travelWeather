@@ -8,6 +8,7 @@ import okhttp3.ResponseBody
 import pozzo.apps.travelweather.GsonFactory
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastClient
+import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
@@ -17,7 +18,7 @@ import retrofit2.Response
  * Yahoo forecast api client.
  */
 @Deprecated("They say end of life on January 3rd 2019, lets keep an eye on it")
-class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClient {
+class ForecastClientYahoo(private val yahooWeather: YahooWeather, private val forecastTypeMapper: ForecastTypeMapper) : ForecastClient {
     companion object {
         const val MAX_RETRIES = 3
     }
@@ -71,6 +72,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather) : ForecastClie
             if (forecasts.isEmpty())
                 return null//TODO need to re add the mapper in here
 
+            forecasts.forEach { it.forecastType = forecastTypeMapper.getForecastType(it.text) }
             return Weather(getLink(item), forecasts, Address(coordinates))
         } catch (e: ClassCastException) {
             if (result.isJsonNull) {
