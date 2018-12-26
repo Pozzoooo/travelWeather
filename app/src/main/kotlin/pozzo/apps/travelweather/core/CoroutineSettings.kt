@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.core
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.android.Main
 
 /*
 todo I need to think about it
@@ -13,5 +14,5 @@ todo I need to think about it
  */
 object CoroutineSettings {
     var background: CoroutineDispatcher = Dispatchers.Unconfined
-    var ui: CoroutineDispatcher = Dispatchers.Unconfined
+    var ui: CoroutineDispatcher = Dispatchers.Main
 }

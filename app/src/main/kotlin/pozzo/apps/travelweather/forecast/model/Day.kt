@@ -14,9 +14,7 @@ enum class Day(val index: Int, val title: Int? = null) {
     IDX_4(4),
     IDX_5(5),
     IDX_6(6),
-    IDX_7(7),
-    IDX_8(8),
-    IDX_9(9);
+    IDX_7(7);
 
     override fun toString() = title?.let { getTitleFromStringResource(it) } ?: getTitleFromDate(index)
 

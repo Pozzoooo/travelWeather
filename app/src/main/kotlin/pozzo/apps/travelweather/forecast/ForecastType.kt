@@ -21,6 +21,7 @@ enum class ForecastType(@DrawableRes val iconId: Int, @StringRes val stringId: I
     RAIN_SNOW(              R.drawable.rain_snow,               R.string.forecast_rainAndSnow),
     WINDY(                  R.drawable.wind,                    R.string.forecast_windy),
     BREEZY(                 R.drawable.wind,                    R.string.forecast_breezy),
+    FOG(                    R.drawable.fog,                     R.string.forecast_fog),
     UNKNOWN(                R.drawable.cloudy_moon,             R.string.forecast_unknown);
 
     private val bitmapCache = HashMap<ForecastType, BitmapDescriptor>()

@@ -6,12 +6,11 @@ import pozzo.apps.travelweather.map.model.Address
 
 data class Weather(
     val url: String,
-    var address: Address? = null) {
-
-    lateinit var forecasts: List<Forecast>
+    val forecasts: List<Forecast>,
+    val address: Address) {
 
     val latLng: LatLng
-        get() = LatLng(address!!.latitude, address!!.longitude)
+        get() = address.latLng
 
     fun getForecast(day: Day): Forecast {
         val index = day.index

@@ -40,6 +40,7 @@
 	<string name="forecast_rainAndSnow">Rain and snow</string>
 	<string name="forecast_breezy">Breezy</string>
 	<string name="forecast_windy">Windy</string>
+	<string name="forecast_fog">Fog</string>
 	<string name="forecast_unknown">Unknown</string>
 
 	<string name="day_today">Today</string>

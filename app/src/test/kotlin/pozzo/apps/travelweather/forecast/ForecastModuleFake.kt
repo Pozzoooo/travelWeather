@@ -14,7 +14,7 @@ class ForecastModuleFake : ForecastModule() {
         }
     }
 
-    override fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient {
+    override fun forecastClient(retrofitBuilder: Retrofit.Builder, forecastTypeMapper: ForecastTypeMapper): ForecastClient {
         return object : ForecastClient {
             override fun fromCoordinates(coordinates: LatLng): Weather? {
                 return JsonParser.fromJson(Weather::class.java, """

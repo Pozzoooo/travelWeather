@@ -40,6 +40,7 @@
 	<string name="forecast_rainAndSnow">Lluvia y nieve</string>
 	<string name="forecast_breezy">Ventoso</string>
 	<string name="forecast_windy">Muy ventoso</string>
+	<string name="forecast_fog">Niebla</string>
 	<string name="forecast_unknown">Desconocido</string>
 
 	<string name="day_today">Hoy</string>
