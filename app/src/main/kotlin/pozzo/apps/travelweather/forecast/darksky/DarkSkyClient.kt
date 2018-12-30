@@ -12,9 +12,16 @@ import pozzo.apps.travelweather.map.model.Address
 import java.util.*
 
 class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper: ForecastTypeMapper) : ForecastClient {
+    //todo needs refactoring
     override fun fromCoordinates(coordinates: LatLng): Weather? {
-        val response = api.forecast(coordinates.latitude, coordinates.longitude).execute()
-        val result = response.body()?.string()
+        val response = try {
+            api.forecast(coordinates.latitude, coordinates.longitude).execute()
+        } catch (e: Exception) {
+            Bug.get().logException(e)
+            return null
+        }
+
+        val result = response?.body()?.string()
         if (result?.isEmpty() != false) {
             Bug.get().logException(Exception("Null body, code: ${response.code()}, error: ${response.errorBody()?.string()}"))
             return null
