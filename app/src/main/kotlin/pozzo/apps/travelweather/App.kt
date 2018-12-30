@@ -71,7 +71,7 @@ class App : Application() {
         Bug.setInstance(bugInstance)
     }
 
-    private fun initComponent() {
+    private fun initComponent() {//todo pq eu nao preciso de todos os compoenents aqui? E da pra usar da forma q usamos no trampo?
         setComponent(DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule())
@@ -85,10 +85,3 @@ class App : Application() {
         CoroutineSettings.ui = Dispatchers.Main
     }
 }
-
-/**
- * Yahoo weather, 2,000 requisicoes por dia.
- * https://developer.yahoo.com/weather/
- * Google direction = 2,500 free directions requests per day and $0.50 USD / 1000 additional requests, up to 100,000 daily.
- * https://developers.google.com/maps/documentation/directions/usage-limits
- */
