@@ -70,7 +70,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather, private val fo
             val forecastType = object : TypeToken<List<Forecast>>() {}.type
             val forecasts = GsonFactory.gson.fromJson<List<Forecast>>(forecastArray, forecastType)
             if (forecasts.isEmpty())
-                return null//TODO need to re add the mapper in here
+                return null
 
             forecasts.forEach { it.forecastType = forecastTypeMapper.getForecastType(it.text) }
             return Weather(getLink(item), forecasts, Address(coordinates))
