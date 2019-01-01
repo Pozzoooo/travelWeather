@@ -21,6 +21,7 @@ class ForecastTypeMapperDarkSky : ForecastTypeMapper {
             "mostly cloudy" to ForecastType.MOSTLY_CLOUDY,
             "snow" to ForecastType.SNOW,
             "rain and snow" to ForecastType.RAIN_SNOW,
+            "snow showers" to ForecastType.RAIN_SNOW,
             "wind" to ForecastType.WINDY,
             "fog" to ForecastType.FOG,
             "breezy" to ForecastType.BREEZY)
