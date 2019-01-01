@@ -7,9 +7,8 @@ import retrofit2.Retrofit
 @Module
 open class ForecastModule {
 
-    @Provides open fun forecastClient(retrofitBuilder: Retrofit.Builder, forecastTypeMapper: ForecastTypeMapper) : ForecastClient = null!!
-    @Provides open fun forecastTypeMapper() : ForecastTypeMapper = null!!
+    @Provides open fun forecastClients(retrofitBuilder: Retrofit.Builder) : List<@JvmSuppressWildcards ForecastClient> = null!!
 
-    @Provides fun forecastBusiness(forecastClient: ForecastClient) =
+    @Provides fun forecastBusiness(forecastClient: List<@JvmSuppressWildcards ForecastClient>) =
             ForecastBusiness(forecastClient)
 }

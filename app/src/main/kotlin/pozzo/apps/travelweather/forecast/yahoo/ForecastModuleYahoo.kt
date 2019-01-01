@@ -1,16 +1,15 @@
 package pozzo.apps.travelweather.forecast.yahoo
 
 import pozzo.apps.travelweather.forecast.ForecastClient
-import pozzo.apps.travelweather.forecast.ForecastModule
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import retrofit2.Retrofit
 
-class ForecastModuleYahoo : ForecastModule() {
+class ForecastModuleYahoo {
 
-    override fun forecastClient(retrofitBuilder: Retrofit.Builder, forecastTypeMapper: ForecastTypeMapper): ForecastClient =
-            ForecastClientYahoo(yahooWeather(retrofitBuilder, yahooBaseUrl()), forecastTypeMapper)
+    fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient =
+            ForecastClientYahoo(yahooWeather(retrofitBuilder, yahooBaseUrl()), forecastTypeMapper())
 
-    override fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperYahoo()
+    private fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperYahoo()
 
     fun yahooWeather(retrofitBuilder: Retrofit.Builder, baseUrl: String): YahooWeather {
         return retrofitBuilder

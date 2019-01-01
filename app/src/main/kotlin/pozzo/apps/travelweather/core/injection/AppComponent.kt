@@ -16,16 +16,11 @@ import pozzo.apps.travelweather.direction.DirectionBusiness
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
 import pozzo.apps.travelweather.direction.DirectionModule
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
+import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastModule
-import pozzo.apps.travelweather.forecast.ForecastTypeMapper
-import pozzo.apps.travelweather.location.CurrentLocationRequester
-import pozzo.apps.travelweather.location.LocationBusiness
-import pozzo.apps.travelweather.location.LocationLiveData
-import pozzo.apps.travelweather.location.LocationModule
-import pozzo.apps.travelweather.direction.google.GoogleDirection
-import pozzo.apps.travelweather.location.GeoCoderBusiness
+import pozzo.apps.travelweather.location.*
 import pozzo.apps.travelweather.map.MapModule
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
@@ -64,9 +59,8 @@ interface AppComponent {
     fun networkHelper() : NetworkHelper
 
     //forecast
-    fun forecastClient() : ForecastClient
+    fun forecastClients() : List<ForecastClient>
     fun forecastBusiness() : ForecastBusiness
-    fun forecastTypeMapper(): ForecastTypeMapper
 
     //direction
     fun directionBusiness() : DirectionBusiness

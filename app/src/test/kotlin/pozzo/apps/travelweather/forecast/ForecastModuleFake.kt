@@ -7,14 +7,14 @@ import retrofit2.Retrofit
 
 class ForecastModuleFake : ForecastModule() {
 
-    override fun forecastTypeMapper(): ForecastTypeMapper {
+    fun forecastTypeMapper(): ForecastTypeMapper {
         return object : ForecastTypeMapper {
             override fun getForecastType(type: String): ForecastType = ForecastType.THUNDERSTORMS
         }
     }
 
-    override fun forecastClient(retrofitBuilder: Retrofit.Builder, forecastTypeMapper: ForecastTypeMapper): ForecastClient {
-        return object : ForecastClient {
+    override fun forecastClients(retrofitBuilder: Retrofit.Builder): List<ForecastClient> {
+        return listOf(object : ForecastClient {
             override fun fromCoordinates(coordinates: LatLng): Weather? {
                 return JsonParser.fromJson(Weather::class.java, """
                     {
@@ -35,6 +35,6 @@ class ForecastModuleFake : ForecastModule() {
                     }
                 """.trimIndent())
             }
-        }
+        })
     }
 }
