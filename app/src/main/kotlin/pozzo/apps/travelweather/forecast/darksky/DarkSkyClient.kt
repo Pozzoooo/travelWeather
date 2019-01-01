@@ -3,15 +3,19 @@ package pozzo.apps.travelweather.forecast.darksky
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
+import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
+import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
 import java.util.*
 
 class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper: ForecastTypeMapper) : ForecastClient {
+    private val poweredByDarkSky = PoweredBy(R.drawable.poweredbydarksky)
+
     //todo needs refactoring
     override fun fromCoordinates(coordinates: LatLng): Weather? {
         val response = try {
@@ -33,7 +37,8 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
         return Weather(
                 "https://darksky.net/forecast/${coordinates.latitude},${coordinates.longitude}/si12/$language",
                 forecasts,
-                Address(coordinates)
+                Address(coordinates),
+                poweredByDarkSky
         )
     }
 

@@ -14,8 +14,8 @@
         tools:text="Chuva Braba"/>
 
     <ImageView
+        android:id="@+id/poweredByImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/poweredbydarksky"/>
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>

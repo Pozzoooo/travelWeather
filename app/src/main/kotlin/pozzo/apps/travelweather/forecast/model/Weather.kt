@@ -7,7 +7,8 @@ import pozzo.apps.travelweather.map.model.Address
 data class Weather(
     val url: String,
     val forecasts: List<Forecast>,
-    val address: Address) {
+    val address: Address,
+    val poweredBy: PoweredBy) {
 
     val latLng: LatLng
         get() = address.latLng

@@ -6,10 +6,12 @@ import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.GsonFactory
+import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
+import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
@@ -22,6 +24,8 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather, private val fo
     companion object {
         const val MAX_RETRIES = 3
     }
+
+    private val poweredByYahoo = PoweredBy(R.drawable.yahoo)
 
     override fun fromCoordinates(coordinates: LatLng): Weather? {
         val query = "select item from weather.forecast where woeid in " +
@@ -73,7 +77,7 @@ class ForecastClientYahoo(private val yahooWeather: YahooWeather, private val fo
                 return null
 
             forecasts.forEach { it.forecastType = forecastTypeMapper.getForecastType(it.text) }
-            return Weather(getLink(item), forecasts, Address(coordinates))
+            return Weather(getLink(item), forecasts, Address(coordinates), poweredByYahoo)
         } catch (e: ClassCastException) {
             if (result.isJsonNull) {
                 //sometime yahoo is sending us a null object, not really sure why, but all we can do for
