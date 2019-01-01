@@ -9,7 +9,7 @@ class ForecastModuleYahoo {
     fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient =
             ForecastClientYahoo(yahooWeather(retrofitBuilder, yahooBaseUrl()), forecastTypeMapper())
 
-    private fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperYahoo()
+    fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperYahoo()
 
     fun yahooWeather(retrofitBuilder: Retrofit.Builder, baseUrl: String): YahooWeather {
         return retrofitBuilder

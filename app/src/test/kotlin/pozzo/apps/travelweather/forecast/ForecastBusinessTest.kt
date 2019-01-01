@@ -11,7 +11,7 @@ class ForecastBusinessTest {
 
     @Before fun setup() {
         val appComponent = TestInjector.getAppComponent().build()
-        forecastBusiness = ForecastBusiness(appComponent.forecastClient())
+        forecastBusiness = ForecastBusiness(appComponent.forecastClients())
     }
 
     @Test fun requestWeather() {

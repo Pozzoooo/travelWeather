@@ -1,3 +1,3 @@
 package pozzo.apps.travelweather.forecast.model
 
-class PoweredBy(val icon: Int)
+data class PoweredBy(val icon: Int)

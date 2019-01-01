@@ -7,7 +7,8 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import pozzo.apps.travelweather.core.JsonParser
+import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.core.JsonParser.fromJson
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.TestSettings
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -49,7 +50,7 @@ class ForecastClientYahooTest {
     }
 
     private fun weatherExpectation() : Weather {
-        return JsonParser.fromJson(Weather::class.java, """
+        return fromJson(Weather::class.java, """
 {
   "address": {
     "latLng": {
@@ -129,7 +130,10 @@ class ForecastClientYahooTest {
 	  "low": 19
 	}
   ],
-  "url": "https://weather.yahoo.com/country/state/city-91558663/"
+  "url": "https://weather.yahoo.com/country/state/city-91558663/",
+  "poweredBy": {
+    icon: ${R.drawable.yahoo}
+  }
 }
         """.trimIndent())
     }
