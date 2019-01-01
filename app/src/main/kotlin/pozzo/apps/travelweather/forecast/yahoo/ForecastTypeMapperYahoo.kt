@@ -19,6 +19,7 @@ class ForecastTypeMapperYahoo : ForecastTypeMapper {
             "mostly cloudy" to ForecastType.MOSTLY_CLOUDY,
             "snow" to ForecastType.SNOW,
             "rain and snow" to ForecastType.RAIN_SNOW,
+            "snow showers" to ForecastType.RAIN_SNOW,
             "windy" to ForecastType.WINDY,
             "breezy" to ForecastType.BREEZY)
 
