@@ -15,8 +15,8 @@ android {
 		applicationId "pozzo.apps.travelweather"
 		minSdkVersion 21
 		targetSdkVersion 28
-		versionCode 23
-		versionName "1.3.3"
+		versionCode 24
+		versionName "1.3.4-SNAPSHOT"
 
 		def keys = getKeys('../keystore/keys.properties')
 		buildConfigField("String", "DIRECTIONS", "\"${keys.directions}\"")
