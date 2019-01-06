@@ -24,11 +24,11 @@ enum class ForecastType(@DrawableRes val iconId: Int, @StringRes val stringId: I
     FOG(                    R.drawable.fog,                     R.string.forecast_fog),
     UNKNOWN(                R.drawable.cloudy_moon,             R.string.forecast_unknown);
 
-    private val bitmapCache = HashMap<ForecastType, BitmapDescriptor>()
+    private val bitmapCache = HashMap<ForecastType, BitmapDescriptor?>()
 
-    fun getIcon() : BitmapDescriptor = bitmapCache[this] ?: createIcon()
+    fun getIcon() : BitmapDescriptor? = bitmapCache[this] ?: createIcon()
 
-    private fun createIcon() : BitmapDescriptor {
+    private fun createIcon() : BitmapDescriptor? {
         val icon = BitmapCreator.get().fromResource(iconId)
         bitmapCache[this] = icon
         return icon
