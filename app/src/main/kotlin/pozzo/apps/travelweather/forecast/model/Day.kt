@@ -13,8 +13,8 @@ enum class Day(val index: Int, val title: Int? = null) {
     IDX_3(3),
     IDX_4(4),
     IDX_5(5),
-    IDX_6(6),
-    IDX_7(7);
+    IDX_6(6);//TODO need to make it dynamic
+//    IDX_7(7);
 
     override fun toString() = title?.let { getTitleFromStringResource(it) } ?: getTitleFromDate(index)
 

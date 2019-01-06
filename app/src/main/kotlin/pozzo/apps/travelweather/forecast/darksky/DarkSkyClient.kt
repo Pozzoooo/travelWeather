@@ -11,6 +11,7 @@ import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
+import java.lang.NullPointerException
 import java.util.*
 
 class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper: ForecastTypeMapper) : ForecastClient {
@@ -32,7 +33,6 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
         }
 
         val forecasts = handleResponseBody(result) ?: return null
-
         val language = Locale.getDefault().isO3Language
         return Weather(
                 "https://darksky.net/forecast/${coordinates.latitude},${coordinates.longitude}/si12/$language",
@@ -43,11 +43,11 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
     }
 
     private fun handleResponseBody(body: String?) : List<Forecast>? {
-        try {
+        return try {
             val jsonResult = JsonParser().parse(body).asJsonObject
             val dailyData = jsonResult.getAsJsonObject("daily").getAsJsonArray("data")
 
-            return dailyData.map { it.asJsonObject }.map {
+            dailyData.map { it.asJsonObject }.map {
                 Forecast(text = it.get("summary").asString,
                         forecastType = forecastTypeMapper.getForecastType(it.get("icon").asString),
                         high = it.get("temperatureHigh").asDouble,
@@ -56,7 +56,10 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
             }
         } catch (e: JsonParseException) {
             Bug.get().logException(Exception("Unexpected body format: $body", e))
-            return null
+            null
+        } catch (e: NullPointerException) {
+            Bug.get().logException(e)
+            null
         }
     }
 }

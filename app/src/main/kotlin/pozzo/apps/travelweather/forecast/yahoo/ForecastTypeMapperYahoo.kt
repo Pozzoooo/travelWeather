@@ -31,6 +31,5 @@ class ForecastTypeMapperYahoo : ForecastTypeMapper {
         } else {
             forecastType
         }
-
     }
 }
