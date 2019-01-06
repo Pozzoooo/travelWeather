@@ -33,7 +33,7 @@ class LocationLiveData constructor(private val locationManager: LocationManager?
             locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
             locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
         } catch (e: IllegalArgumentException) {
-            Bug.get().logException(e)
+            Bug.get().logException(e)//Emulator having no constant defined
         }
     }
 

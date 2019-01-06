@@ -22,7 +22,7 @@ open class BitmapCreator {
         return try {
             BitmapDescriptorFactory.fromResource(resourceId)
         } catch (e: NullPointerException) {
-            Bug.get().logException(e)
+            Bug.get().logException(e)//There seems to happen a null factory for some weird emulator
             null
         }
     }

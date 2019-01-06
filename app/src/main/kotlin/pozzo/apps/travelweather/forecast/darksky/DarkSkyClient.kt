@@ -28,7 +28,10 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
 
         val result = response?.body()?.string()
         if (result?.isEmpty() != false) {
-            Bug.get().logException(Exception("Null body, code: ${response.code()}, error: ${response.errorBody()?.string()}"))
+            val limitExceededErrorCode = 403
+            if (response.code() != limitExceededErrorCode) {
+                Bug.get().logException(Exception("Null body, code: ${response.code()}, error: ${response.errorBody()?.string()}"))
+            }
             return null
         }
 
