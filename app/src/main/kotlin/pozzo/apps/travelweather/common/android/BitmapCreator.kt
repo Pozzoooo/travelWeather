@@ -2,6 +2,8 @@ package pozzo.apps.travelweather.common.android
 
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import pozzo.apps.travelweather.core.bugtracker.Bug
+import java.lang.NullPointerException
 
 open class BitmapCreator {
     companion object {
@@ -16,5 +18,12 @@ open class BitmapCreator {
         }
     }
 
-    open fun fromResource(resourceId: Int) : BitmapDescriptor = BitmapDescriptorFactory.fromResource(resourceId)
+    open fun fromResource(resourceId: Int) : BitmapDescriptor? {
+        return try {
+            BitmapDescriptorFactory.fromResource(resourceId)
+        } catch (e: NullPointerException) {
+            Bug.get().logException(e)
+            null
+        }
+    }
 }
