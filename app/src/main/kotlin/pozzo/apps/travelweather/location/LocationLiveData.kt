@@ -8,6 +8,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -28,8 +29,12 @@ class LocationLiveData constructor(private val locationManager: LocationManager?
 
     @SuppressLint("MissingPermission")
     override fun onActive() {
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
-        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
+        try {
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
+            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
+        } catch (e: IllegalArgumentException) {
+            Bug.get().logException(e)
+        }
     }
 
     override fun onInactive() {
