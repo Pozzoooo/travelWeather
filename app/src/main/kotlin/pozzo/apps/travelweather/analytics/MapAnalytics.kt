@@ -85,6 +85,6 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
         bundle.putInt("weatherCount", weatherCount)
         bundle.putInt("directionLineSize", directionLineSize)
-        firebaseAnalytics.logEvent("dragDuration", bundle)
+        firebaseAnalytics.logEvent("forecastRequest", bundle)
     }
 }
