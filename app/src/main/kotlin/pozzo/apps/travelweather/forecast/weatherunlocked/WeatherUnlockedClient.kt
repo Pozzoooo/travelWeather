@@ -29,7 +29,6 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
         val jsonResult = JsonParser().parse(body).asJsonObject
         val dailyData = jsonResult.getAsJsonArray("Days")
 
-        //todo definitivamente preciso testar isso
         return dailyData.map {
             val timeFrames = it.asJsonObject.getAsJsonArray("Timeframes")
             timeFrames.get(timeFrames.size() / 2).asJsonObject

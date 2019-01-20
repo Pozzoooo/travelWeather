@@ -10,9 +10,9 @@ class ForecastModuleDarkSky {
     fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient =
             DarkSkyClient(createApi(retrofitBuilder, baseUrl()), forecastTypeMapper())
 
-    private fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperDarkSky()
+    fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperDarkSky()
 
-    private fun createApi(retrofitBuilder: Retrofit.Builder, baseUrl: String): DarkSkyApi {
+    fun createApi(retrofitBuilder: Retrofit.Builder, baseUrl: String): DarkSkyApi {
         return retrofitBuilder
                 .baseUrl(baseUrl)
                 .build()

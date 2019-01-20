@@ -27,7 +27,7 @@ class GoogleDirectionTest {
     }
 
     @Test fun assertReturnAsExpected() {
-        val sample = FileLoader("googleDirectionResponseSample.json").read().string()
+        val sample = FileLoader("googleDirectionResponseSample.json").string()
         whenever(requester.request(start, end)).thenReturn(sample)
 
         val direction = directionBusiness.getDirection(start, end)

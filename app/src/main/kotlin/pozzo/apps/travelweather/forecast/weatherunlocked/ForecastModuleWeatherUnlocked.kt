@@ -5,15 +5,16 @@ import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import retrofit2.Retrofit
 
+//todo do I really need to expose the mapper and the create api? Is there an alternative solution?
 class ForecastModuleWeatherUnlocked {
 
     fun forecastClient(retrofitBuilder: Retrofit.Builder): ForecastClient =
             WeatherUnlockedClient(createApi(retrofitBuilder, baseUrl()), "9e2ec5bf",
                     BuildConfig.WEATHER_UNLOCKED, forecastTypeMapper())
 
-    private fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperWeatherUnlocked()
+    fun forecastTypeMapper(): ForecastTypeMapper = ForecastTypeMapperWeatherUnlocked()
 
-    private fun createApi(retrofitBuilder: Retrofit.Builder, baseUrl: String): WeatherUnlockedApi {
+    fun createApi(retrofitBuilder: Retrofit.Builder, baseUrl: String): WeatherUnlockedApi {
         return retrofitBuilder
                 .baseUrl(baseUrl)
                 .build()

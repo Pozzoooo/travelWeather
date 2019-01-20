@@ -14,7 +14,7 @@ class GoogleResponseParserTest {
     }
 
     @Test fun assertParsing() {
-        val sample = FileLoader("googleDirectionResponseSample.json").read().string()
+        val sample = FileLoader("googleDirectionResponseSample.json").string()
         val parsed = parser.parse(sample)
         Assert.assertNotNull(parsed!!.routes[0].legs[0].steps[0].polyline.points)
     }

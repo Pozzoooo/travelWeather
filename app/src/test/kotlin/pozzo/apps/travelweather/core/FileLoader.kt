@@ -1,15 +1,11 @@
 package pozzo.apps.travelweather.core
 
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.io.File
 
 class FileLoader(val filePath: String) {
-    var fileBytes : ByteArray = ByteArray(0)
 
-    fun read() = apply {
+    fun string() : String {
         val fileUrl = javaClass.classLoader!!.getResource(filePath)!!
-        fileBytes = Files.readAllBytes(Paths.get(fileUrl.toURI()))
+        return File(fileUrl.toURI()).readText()
     }
-
-    fun string() = String(fileBytes)
 }
