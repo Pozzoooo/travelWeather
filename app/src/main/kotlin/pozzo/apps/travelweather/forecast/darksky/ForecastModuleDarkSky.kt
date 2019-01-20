@@ -21,4 +21,3 @@ class ForecastModuleDarkSky {
 
     private fun baseUrl() = "https://api.darksky.net/forecast/${BuildConfig.DARK_SKY}/"
 }
-//TODO preciso adicionar ao analytics o numero de requisicoes a previsao do tempo q eu fiz

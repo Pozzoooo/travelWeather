@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -11,7 +12,7 @@ class DirectionWeatherFilterTest {
     private lateinit var directionWeatherFilter: DirectionWeatherFilter
 
     @Before fun setup() {
-        directionWeatherFilter = DirectionWeatherFilter()
+        directionWeatherFilter = DirectionWeatherFilter(mock())
     }
 
     @Test fun checkMinDistanceForWeathers() {

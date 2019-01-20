@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.direction
 
 import org.mockito.Mockito
+import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 
@@ -10,5 +11,5 @@ class DirectionModuleFake : DirectionModule() {
                                    mapPointCreator: MapPointCreator) = directionBusiness
 
     val directionWeatherFilter by lazy { Mockito.mock(DirectionWeatherFilter::class.java)!! }
-    override fun directionWeatherFilter() = directionWeatherFilter
+    override fun directionWeatherFilter(mapAnalytics: MapAnalytics) = directionWeatherFilter
 }
