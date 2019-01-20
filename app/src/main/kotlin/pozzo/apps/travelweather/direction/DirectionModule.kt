@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.direction
 
 import dagger.Module
 import dagger.Provides
+import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 
@@ -12,5 +13,5 @@ open class DirectionModule {
                                          mapPointCreator: MapPointCreator) =
             DirectionBusiness(directionLineBusiness, mapPointCreator, googleDirection)
 
-    @Provides open fun directionWeatherFilter() = DirectionWeatherFilter()
+    @Provides open fun directionWeatherFilter(mapAnalytics: MapAnalytics) = DirectionWeatherFilter(mapAnalytics)
 }

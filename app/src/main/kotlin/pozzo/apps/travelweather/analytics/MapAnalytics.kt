@@ -26,7 +26,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
     fun sendDragDurationEvent(eventName: String, dragTime: Long) = launch(background) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
-        bundle.putLong("milliseconds", dragTime)
+        bundle.putLong("tenthOfSecond", dragTime / 100L)
         bundle.putString("dragLevel", dragLevel(dragTime))
         firebaseAnalytics.logEvent("dragDuration", bundle)
     }
@@ -66,5 +66,25 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
 
     fun sendIWantToRate() = launch(background) {
         firebaseAnalytics.logEvent("rateDialog", null)
+    }
+
+    fun sendEmptyForecastCountByRoute() = launch(background) {
+        sendForecastCountByRoute("single", 0, 0)
+    }
+
+    fun sendSingleForecastCountByRoute(directionLineSize: Int) = launch(background) {
+        sendForecastCountByRoute("single", 0, directionLineSize)
+    }
+
+    fun sendForecastCountByRoute(weatherCount: Int, directionLineSize: Int) = launch(background) {
+        sendForecastCountByRoute("single", weatherCount, directionLineSize)
+    }
+
+    private fun sendForecastCountByRoute(eventName: String, weatherCount: Int, directionLineSize: Int) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
+        bundle.putInt("weatherCount", weatherCount)
+        bundle.putInt("directionLineSize", directionLineSize)
+        firebaseAnalytics.logEvent("dragDuration", bundle)
     }
 }

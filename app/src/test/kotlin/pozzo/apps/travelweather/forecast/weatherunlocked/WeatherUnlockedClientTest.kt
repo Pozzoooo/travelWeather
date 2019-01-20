@@ -10,6 +10,7 @@ import org.junit.Test
 import pozzo.apps.travelweather.core.FileLoader
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.injection.AppComponent
+import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastClientBase
 import pozzo.apps.travelweather.forecast.ForecastType
 import pozzo.apps.travelweather.forecast.darksky.DarkSkyClient
@@ -25,7 +26,7 @@ class WeatherUnlockedClientTest {
         private val LAT_LNG = LatLng(LATITUDE, LONGITUDE)
     }
 
-    private val forecastClients = ArrayList<ForecastClientBase>()
+    private val forecastClients = ArrayList<ForecastClient>()
 
     private lateinit var mockWebServer: MockWebServer
     private lateinit var appComponent: AppComponent

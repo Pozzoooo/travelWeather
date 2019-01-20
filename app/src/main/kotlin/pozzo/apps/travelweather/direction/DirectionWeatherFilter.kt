@@ -1,12 +1,12 @@
 package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.forecast.ForecastBusiness
+import pozzo.apps.travelweather.analytics.MapAnalytics
 
 /**
  * The idea here is to pick where the weathers are gonna be shown in the direction line.
  */
-class DirectionWeatherFilter {
+class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
     companion object {
         private const val MIN_SIZE = 1000
         private const val PADDING = 350
@@ -18,20 +18,31 @@ class DirectionWeatherFilter {
         this.directionLine = directionLine
 
         return when {
-            directionLine.isEmpty() -> emptyList()
+            directionLine.isEmpty() -> emptyDirectionLine()
             isShortDirection() -> createShortDirectionList()
             else -> createLongDirectionList()
         }
     }
 
+    private fun emptyDirectionLine() : List<LatLng> {
+        mapAnalytics.sendEmptyForecastCountByRoute()
+        return emptyList()
+    }
+
     private fun isShortDirection() : Boolean = directionLine.size < MIN_SIZE
-    private fun createShortDirectionList() = listOf(meanPoint())
+
+    private fun createShortDirectionList() : List<LatLng> {
+        mapAnalytics.sendSingleForecastCountByRoute(directionLine.size)
+        return listOf(meanPoint())
+    }
+
     private fun meanPoint() : LatLng = directionLine[directionLine.size / 2]
 
     private fun createLongDirectionList() : List<LatLng> {
         val filteredPoints = mutableListOf<LatLng>()
         addStartAndFinish(filteredPoints)
         addMiddlePoints(filteredPoints)
+        mapAnalytics.sendForecastCountByRoute(filteredPoints.size, directionLine.size)
         return filteredPoints
     }
 

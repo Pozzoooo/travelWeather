@@ -16,6 +16,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
+ * Ideia: Colocar limite de request de previsao do tempo, se o usuario atingir o limite
+ *  posso criar um sistema de in app para comprar adicionais
+ * Que podem acumular e descontar sempre q usar alem do limite
+ *
  * Another option might be https://openweathermap.org/price
  * https://www.worldweatheronline.com/developer/api/pricing2.aspx
  *
