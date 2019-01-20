@@ -1,13 +1,13 @@
 package pozzo.apps.travelweather.location
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -27,11 +27,18 @@ class LocationLiveData constructor(private val locationManager: LocationManager?
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onActive() {
+        startProvider(LocationManager.GPS_PROVIDER)
+        startProvider(LocationManager.NETWORK_PROVIDER)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startProvider(provider: String) {
         try {
-            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0F, listener)
-            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, listener)
+            val locationManager = locationManager
+            if (locationManager != null && locationManager.isProviderEnabled(provider)) {
+                locationManager.requestLocationUpdates(provider, 0L, 0F, listener)
+            }
         } catch (e: IllegalArgumentException) {
             Bug.get().logException(e)//Emulator having no constant defined
         }
