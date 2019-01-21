@@ -23,6 +23,9 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Another option might be https://openweathermap.org/price
  * https://www.worldweatheronline.com/developer/api/pricing2.aspx
  *
+ * Br apenas
+ * http://servicos.cptec.inpe.br/XML/
+ *
  * Minor bug: Multiples clicks on curret location make it request multiple times even if the last one
  *  has not finished yet
  *
