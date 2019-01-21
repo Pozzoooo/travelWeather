@@ -18,7 +18,6 @@ import pozzo.apps.travelweather.forecast.darksky.ForecastModuleDarkSky
 import pozzo.apps.travelweather.forecast.model.Day
 
 //todo add tests for over the limit requests
-//todo catch a dark sky request and add it to our tests
 class WeatherUnlockedClientTest {
     companion object {
         private const val LATITUDE = -23.565939
@@ -36,7 +35,7 @@ class WeatherUnlockedClientTest {
         setupMockServer()
 
         setupWeatherUnlocked()
-//        setupDarkSky()
+        setupDarkSky()
     }
 
     private fun setupMockServer() {
@@ -55,13 +54,12 @@ class WeatherUnlockedClientTest {
         return mockWebServer.url("").toString()
     }
 
-//    private fun setupDarkSky() {
-//        val module = ForecastModuleDarkSky()
-////        val api = module.createApi(appComponent.retrofitBuilder(), enqueueRequest())
-//
-//        forecastClients.add(module.forecastClient(appComponent.retrofitBuilder()) as ForecastClientBase)
-////        forecastClients.add(DarkSkyClient(api, module.forecastTypeMapper()))
-//    }
+    private fun setupDarkSky() {
+        val module = ForecastModuleDarkSky()
+        val api = module.createApi(appComponent.retrofitBuilder(), enqueueRequest("darkSkySample.json"))
+
+        forecastClients.add(DarkSkyClient(api, module.forecastTypeMapper()))
+    }
 
     @After fun tearDown() {
         mockWebServer.shutdown()
@@ -71,7 +69,7 @@ class WeatherUnlockedClientTest {
         forecastClients.forEach {
             val weather = it.fromCoordinates(LAT_LNG)!!
 
-            Assert.assertEquals(7, weather.forecasts.size)
+            Assert.assertTrue(weather.forecasts.isNotEmpty())
             Assert.assertEquals(LAT_LNG, weather.address.latLng)
             Assert.assertNotNull(weather.url)
             Assert.assertNotNull(weather.poweredBy)
