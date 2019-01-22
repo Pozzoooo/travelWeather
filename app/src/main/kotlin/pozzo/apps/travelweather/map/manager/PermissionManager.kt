@@ -1,7 +1,6 @@
 package pozzo.apps.travelweather.map.manager
 
 import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import androidx.appcompat.app.AppCompatActivity
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
@@ -9,15 +8,14 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 /**
  * Manages permission requests and results.
- *
- * todo to be able to test this class I need to invert dependencies on ActivityCompat.requestPermissions
  */
-class PermissionManager(private val activity: AppCompatActivity, private val viewModel: MapViewModel) {
+class PermissionManager(private val activity: AppCompatActivity, private val viewModel: MapViewModel,
+                        private val permissionRequester: PermissionRequester = PermissionRequesterAndroid()) {
     private val onGoingRequests = HashMap<Int, PermissionRequest>()
 
     fun requestPermissions(permissionRequest: PermissionRequest) {
         onGoingRequests[permissionRequest.code()] = permissionRequest
-        ActivityCompat.requestPermissions(activity, permissionRequest.permissions, permissionRequest.code())
+        permissionRequester.requestPermissions(activity, permissionRequest)
     }
 
     /**
