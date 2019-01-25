@@ -1,12 +1,13 @@
 package pozzo.apps.travelweather.location
 
-import androidx.lifecycle.LifecycleOwner
 import android.location.Location
 import android.location.LocationManager
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -40,11 +41,7 @@ class CurrentLocationRequesterTest {
     }
 
     @Test fun shouldReturnCurrentKnownLocation() {
-        val location = Mockito.mock(Location::class.java)
-        whenever(location.latitude).thenReturn(1.0)
-        whenever(location.longitude).thenReturn(2.0)
-        whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenReturn(location)
-        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        setupCurrentKnownLocation()
 
         currentLocationRequester.callback = object : CurrentLocationRequester.Callback {
             override fun onCurrentLocation(latLng: LatLng) {
@@ -59,10 +56,36 @@ class CurrentLocationRequesterTest {
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 
+    private fun setupCurrentKnownLocation() {
+        val location = Mockito.mock(Location::class.java)
+        whenever(location.latitude).thenReturn(1.0)
+        whenever(location.longitude).thenReturn(2.0)
+        whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenReturn(location)
+        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+    }
+
+    @Test fun shouldNotCrashWhenCurrentKnownLocationIsAvailableButNoCallback() {
+        setupCurrentKnownLocation()
+        currentLocationRequester.callback = null
+        currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
+    }
+
     @Test fun shouldNotCrashOnFullRequestFlow() {
         whenever(permissionChecker.hasPermission(any())).thenReturn(true)
 
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
         currentLocationRequester.removeLocationObserver()
+    }
+
+    @Test fun shouldSurviveUnexpectedState() {
+        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenThrow(RuntimeException("Die!!!"))
+        currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
+    }
+
+    @Test fun shouldSurviveSecurityException() {
+        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenThrow(SecurityException("Guards!!!"))
+        currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 }
