@@ -35,6 +35,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/Manifest*.*',
 			'**/*Test*.*',
 			'android/**/*.*',
+			'**/model/*.*',
+			'**/model/point/*.*',
 			'**/*Fragment*',
 			'**/*Activity*',
 			'**/*Adapter*',
@@ -46,7 +48,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/*Module*.*',
 			'**/databinding/**',
 			'**/*Tutorial*',
-			'**/*LiveData*'
+			'**/*LiveData*',
+			'**/PermissionChecker.class'
 	]
 	// generated classes
 	classDirectories = fileTree(
