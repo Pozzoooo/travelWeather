@@ -1,6 +1,8 @@
 package pozzo.apps.travelweather.forecast
 
-import com.google.android.gms.maps.model.LatLng
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import pozzo.apps.travelweather.core.JsonParser
 import pozzo.apps.travelweather.forecast.model.Weather
 import retrofit2.Retrofit
@@ -13,14 +15,13 @@ class ForecastModuleFake : ForecastModule() {
         }
     }
 
+    val forecastClient by lazy { mock<ForecastClient>() }
     override fun forecastClients(retrofitBuilder: Retrofit.Builder): List<ForecastClient> {
-        return listOf(object : ForecastClient {
-            override fun fromCoordinates(coordinates: LatLng): Weather? {
-                return JsonParser.fromJson(Weather::class.java, """
+        whenever(forecastClient.fromCoordinates(any())).thenReturn(JsonParser.fromJson(Weather::class.java, """
                     {
                       "address": {
-                        "latitude": ${coordinates.latitude},
-                        "longitude": ${coordinates.longitude}
+                        "latitude": 40.1,
+                        "longitude": 50.0
                       },
                       "forecasts": [
                         {
@@ -33,8 +34,8 @@ class ForecastModuleFake : ForecastModule() {
                       ],
                       "url": "https://weather.yahoo.com/country/state/city-91558663/"
                     }
-                """.trimIndent())
-            }
-        })
+                """.trimIndent()))
+
+        return listOf(forecastClient)
     }
 }
