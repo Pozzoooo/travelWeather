@@ -23,7 +23,6 @@ import pozzo.apps.travelweather.forecast.weatherunlocked.WeatherUnlockedClient
 import java.lang.Exception
 import java.util.*
 
-//todo add tests for over the limit requests
 class WeatherClientTest {
     companion object {
         private const val LATITUDE = -23.565939
@@ -108,7 +107,7 @@ class WeatherClientTest {
     }
 
     @Test fun shouldNotCrashAndReportOnErrorFormat() {
-        setupAllClients(false)
+        setupAllClients()
 
         forecastClients.reverse()
         forecastClients.forEach {

@@ -60,6 +60,9 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
         } catch (e: JsonParseException) {
             Bug.get().logException(Exception("Unexpected body format: $body", e))
             null
+        } catch (e: IllegalStateException) {
+            Bug.get().logException(Exception("Unexpected body format: $body", e))
+            null
         } catch (e: IndexOutOfBoundsException) {
             Bug.get().logException(e)
             null
