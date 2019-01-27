@@ -7,6 +7,7 @@ import pozzo.apps.travelweather.forecast.model.Weather
 class WeatherPoint(private val weather: Weather) :
         MapPoint(null, null, weather.latLng, weather.url, false, true) {
 
+    val forecastSize = weather.forecasts.size
     val forecast : Forecast get() = weather.getForecast(day)
     override val icon get() = forecast.icon
     override val title get() = forecast.forecastType?.stringId

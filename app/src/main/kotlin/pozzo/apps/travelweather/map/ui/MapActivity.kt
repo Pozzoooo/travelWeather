@@ -8,7 +8,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -37,7 +36,9 @@ import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.ReturnAnimation
+import pozzo.apps.travelweather.map.manager.DaySelectionListManager
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorial
@@ -55,6 +56,7 @@ class MapActivity : BaseActivity() {
     private lateinit var viewModel: MapViewModel
     private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var permissionManager: PermissionManager
+    private lateinit var daySelectionListManager: DaySelectionListManager
 
     private var lastDisplayedRoute = Route()
 
@@ -93,15 +95,13 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupDaySelection() {
-        val adapter = ArrayAdapter<Day>(this, android.R.layout.simple_list_item_1, Day.values())
-        spinnerDaySelection.adapter = adapter
-        spinnerDaySelection.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        daySelectionListManager = DaySelectionListManager(spinnerDaySelection, object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) { }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 preferencesViewModel.setSelectedDay(position)
             }
-        }
+        })
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
@@ -231,8 +231,15 @@ class MapActivity : BaseActivity() {
 
     private fun showMapPoints(route: Route) {
         launch(ui) {
+            var hasResizedDays = false
             for (it in route.mapPoints) {
                 if (isFinishing) break
+
+                //todo should this logic be moved somewhere else?
+                if (!hasResizedDays && it is WeatherPoint) {
+                    daySelectionListManager.updateDaySelections(it.forecastSize)
+                    hasResizedDays = true
+                }
 
                 addMark(it)
             }
@@ -294,7 +301,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun changeSelectedDay(newSelection: Day) {
-        spinnerDaySelection.setSelection(newSelection.index)
+        daySelectionListManager.safeSelection(newSelection.index)
         refreshMarkers(newSelection)
         viewModel.selectedDayChanged(newSelection)
     }
