@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.core.Error
@@ -9,7 +10,7 @@ import pozzo.apps.travelweather.forecast.model.Day
 
 class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
 
-    fun sendFirebaseUserRequestedCurrentLocationEvent() = launch(background) {
+    fun sendFirebaseUserRequestedCurrentLocationEvent() = GlobalScope.launch(background) {
         sendFirebaseFab("currentLocation")
     }
 
@@ -19,11 +20,11 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         firebaseAnalytics.logEvent("fab", bundle)
     }
 
-    fun sendClearRouteEvent() = launch(background) {
+    fun sendClearRouteEvent() = GlobalScope.launch(background) {
         sendFirebaseFab("clearRoute")
     }
 
-    fun sendDragDurationEvent(eventName: String, dragTime: Long) = launch(background) {
+    fun sendDragDurationEvent(eventName: String, dragTime: Long) = GlobalScope.launch(background) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
         bundle.putLong("tenthOfSecond", dragTime / 100L)
@@ -40,43 +41,43 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         }
     }
 
-    fun sendDaySelectionChanged(day: Day) = launch(background) {
+    fun sendDaySelectionChanged(day: Day) = GlobalScope.launch(background) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, day.name)
         firebaseAnalytics.logEvent("daySelection", bundle)
     }
 
-    fun sendErrorMessage(it: Error) = launch(background) {
+    fun sendErrorMessage(it: Error) = GlobalScope.launch(background) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, it.name)
         firebaseAnalytics.logEvent("errorMessage", bundle)
     }
 
-    fun sendDisplayTopBarAction() = launch(background) {
+    fun sendDisplayTopBarAction() = GlobalScope.launch(background) {
         firebaseAnalytics.logEvent("displayTopBar", null)
     }
 
-    fun sendSearchAddress() = launch(background) {
+    fun sendSearchAddress() = GlobalScope.launch(background) {
         firebaseAnalytics.logEvent("searchAddress", null)
     }
 
-    fun sendRateDialogShown() = launch(background) {
+    fun sendRateDialogShown() = GlobalScope.launch(background) {
         firebaseAnalytics.logEvent("rateDialogShown", null)
     }
 
-    fun sendIWantToRate() = launch(background) {
+    fun sendIWantToRate() = GlobalScope.launch(background) {
         firebaseAnalytics.logEvent("rateDialog", null)
     }
 
-    fun sendEmptyForecastCountByRoute() = launch(background) {
+    fun sendEmptyForecastCountByRoute() = GlobalScope.launch(background) {
         sendForecastCountByRoute("single", 0, 0)
     }
 
-    fun sendSingleForecastCountByRoute(directionLineSize: Int) = launch(background) {
+    fun sendSingleForecastCountByRoute(directionLineSize: Int) = GlobalScope.launch(background) {
         sendForecastCountByRoute("single", 0, directionLineSize)
     }
 
-    fun sendForecastCountByRoute(weatherCount: Int, directionLineSize: Int) = launch(background) {
+    fun sendForecastCountByRoute(weatherCount: Int, directionLineSize: Int) = GlobalScope.launch(background) {
         sendForecastCountByRoute("single", weatherCount, directionLineSize)
     }
 

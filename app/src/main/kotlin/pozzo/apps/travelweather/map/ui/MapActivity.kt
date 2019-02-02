@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
@@ -230,7 +231,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun showMapPoints(route: Route) {
-        launch(ui) {
+        GlobalScope.launch(ui) {
             var hasResizedDays = false
             for (it in route.mapPoints) {
                 if (isFinishing) break

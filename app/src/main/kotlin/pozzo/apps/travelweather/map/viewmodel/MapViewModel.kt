@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -137,7 +138,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
         showProgress()
         updateRouteJob?.cancel()
-        updateRouteJob = launch(background) {
+        updateRouteJob = GlobalScope.launch(background) {
             try {
                 val route = directionBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) setRoute(route)
