@@ -247,9 +247,9 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    public override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putParcelable("startPosition", viewModel.routeData.value!!.startPoint?.position)
-        outState?.putParcelable("finishPosition", viewModel.routeData.value!!.finishPoint?.position)
+    public override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("startPosition", viewModel.routeData.value!!.startPoint?.position)
+        outState.putParcelable("finishPosition", viewModel.routeData.value!!.finishPoint?.position)
 
         super.onSaveInstanceState(outState)
     }

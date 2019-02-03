@@ -24,7 +24,7 @@ class ForecastTypeMapperDarkSky : ForecastTypeMapper {
             "snow showers" to ForecastType.RAIN_SNOW,
             "wind" to ForecastType.WINDY,
             "fog" to ForecastType.FOG,
-            "sleet" to ForecastType.SCATTERED_THUNDERSTORMS,//todo sleet
+            "sleet" to ForecastType.SLEET,
             "breezy" to ForecastType.BREEZY)
 
     override fun getForecastType(type: String) : ForecastType {

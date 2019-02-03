@@ -41,6 +41,7 @@
 	<string name="forecast_breezy">Vento</string>
 	<string name="forecast_windy">Muito vento</string>
 	<string name="forecast_fog">Neblina</string>
+	<string name="forecast_sleet">Granizo</string>
 	<string name="forecast_unknown">Desconhecido</string>
 
 	<string name="day_today">Hoje</string>

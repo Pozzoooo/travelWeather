@@ -37,7 +37,6 @@ android {
 			debuggable true
 			minifyEnabled false
 			testCoverageEnabled true
-			ext.enableCrashlytics = false
 		}
 	}
 

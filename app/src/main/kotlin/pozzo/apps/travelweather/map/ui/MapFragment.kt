@@ -26,7 +26,7 @@ class MapFragment : SupportMapFragment() {
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         this.viewModel = ViewModelProviders.of(activity!!).get(MapViewModel::class.java)
         this.mainThread = Handler()
