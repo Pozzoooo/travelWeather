@@ -21,16 +21,11 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
     abstract fun getLinkForFullForecast(coordinates: LatLng): String
 
     override fun fromCoordinates(coordinates: LatLng): Weather? {
-        val response = makeRequest(coordinates)
-        val result = validateResponse(response)
-
-        if (result != null) {
-            val forecasts = handleSuccessResponseBody(result) ?: return null
-
-            return Weather(getLinkForFullForecast(coordinates),
-                    forecasts, Address(coordinates), poweredBy)
-        }
-        return null
+        val response = makeRequest(coordinates) ?: return null
+        val result = validateResponse(response) ?: return null
+        val forecasts = handleSuccessResponseBody(result) ?: return null
+        if (forecasts.isEmpty()) return null
+        return Weather(getLinkForFullForecast(coordinates), forecasts, Address(coordinates), poweredBy)
     }
 
     private fun makeRequest(coordinates: LatLng) : Response<ResponseBody>? {
@@ -42,12 +37,12 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
         }
     }
 
-    private fun validateResponse(response: Response<ResponseBody>?): String? {
-        val result = response?.body()?.string()
+    private fun validateResponse(response: Response<ResponseBody>): String? {
+        val result = response.body()?.string()
         return if (result?.isEmpty() != false || !response.isSuccessful) {
             if(!handleError(response)) {
                 Bug.get().logException(Exception("Null body ${this.javaClass.simpleName}, " +
-                        "code: ${response?.code()}, error: ${response?.errorBody()?.string()}"))
+                        "code: ${response.code()}, error: ${response.errorBody()?.string()}"))
             }
             null
         } else {
