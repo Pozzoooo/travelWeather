@@ -46,7 +46,8 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
         val result = response?.body()?.string()
         return if (result?.isEmpty() != false || !response.isSuccessful) {
             if(!handleError(response)) {
-                Bug.get().logException(Exception("Null body, code: ${response?.code()}, error: ${response?.errorBody()?.string()}"))
+                Bug.get().logException(Exception("Null body ${this.javaClass.simpleName}, " +
+                        "code: ${response?.code()}, error: ${response?.errorBody()?.string()}"))
             }
             null
         } else {

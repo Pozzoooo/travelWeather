@@ -26,7 +26,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Br apenas
  * http://servicos.cptec.inpe.br/XML/
  *
- * Minor bug: Multiples clicks on curret location make it request multiple times even if the last one
+ * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
  *  has not finished yet
  *
  * Minor bug: Channel keep flowing after changing route destination.
