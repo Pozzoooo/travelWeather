@@ -35,9 +35,11 @@ enum class Day(val index: Int, val title: Int? = null) {
     }
 
     companion object {
+        val DEFAULT = TOMORROW
+
         fun getByIndex(index: Int): Day =
                 Day.values().firstOrNull {
                     it.index == index
-                }?.let { it } ?: TODAY
+                }?.let { it } ?: DEFAULT
     }
 }

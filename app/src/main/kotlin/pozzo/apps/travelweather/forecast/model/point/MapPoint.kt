@@ -12,5 +12,5 @@ abstract class MapPoint(open val icon: BitmapDescriptor?,
                         open val redirectUrl: String?,
                         val isDraggable: Boolean = false,
                         val shouldFadeIn: Boolean = true,
-                        var day: Day = Day.TODAY,
+                        var day: Day = Day.DEFAULT,
                         var marker: Marker? = null)

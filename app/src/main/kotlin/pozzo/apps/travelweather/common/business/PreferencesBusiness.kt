@@ -11,7 +11,7 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
     }
 
     fun getSelectedDay() : Day {
-        val selectedDay = preferences.getInt(KEY_SELECTED_DAY, Day.TODAY.index)
+        val selectedDay = preferences.getInt(KEY_SELECTED_DAY, Day.DEFAULT.index)
         return Day.getByIndex(selectedDay)
     }
 
