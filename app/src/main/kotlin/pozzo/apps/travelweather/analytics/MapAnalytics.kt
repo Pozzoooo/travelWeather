@@ -70,7 +70,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
     }
 
     fun sendEmptyForecastCountByRoute() = GlobalScope.launch(background) {
-        sendForecastCountByRoute("single", 0, 0)
+        sendForecastCountByRoute("empty", 0, 0)
     }
 
     fun sendSingleForecastCountByRoute(directionLineSize: Int) = GlobalScope.launch(background) {
@@ -78,7 +78,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
     }
 
     fun sendForecastCountByRoute(weatherCount: Int, directionLineSize: Int) = GlobalScope.launch(background) {
-        sendForecastCountByRoute("single", weatherCount, directionLineSize)
+        sendForecastCountByRoute("multiple", weatherCount, directionLineSize)
     }
 
     private fun sendForecastCountByRoute(eventName: String, weatherCount: Int, directionLineSize: Int) {
