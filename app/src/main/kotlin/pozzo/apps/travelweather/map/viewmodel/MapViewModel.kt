@@ -3,6 +3,7 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -35,6 +36,7 @@ import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import java.io.IOException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
@@ -217,8 +219,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun logDragEvent(flagName: String) {
-        val dragTime = System.currentTimeMillis() - dragStart
-        mapAnalytics.sendDragDurationEvent(flagName, dragTime)
+        if (dragStart == 0L) {
+            val dragTime = System.currentTimeMillis() - dragStart
+            mapAnalytics.sendDragDurationEvent(flagName, dragTime)
+            dragStart = 0L
+        } else {
+            Crashlytics.logException(IllegalStateException("So it really is running log event without running the start first! :o"))
+        }
     }
 
     fun dragStarted() {
