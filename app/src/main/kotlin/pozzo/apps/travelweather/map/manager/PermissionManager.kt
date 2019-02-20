@@ -28,7 +28,7 @@ class PermissionManager(private val activity: AppCompatActivity, private val vie
             return false
         }
 
-        if (PackageManager.PERMISSION_GRANTED == grantResults[0])
+        if (PackageManager.PERMISSION_GRANTED == grantResults.getOrNull(0))
             viewModel.onPermissionGranted(permissionRequest, activity)
         else
             viewModel.onPermissionDenied(permissionRequest)
