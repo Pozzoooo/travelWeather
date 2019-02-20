@@ -44,6 +44,7 @@ import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
+import java.lang.NullPointerException
 import java.util.*
 
 //todo colocar data da previsao junto ao texto da previsao
@@ -198,7 +199,11 @@ class MapActivity : BaseActivity() {
                         .include(route.startPoint!!.position)
                         .include(route.finishPoint!!.position).build(), 70))
         } else if (route.startPoint != null) {
-            mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
+            try {
+                mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
+            } catch (e: NullPointerException) {
+                Bug.get().logException(e)//seems to be some weird TT mars error... gonna keep an eye
+            }
         }
     }
 
