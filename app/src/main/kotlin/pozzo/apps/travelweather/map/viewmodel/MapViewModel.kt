@@ -21,6 +21,7 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionBusiness
@@ -224,7 +225,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             mapAnalytics.sendDragDurationEvent(flagName, dragTime)
             dragStart = 0L
         } else {
-            Crashlytics.logException(IllegalStateException("So it really is running log event without running the start first! :o"))
+            Bug.get().logException(IllegalStateException("So it really is running log event without running the start first! :o"))
         }
     }
 
