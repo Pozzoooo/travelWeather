@@ -224,7 +224,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             val dragTime = System.currentTimeMillis() - dragStart
             mapAnalytics.sendDragDurationEvent(flagName, dragTime)
             dragStart = 0L
-        } else {
+        } else {//TODO I've got you!! Happens always when dragging from the drawer, and by the way, it can be another cool thing to measure
             Bug.get().logException(IllegalStateException("So it really is running log event without running the start first! :o"))
         }
     }
