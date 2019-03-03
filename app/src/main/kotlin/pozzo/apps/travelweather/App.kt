@@ -34,6 +34,11 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  *
+ * Make the number of weather dynamic based on the size of the route.
+ *  So if the route is really big, then I add fewer weather requests as they probably matter less anyway.
+ *  At some point it can even turn into a configuration for advanced users.
+ *  Important class regarding to it: DirectionWeatherFilter
+ *
  * Mover mapa quando estiver arrastando e atinger o canto do mapa
  * Animar as flags voltando para a lateral quando apertar o clear
  * I might need to better hide some keys? (Google maps, Firebase, Mint)
