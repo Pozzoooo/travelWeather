@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -21,7 +20,6 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
-import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionBusiness
@@ -31,13 +29,12 @@ import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
-import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.location.GeoCoderBusiness
+import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import java.io.IOException
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application) {
@@ -133,6 +130,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setStartPosition(startPosition: LatLng) {
         val startPoint = StartPoint(startPosition)
         updateRoute(startPoint = startPoint)
+        logDragEvent("re-startFlag")
     }
 
     private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
@@ -159,6 +157,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         val finishPoint = FinishPoint(finishPosition)
         updateRoute(finishPoint = finishPoint)
         mapTutorialScript.onFinishPositionSet()
+        logDragEvent("re-finishFlag")
     }
 
     private fun postError(error: Error) {
@@ -220,12 +219,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun logDragEvent(flagName: String) {
-        if (dragStart == 0L) {
+        if (dragStart != 0L) {//wont start when set by address
             val dragTime = System.currentTimeMillis() - dragStart
             mapAnalytics.sendDragDurationEvent(flagName, dragTime)
             dragStart = 0L
-        } else {//TODO I've got you!! Happens always when dragging from the drawer, and by the way, it can be another cool thing to measure
-            Bug.get().logException(IllegalStateException("So it really is running log event without running the start first! :o"))
         }
     }
 

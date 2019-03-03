@@ -101,7 +101,10 @@ class MapFragment : SupportMapFragment() {
             }
         }
 
-        override fun onMarkerDragStart(marker: Marker) { }
+        override fun onMarkerDragStart(marker: Marker) {
+            viewModel.dragStarted()
+        }
+
         override fun onMarkerDrag(marker: Marker) { }
     }
 
