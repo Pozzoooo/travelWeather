@@ -32,7 +32,7 @@ class DaySelectionListManager(private val spinnerDaySelection: Spinner, callback
 
     private fun calculateNewSelection(size: Int) : Int {
         val currentSelection = spinnerDaySelection.selectedItemPosition
-        return if (currentSelection > size) size - 1 else currentSelection
+        return if (currentSelection >= size) size - 1 else currentSelection
     }
 
     private fun updateAdapterAndSelection(adapter: SpinnerAdapter, currentSelection: Int) {
