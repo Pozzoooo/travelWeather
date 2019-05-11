@@ -133,7 +133,7 @@ class MapActivity : BaseActivity() {
     private fun observeViewModel() {
         preferencesViewModel.selectedDay.observe(this, Observer { it?.let { changeSelectedDay(it) } })
 
-        viewModel.routeData.observe(this, Observer { updateRoute(it as Route) })
+        viewModel.routeData.observe(this, Observer { updateRoute(it) })
 
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
