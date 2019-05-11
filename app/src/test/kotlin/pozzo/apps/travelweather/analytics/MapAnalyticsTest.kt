@@ -21,7 +21,7 @@ class MapAnalyticsTest {
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
-        mapAnalytics = MapAnalytics(firebaseAnalytics)
+        mapAnalytics = MapAnalytics(firebaseAnalytics, emptyList())
     }
 
     @Test fun assertFirebaseIsBeingCalled() {

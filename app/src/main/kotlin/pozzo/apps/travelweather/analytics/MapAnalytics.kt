@@ -6,9 +6,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Day
 
-class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
+class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val forecastClient: List<ForecastClient>) {
+    private val topProvider : String by lazy { forecastClient.getOrNull(0)?.javaClass?.simpleName ?: "no provider" }
 
     fun sendFirebaseUserRequestedCurrentLocationEvent() = GlobalScope.launch(background) {
         sendFirebaseFab("currentLocation")
@@ -86,6 +88,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics) {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, eventName)
         bundle.putInt("weatherCount", weatherCount)
         bundle.putInt("directionLineSize", directionLineSize)
+        bundle.putString("topProvider", topProvider)
         firebaseAnalytics.logEvent("forecastRequest", bundle)
     }
 }
