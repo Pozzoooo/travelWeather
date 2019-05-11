@@ -6,11 +6,15 @@ class MapTutorialScript(private val lastRunRepository: LastRunRepository) {
     lateinit var playTutorialCallback: (tutorial: LastRunKey) -> Unit
 
     fun onAppStart() {
-        playIfNotPlayed(LastRunKey.FULL_TUTORIAL)
+        playIfNotPlayed(LastRunKey.DRAG_THE_FLAG)
     }
 
     fun onFinishPositionSet() {
-        playIfNotPlayed(LastRunKey.ROUTE_CREATED_TUTORIAL)
+        playIfNotPlayed(LastRunKey.DRAG_AGAIN)
+    }
+
+    fun onUserRequestCurrentLocation() {
+        playIfNotPlayed(LastRunKey.DAY_SELECTION)
     }
 
     private fun playIfNotPlayed(tutorial: LastRunKey) {

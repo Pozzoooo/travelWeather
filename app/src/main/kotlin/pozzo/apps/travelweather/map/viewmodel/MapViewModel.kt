@@ -94,6 +94,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
         mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
         setStartAsCurrentLocation(lifecycleOwner)
+        mapTutorialScript.onUserRequestCurrentLocation()
     }
 
     fun onPermissionGranted(permissionRequest: PermissionRequest, lifecycleOwner: LifecycleOwner) {

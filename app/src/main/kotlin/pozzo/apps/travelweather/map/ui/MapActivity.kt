@@ -148,8 +148,9 @@ class MapActivity : BaseActivity() {
     private fun showOverlay(overlay: LastRunKey) {
         val mapTutorial = MapTutorial()
         when(overlay) {
-            LastRunKey.FULL_TUTORIAL -> mapTutorial.playFullTutorial(this)
-            LastRunKey.ROUTE_CREATED_TUTORIAL -> mapTutorial.playRouteCreatedTutorial(this)
+            LastRunKey.DRAG_THE_FLAG -> mapTutorial.playDragTheFlag(this)
+            LastRunKey.DRAG_AGAIN -> mapTutorial.playDragAgain(this)
+            LastRunKey.DAY_SELECTION -> mapTutorial.playDaySelectionTutorial(this)
             else -> Bug.get().logException("Missing show overlay $overlay")
         }
     }

@@ -9,7 +9,7 @@ import pozzo.apps.travelweather.R
 
 class MapTutorial {
 
-    fun playFullTutorial(activity: Activity) {
+    fun playDragTheFlag(activity: Activity) {
         FancyShowCaseView.Builder(activity)
                 .focusOn(activity.findViewById(R.id.startFlag))
                 .title(activity.getString(R.string.tutorial_flags))
@@ -18,9 +18,17 @@ class MapTutorial {
                 .show()
     }
 
-    fun playRouteCreatedTutorial(activity: Activity) {
+    fun playDragAgain(activity: Activity) {
         FancyShowCaseView.Builder(activity)
                 .title(activity.getString(R.string.tutorial_longPressToDrag))
+                .build()
+                .show()
+    }
+
+    fun playDaySelectionTutorial(activity: Activity) {
+        FancyShowCaseView.Builder(activity)
+                .title(activity.getString(R.string.tutorial_daySelection))
+                .focusOn(activity.findViewById(R.id.spinnerDaySelection))
                 .build()
                 .show()
     }

@@ -25,6 +25,7 @@
 	<string name="tutorial_flags">Drag the flags to create a route</string>
 	<string name="tutorial_dragTheFlags">Drag the flags</string>
 	<string name="tutorial_longPressToDrag">You can always long press the flags to move it again</string>
+	<string name="tutorial_daySelection">You can change the date at the top bar</string>
 
 	<string name="forecast_sunny">Sunny</string>
 	<string name="forecast_mostlySunny">Mostly sunny</string>

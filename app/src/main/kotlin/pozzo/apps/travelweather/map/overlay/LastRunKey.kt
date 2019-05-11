@@ -2,7 +2,8 @@ package pozzo.apps.travelweather.map.overlay
 
 //todo still not confident that this is right
 enum class LastRunKey(val key: String) {
-  FULL_TUTORIAL("fullTutorial"),
-  ROUTE_CREATED_TUTORIAL("routeCreatedTutorial"),
+  DRAG_THE_FLAG("fullTutorial"),
+  DRAG_AGAIN("routeCreatedTutorial"),
+  DAY_SELECTION("daySelection"),
   RATE_DIALOG("rateDialog")
 }
