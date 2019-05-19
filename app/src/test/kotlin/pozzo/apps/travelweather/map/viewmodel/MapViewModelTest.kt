@@ -4,10 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -142,14 +139,16 @@ class MapViewModelTest {
     }
 
     @Test fun assertRouteNotFindErrorBeingHandled() {
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenThrow(DirectionNotFoundException())
+        doAnswer { throw DirectionNotFoundException() }
+                .whenever(directionModuleFake.directionBusiness).createRoute(any(), any())
         createSampleRoute()
 
         assertEquals(Error.CANT_FIND_ROUTE, mapViewModel.error.value)
     }
 
     @Test fun assertInternetErrorBeingHandled() {
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenThrow(IOException())
+        doAnswer { throw IOException() }
+                .whenever(directionModuleFake.directionBusiness).createRoute(any(), any())
         createSampleRoute()
 
         assertEquals(Error.NO_CONNECTION, mapViewModel.error.value)

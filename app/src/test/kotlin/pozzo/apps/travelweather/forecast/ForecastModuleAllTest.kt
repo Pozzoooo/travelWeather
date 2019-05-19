@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.forecast
 
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import pozzo.apps.travelweather.core.TestInjector
@@ -26,6 +27,6 @@ class ForecastModuleAllTest {
             }
             lastList = list
         }
-        assert(matchCount < maxMatch)
+        Assert.assertTrue("$matchCount < $maxMatch", matchCount < maxMatch)
     }
 }
