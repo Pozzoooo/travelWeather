@@ -33,7 +33,7 @@ class MapAnalyticsTest {
         mapAnalytics.sendDragDurationEvent("untiTest", 5000L)
         mapAnalytics.sendDaySelectionChanged(Day.TODAY)
         mapAnalytics.sendErrorMessage(Error.CANT_FIND_ROUTE)
-        mapAnalytics.sendDisplayTopBarAction()
+        mapAnalytics.sendShowSearch()
         mapAnalytics.sendSearchAddress()
         mapAnalytics.sendRateDialogShown()
         mapAnalytics.sendIWantToRate()
