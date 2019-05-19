@@ -29,6 +29,15 @@
 			layout="@layout/group_top_bar"
 			app:viewModel="@{viewModel}"/>
 
+		<TextView
+			android:id="@+id/remainingWeatherRequests"
+			style="@style/remainingWeatherLabel"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/topBar"
+			android:layout_alignParentStart="true"
+			tools:text="100/100"/>
+
 		<include
 			layout="@layout/group_flag_shelf"
 			android:layout_width="wrap_content"
