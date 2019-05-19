@@ -15,9 +15,10 @@ open class DirectionModule {
     @Provides open fun routeBusiness(googleDirection: GoogleDirection,
                                      directionLineBusiness: DirectionLineBusiness,
                                      mapPointCreator: MapPointCreator,
-                                     preferencesBusiness: PreferencesBusiness): RouteBusiness =
+                                     preferencesBusiness: PreferencesBusiness,
+                                     directionWeatherFilter: DirectionWeatherFilter): RouteBusiness =
             LimitedRouteBusiness(
-                    UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection),
+                    UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection, directionWeatherFilter),
                     preferencesBusiness)
 
     @Provides

@@ -10,18 +10,21 @@ class Route(baseRoute: Route? = null,
             startPoint: StartPoint? = null,
             finishPoint: FinishPoint? = null,
             polyline: PolylineOptions? = null,
+            weatherLocationCount: Int? = null,
             mapPoints: Channel<MapPoint>? = null) {
 
     val startPoint: StartPoint?
     val finishPoint: FinishPoint?
     val polyline: PolylineOptions?
     val mapPoints: Channel<MapPoint>
+    val weatherLocationCount: Int
 
     init {
         this.startPoint = startPoint ?: baseRoute?.startPoint
         this.finishPoint = finishPoint ?: baseRoute?.finishPoint
         this.polyline = polyline ?: baseRoute?.polyline
         this.mapPoints = mapPoints ?: baseRoute?.mapPoints ?: Channel(0)
+        this.weatherLocationCount = weatherLocationCount ?: baseRoute?.weatherLocationCount ?: 0
     }
 
     fun isComplete() : Boolean = startPoint != null && finishPoint != null

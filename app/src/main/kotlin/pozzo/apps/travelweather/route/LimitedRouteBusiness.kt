@@ -36,8 +36,7 @@ class LimitedRouteBusiness(
     }
 
     private fun incrementCounter(route: Route) {
-        preferencesBusiness.addUsedRequestCount(99)
-//        todo preferencesBusiness.addUsedRequestCount()
+        preferencesBusiness.addUsedRequestCount(route.weatherLocationCount)
     }
 
     /*
@@ -48,6 +47,8 @@ class LimitedRouteBusiness(
         - alterar mensagem de erro
         - descobrir como ligar mensagem de erro para uma janela de pagamento
         - click listener pra mostrar janela de pagamento a partir do count na tela
+        - adicionar analytics para entender como esta sendo utilizado
+        - olhar analytics para decidir qual um maximo apropriado
      */
     fun getMaxRequest() : Int {
         return DAILY_MAX_FREE_REQUESTS //todo add paid ones
