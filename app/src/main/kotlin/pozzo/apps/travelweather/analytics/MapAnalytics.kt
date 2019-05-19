@@ -72,7 +72,7 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val
     }
 
     fun sendIWantToRate() = GlobalScope.launch(background) {
-        firebaseAnalytics.logEvent("rateDialog", null)
+        firebaseAnalytics.logEvent("pressedYestToRate", null)
     }
 
     fun sendEmptyForecastCountByRoute() = GlobalScope.launch(background) {
