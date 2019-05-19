@@ -40,6 +40,15 @@ class LimitedRouteBusiness(
 //        todo preferencesBusiness.addUsedRequestCount()
     }
 
+    /*
+    todo Faltam:
+        - conectar visualizacao do count com viewModel
+        - descobrir como vou contar, pois nao da pra usar o channel
+        - descobrir como criar a parada pa pagar
+        - alterar mensagem de erro
+        - descobrir como ligar mensagem de erro para uma janela de pagamento
+        - click listener pra mostrar janela de pagamento a partir do count na tela
+     */
     fun getMaxRequest() : Int {
         return DAILY_MAX_FREE_REQUESTS //todo add paid ones
     }
