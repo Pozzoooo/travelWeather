@@ -136,7 +136,7 @@ class MapActivity : BaseActivity() {
         viewModel.routeData.observe(this, Observer { updateRoute(it) })
 
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
-        viewModel.isShowingTopBar.observe(this, Observer { if (it == true) showTopBar() else hideTopBar() })
+        viewModel.isShowingSearch.observe(this, Observer { if (it == true) showSearch() else hideSearch() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
         viewModel.error.observe(this, Observer { if (it != null) showError(it) })
         viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
@@ -292,14 +292,14 @@ class MapActivity : BaseActivity() {
             .show()
     }
 
-    private fun hideTopBar() {
+    private fun hideSearch() {
         eSearch.visibility = View.GONE
         lDaySelection.visibility = View.VISIBLE
         spinnerDaySelection.visibility = View.VISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
     }
 
-    private fun showTopBar() {
+    private fun showSearch() {
         eSearch.visibility = View.VISIBLE
         lDaySelection.visibility = View.GONE
         spinnerDaySelection.visibility = View.GONE

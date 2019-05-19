@@ -161,14 +161,14 @@ class MapViewModelTest {
     }
 
     @Test fun shouldDisplayTopBarWhenHidden() {
-        mapViewModel.toggleTopBar("")
-        assertTrue(mapViewModel.isShowingTopBar.value!!)
+        mapViewModel.toggleSearch("")
+        assertTrue(mapViewModel.isShowingSearch.value!!)
     }
 
     @Test fun shouldHideTopBarWhenDisplaing() {
-        mapViewModel.toggleTopBar("")
-        mapViewModel.toggleTopBar("")
-        assertFalse(mapViewModel.isShowingTopBar.value!!)
+        mapViewModel.toggleSearch("")
+        mapViewModel.toggleSearch("")
+        assertFalse(mapViewModel.isShowingSearch.value!!)
     }
 
     @Test fun assertDragActionAddsAPoint() {

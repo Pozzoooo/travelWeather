@@ -57,7 +57,7 @@
 			android:background="@null"
 			android:contentDescription="@android:string/search_go"
 			android:elevation="@dimen/elevation_floatingButton"
-			android:onClick="@{() -> viewModel.toggleTopBar(eSearch.getText().toString())}"
+			android:onClick="@{() -> viewModel.toggleSearch(eSearch.getText().toString())}"
 			android:src="@android:drawable/ic_menu_search"/>
 	</LinearLayout>
 </layout>

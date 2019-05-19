@@ -60,7 +60,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     val overlay = MutableLiveData<LastRunKey>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
-    val isShowingTopBar = MutableLiveData<Boolean>()
+    val isShowingSearch = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
@@ -70,7 +70,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 .inject(this)
 
         isShowingProgress.value = false
-        isShowingTopBar.value = false
+        isShowingSearch.value = false
         shouldFinish.value = false
         routeData.value = route
         //todo it must be a better solution to make this dependency clear with injection
@@ -182,28 +182,31 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
     fun back() {
         when {
-            isShowingTopBar.value == true -> hideTopBar()
+            isShowingSearch.value == true -> hideSearch()
             route.finishPoint != null -> clearFinishPosition()
             route.startPoint != null -> clearStartPosition()
             else -> shouldFinish.postValue(true)
         }
     }
 
-    fun toggleTopBar(text: String) {
-        if (isShowingTopBar.value != true) {
-            displayTopBar()
+    fun toggleSearch(text: String) {
+        if (isShowingSearch.value != true) {
+            showSearch()
         } else {
-            hideTopBar()
+            hideSearch()
             if (text.isNotBlank()) searchAddress(text)
         }
     }
 
-    private fun displayTopBar() {
-        isShowingTopBar.postValue(true)
-        mapAnalytics.sendDisplayTopBarAction()
+    private fun showSearch() {
+        isShowingSearch.postValue(true)
+        mapAnalytics.sendShowSearch()
     }
 
-    private fun hideTopBar() = isShowingTopBar.postValue(false)
+    private fun hideSearch() {
+        isShowingSearch.postValue(false)
+        mapAnalytics.sendHideSearch()
+    }
 
     fun flagDragActionFinished(latLng: LatLng) {
         addPoint(latLng)

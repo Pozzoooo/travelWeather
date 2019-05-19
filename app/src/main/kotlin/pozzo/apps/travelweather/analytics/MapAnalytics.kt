@@ -55,8 +55,12 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val
         firebaseAnalytics.logEvent("errorMessage", bundle)
     }
 
-    fun sendDisplayTopBarAction() = GlobalScope.launch(background) {
-        firebaseAnalytics.logEvent("displayTopBar", null)
+    fun sendShowSearch() = GlobalScope.launch(background) {
+        firebaseAnalytics.logEvent("showSearch", null)
+    }
+
+    fun sendHideSearch() = GlobalScope.launch(background) {
+        firebaseAnalytics.logEvent("hideSearch", null)
     }
 
     fun sendSearchAddress() = GlobalScope.launch(background) {
