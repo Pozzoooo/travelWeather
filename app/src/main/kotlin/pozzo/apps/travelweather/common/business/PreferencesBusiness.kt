@@ -8,7 +8,7 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
     companion object {
         private const val KEY_SELECTED_DAY = "selectedDay"
         private const val KEY_DAY_SELECTION_COUNT = "daySelectionCount"
-        private const val KEY_LAST_REMAINING_REQUEST_RESET = "lastRemainingRequestReset"
+        private const val KEY_LAST_REMAINING_REQUEST_RESET_TIME = "lastRemainingRequestReset"
         private const val KEY_USED_REQUEST_COUNT = "usedRequestCount"
     }
 
@@ -44,11 +44,7 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
     }
 
     fun getLastRemainingRequestReset() : Long =
-            preferences.getLong(KEY_LAST_REMAINING_REQUEST_RESET, 0L)
-
-    fun updateLastRemainingRequestReset() {
-        preferences.edit().putLong(KEY_LAST_REMAINING_REQUEST_RESET, System.currentTimeMillis()).apply()
-    }
+            preferences.getLong(KEY_LAST_REMAINING_REQUEST_RESET_TIME, 0L)
 
     fun getUsedRequestCount() : Int =
             preferences.getInt(KEY_USED_REQUEST_COUNT, 0)
@@ -58,6 +54,9 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
     }
 
     fun resetUsedRequestCount() {
-        preferences.edit().putInt(KEY_USED_REQUEST_COUNT, 0).apply()
+        preferences.edit()
+                .putLong(KEY_LAST_REMAINING_REQUEST_RESET_TIME, System.currentTimeMillis())
+                .putInt(KEY_USED_REQUEST_COUNT, 0)
+                .apply()
     }
 }
