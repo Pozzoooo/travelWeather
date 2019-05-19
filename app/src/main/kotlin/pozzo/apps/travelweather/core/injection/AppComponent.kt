@@ -12,7 +12,6 @@ import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.PermissionChecker
-import pozzo.apps.travelweather.direction.DirectionBusiness
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
 import pozzo.apps.travelweather.direction.DirectionModule
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
@@ -26,6 +25,7 @@ import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
+import pozzo.apps.travelweather.route.RouteBusiness
 import retrofit2.Retrofit
 import java.util.*
 import javax.inject.Singleton
@@ -63,7 +63,6 @@ interface AppComponent {
     fun forecastBusiness() : ForecastBusiness
 
     //direction
-    fun directionBusiness() : DirectionBusiness
     fun directionWeatherFilter() : DirectionWeatherFilter
 
     //analytics
@@ -87,4 +86,7 @@ interface AppComponent {
     fun mapPointCreator() : MapPointCreator
     fun mapTutorial() : MapTutorial
     fun mapTutorialScript() : MapTutorialScript
+
+    //route
+    fun routeBusiness() : RouteBusiness
 }

@@ -13,9 +13,10 @@ import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.parser.MapPointCreator
+import pozzo.apps.travelweather.route.UnlimitedRouteBusiness
 
-class DirectionBusinessTest {
-    private lateinit var directionBusiness: DirectionBusiness
+class UnlimitedRouteBusinessTest {
+    private lateinit var unlimitedRouteBusiness: UnlimitedRouteBusiness
 
     @Mock private lateinit var googleDirection: GoogleDirection
     @Mock private lateinit var directionLineBusiness: DirectionLineBusiness
@@ -25,13 +26,13 @@ class DirectionBusinessTest {
         MockitoAnnotations.initMocks(this)
         BitmapCreator.setInstance(BitmapCreatorTest())
 
-        directionBusiness = DirectionBusiness(directionLineBusiness, mapPointCreator, googleDirection)
+        unlimitedRouteBusiness = UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection)
     }
 
     @Test fun incompleteRouteShouldNotCreateRoute() {
-        assertFalse(directionBusiness.createRoute(null, null).isComplete())
-        assertFalse(directionBusiness.createRoute(StartPoint(LatLng(0.0, 0.0)), null).isComplete())
-        assertFalse(directionBusiness.createRoute(null, FinishPoint(LatLng(0.0, 0.0))).isComplete())
+        assertFalse(unlimitedRouteBusiness.createRoute(null, null).isComplete())
+        assertFalse(unlimitedRouteBusiness.createRoute(StartPoint(LatLng(0.0, 0.0)), null).isComplete())
+        assertFalse(unlimitedRouteBusiness.createRoute(null, FinishPoint(LatLng(0.0, 0.0))).isComplete())
     }
 
     @Test(expected = DirectionNotFoundException::class) fun shouldThrowWhenDirectionIsNotFound() {
@@ -39,12 +40,12 @@ class DirectionBusinessTest {
         val finishPoint = FinishPoint(LatLng(0.0, 0.0))
 
         try {
-            directionBusiness.createRoute(startPoint, finishPoint)
+            unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
             fail()
         } catch (e : DirectionNotFoundException) { /*success*/ }
 
         whenever(googleDirection.getDirection(startPoint.position, finishPoint.position)).thenReturn(emptyList())
-        directionBusiness.createRoute(startPoint, finishPoint)
+        unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
     }
 
     @Test fun shouldCreateAProperRoute() {
@@ -54,7 +55,7 @@ class DirectionBusinessTest {
         whenever(googleDirection.getDirection(startPoint.position, finishPoint.position))
                 .thenReturn(listOf(LatLng(0.0, 1.0), LatLng(2.0, 3.0)))
 
-        val route = directionBusiness.createRoute(startPoint, finishPoint)
+        val route = unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
 
         assertEquals(startPoint, route.startPoint)
         assertEquals(finishPoint, route.finishPoint)

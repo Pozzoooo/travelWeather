@@ -22,7 +22,6 @@ import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
 import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
-import pozzo.apps.travelweather.direction.DirectionBusiness
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
@@ -34,6 +33,7 @@ import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
+import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
 import javax.inject.Inject
 
@@ -41,7 +41,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var geoCoderBusiness: GeoCoderBusiness
     @Inject protected lateinit var mapAnalytics: MapAnalytics
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
-    @Inject protected lateinit var directionBusiness: DirectionBusiness
+    @Inject protected lateinit var routeBusiness: RouteBusiness
     @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
     @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
@@ -142,7 +142,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         updateRouteJob?.cancel()
         updateRouteJob = GlobalScope.launch(background) {
             try {
-                val route = directionBusiness.createRoute(startPoint, finishPoint)
+                val route = routeBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) setRoute(route)
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
