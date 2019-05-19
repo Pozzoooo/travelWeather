@@ -33,6 +33,7 @@ import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
+import pozzo.apps.travelweather.route.RequestLimitReached
 import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
 import javax.inject.Inject
@@ -146,6 +147,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
                 if (isActive) setRoute(route)
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
+            } catch (e: RequestLimitReached) {
+                postError(Error.LIMIT_REACHED)
             } catch (e: IOException) {
                 handleConnectionError(e)
             } finally {

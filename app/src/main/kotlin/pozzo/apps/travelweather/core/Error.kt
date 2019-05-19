@@ -7,5 +7,6 @@ enum class Error(val messageId: Int) {
     CANT_REACH(R.string.error_cantReach),
     ADDRESS_NOT_FOUND(R.string.error_addressNotFound),
     CANT_FIND_CURRENT_LOCATION(R.string.error_currentLocationNotFound),
-    CANT_FIND_ROUTE(R.string.error_pathNotFound);
+    CANT_FIND_ROUTE(R.string.error_pathNotFound),
+    LIMIT_REACHED(R.string.error_pathNotFound);//TODO proper message and handling
 }
