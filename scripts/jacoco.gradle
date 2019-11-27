@@ -1,7 +1,7 @@
 apply plugin: 'jacoco'
 
 jacoco {
-	toolVersion = "0.8.3"
+	toolVersion = "0.8.5"
 	reportsDir = file("$buildDir/reports")
 }
 
@@ -52,18 +52,18 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/PermissionChecker.class'
 	]
 	// generated classes
-	classDirectories = fileTree(
+	getClassDirectories().setFrom(fileTree(
 			dir: "$buildDir/intermediates/classes/debug",
 			excludes: excludes
 	) + fileTree(
 			dir: "$buildDir/tmp/kotlin-classes/debug",
 			excludes: excludes
-	)
+	))
 
 	// sources
-	sourceDirectories = files([
+	getSourceDirectories().setFrom(files([
 			android.sourceSets.main.java.srcDirs,
 			"src/main/kotlin"
-	])
-	executionData = files("$buildDir/jacoco/testDebugUnitTest.exec")
+	]))
+	getExecutionData().setFrom(files("$buildDir/jacoco/testDebugUnitTest.exec"))
 }

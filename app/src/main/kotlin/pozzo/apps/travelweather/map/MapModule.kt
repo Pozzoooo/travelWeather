@@ -18,7 +18,6 @@ open class MapModule {
     @Provides open fun mapTutorialScript(lastRunRepository: LastRunRepository) = MapTutorialScript(lastRunRepository)
 
     @Provides open fun mapPointCreator(forecastBusiness: ForecastBusiness,
-                                  directionWeatherFilter: DirectionWeatherFilter,
                                   weatherToMapPointParser: WeatherToMapPointParser) =
-            MapPointCreator(forecastBusiness, directionWeatherFilter, weatherToMapPointParser)
+            MapPointCreator(forecastBusiness, weatherToMapPointParser)
 }
