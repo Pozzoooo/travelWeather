@@ -13,6 +13,6 @@ class MapModuleFake : MapModule() {
     override fun weatherToMapPointParser() = Mockito.mock(WeatherToMapPointParser::class.java)!!
     override fun mapTutorial() = Mockito.mock(MapTutorial::class.java)!!
     override fun mapTutorialScript(lastRunRepository: LastRunRepository) = Mockito.mock(MapTutorialScript::class.java)!!
-    override fun mapPointCreator(forecastBusiness: ForecastBusiness, directionWeatherFilter: DirectionWeatherFilter, weatherToMapPointParser: WeatherToMapPointParser) =
+    override fun mapPointCreator(forecastBusiness: ForecastBusiness, weatherToMapPointParser: WeatherToMapPointParser) =
             Mockito.mock(MapPointCreator::class.java)!!
 }

@@ -16,7 +16,7 @@ class ForecastModuleAllTest {
     }
 
     @Test fun assertRandomness() {
-        val repeat = 10
+        val repeat = 100
         val maxMatch = repeat - 1
         var matchCount = 0
         var lastList = forecastModuleAll.forecastClients(retrofitBuilder)
@@ -27,6 +27,6 @@ class ForecastModuleAllTest {
             }
             lastList = list
         }
-        Assert.assertTrue("$matchCount < $maxMatch", matchCount < maxMatch)
+        Assert.assertTrue("$matchCount < $maxMatch", matchCount <= maxMatch)
     }
 }

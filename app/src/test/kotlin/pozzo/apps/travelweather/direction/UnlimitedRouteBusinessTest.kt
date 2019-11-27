@@ -21,12 +21,13 @@ class UnlimitedRouteBusinessTest {
     @Mock private lateinit var googleDirection: GoogleDirection
     @Mock private lateinit var directionLineBusiness: DirectionLineBusiness
     @Mock private lateinit var mapPointCreator: MapPointCreator
+    @Mock private lateinit var directionWeatherFilter: DirectionWeatherFilter
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
         BitmapCreator.setInstance(BitmapCreatorTest())
 
-        unlimitedRouteBusiness = UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection)
+        unlimitedRouteBusiness = UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection, directionWeatherFilter)
     }
 
     @Test fun incompleteRouteShouldNotCreateRoute() {

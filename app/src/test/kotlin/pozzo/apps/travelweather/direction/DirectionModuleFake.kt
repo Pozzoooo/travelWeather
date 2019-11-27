@@ -10,9 +10,10 @@ import pozzo.apps.travelweather.route.RouteBusiness
 class DirectionModuleFake : DirectionModule() {
     val directionBusiness by lazy { Mockito.mock(RouteBusiness::class.java)!! }
     override fun routeBusiness(googleDirection: GoogleDirection,
-                           directionLineBusiness: DirectionLineBusiness,
-                           mapPointCreator: MapPointCreator,
-                           preferencesBusiness: PreferencesBusiness): RouteBusiness = directionBusiness
+                               directionLineBusiness: DirectionLineBusiness,
+                               mapPointCreator: MapPointCreator,
+                               preferencesBusiness: PreferencesBusiness,
+                               directionWeatherFilter: DirectionWeatherFilter): RouteBusiness = directionBusiness
 
     val directionWeatherFilter by lazy { Mockito.mock(DirectionWeatherFilter::class.java)!! }
     override fun directionWeatherFilter(mapAnalytics: MapAnalytics) = directionWeatherFilter
