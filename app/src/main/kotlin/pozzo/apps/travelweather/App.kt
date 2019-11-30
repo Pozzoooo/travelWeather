@@ -67,7 +67,7 @@ class App : Application() {
         initBugTracker()
         initComponent()
         initCoroutines()
-    }
+	}
 
     private fun initBugTracker() {
         val bugInstance = if (BuildConfig.DEBUG) {
