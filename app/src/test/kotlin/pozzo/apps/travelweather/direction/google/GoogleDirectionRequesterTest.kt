@@ -46,6 +46,6 @@ class GoogleDirectionRequesterTest {
     @Test(expected = IOException::class) fun shouldReThrowOnNetworkIssue() {
         val call = mock<Call> { on { execute() } doThrow IOException("No Network! Fake!") }
         whenever(okHttp.newCall(any())).thenReturn(call)
-        val response = requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
+        requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
     }
 }
