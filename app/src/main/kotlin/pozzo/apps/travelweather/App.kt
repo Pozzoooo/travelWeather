@@ -2,7 +2,6 @@ package pozzo.apps.travelweather
 
 import android.app.Application
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.Main
 import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.bugtracker.FabricBug
