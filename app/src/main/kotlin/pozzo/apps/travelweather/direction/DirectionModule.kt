@@ -10,17 +10,13 @@ import pozzo.apps.travelweather.route.LimitedRouteBusiness
 import pozzo.apps.travelweather.route.RouteBusiness
 import pozzo.apps.travelweather.route.UnlimitedRouteBusiness
 
-@Module
-open class DirectionModule {
+@Module open class DirectionModule {
     @Provides open fun routeBusiness(googleDirection: GoogleDirection,
-                                     directionLineBusiness: DirectionLineBusiness,
-                                     mapPointCreator: MapPointCreator,
-                                     preferencesBusiness: PreferencesBusiness,
-                                     directionWeatherFilter: DirectionWeatherFilter): RouteBusiness =
-            LimitedRouteBusiness(
-                    UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection, directionWeatherFilter),
-                    preferencesBusiness)
+                           directionLineBusiness: DirectionLineBusiness,
+                           mapPointCreator: MapPointCreator,
+                           preferencesBusiness: PreferencesBusiness,
+                           directionWeatherFilter: DirectionWeatherFilter): RouteBusiness =
+            UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection, directionWeatherFilter)
 
-    @Provides
-    open fun directionWeatherFilter(mapAnalytics: MapAnalytics) = DirectionWeatherFilter(mapAnalytics)
+    @Provides open fun directionWeatherFilter(mapAnalytics: MapAnalytics) = DirectionWeatherFilter(mapAnalytics)
 }
