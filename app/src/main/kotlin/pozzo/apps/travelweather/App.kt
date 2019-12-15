@@ -15,8 +15,14 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
+ * Add temperature besides the weather icon? (or at least in the dialog?) 
+ *
  * Another option might be https://openweathermap.org/price
  * https://www.worldweatheronline.com/developer/api/pricing2.aspx
+ *
+ * Anyway to track a specific time?
+ *
+ * Remove search after it has been done, so the user can see the selected day back again
  *
  * Br apenas
  * http://servicos.cptec.inpe.br/XML/

@@ -41,8 +41,8 @@ class DaySelectionListManager(private val spinnerDaySelection: Spinner, callback
     }
 
     fun safeSelection(selectionIndex: Int) {
-        val max = spinnerDaySelection.adapter.count
-        val newSelection = if (selectionIndex> max) max - 1 else selectionIndex
+        val size = spinnerDaySelection.adapter.count
+        val newSelection = if (selectionIndex >= size) size - 1 else selectionIndex
         spinnerDaySelection.setSelection(newSelection)
     }
 }
