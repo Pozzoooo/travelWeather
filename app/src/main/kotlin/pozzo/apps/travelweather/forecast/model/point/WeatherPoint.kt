@@ -9,9 +9,9 @@ class WeatherPoint(private val weather: Weather) :
         MapPoint(null, weather.latLng, weather.url, false, true) {
 
     val forecastSize = weather.forecasts.size
-    val forecast : Forecast get() = weather.getForecast(day)
+    val forecast: Forecast get() = weather.getForecast(day)
     override val icon get() = forecast.icon
-    val poweredBy : PoweredBy get() = weather.poweredBy
+    val poweredBy: PoweredBy get() = weather.poweredBy
 
     override fun getTitle(context: Context): String {
         //TODO translate string + can I avoid the getString?

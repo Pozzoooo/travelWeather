@@ -105,30 +105,21 @@ class MapFragment : SupportMapFragment() {
             viewModel.dragStarted()
         }
 
-        override fun onMarkerDrag(marker: Marker) { }
+        override fun onMarkerDrag(marker: Marker) {}
     }
 
-    @SuppressLint("ObjectAnimatorBinding")
-    fun addMark(mapPoint: MapPoint) : Marker? {
+    @SuppressLint("ObjectAnimatorBinding") fun addMark(mapPoint: MapPoint): Marker? {
         if (!this.isAdded) return null
 
-        val markerOptions = MarkerOptions()
-                .position(mapPoint.position)
-                .anchor(1F, 1F)
-                .title(mapPoint.getTitle(requireContext()))
-                .icon(mapPoint.icon)
-                .draggable(mapPoint.isDraggable)
-        return map?.addMarker(markerOptions)
-                ?.apply {
-                    tag = mapPoint
-                    if (mapPoint.shouldFadeIn)
-                        ObjectAnimator.ofFloat(this, "alpha", 0F, 1F)
-                                .setDuration(500L).start()
-                }
+        val markerOptions = MarkerOptions().position(mapPoint.position).anchor(1F, 1F).title(mapPoint.getTitle(requireContext())).icon(mapPoint.icon).draggable(mapPoint.isDraggable)
+        return map?.addMarker(markerOptions)?.apply {
+            tag = mapPoint
+            if (mapPoint.shouldFadeIn) ObjectAnimator.ofFloat(this, "alpha", 0F, 1F).setDuration(500L).start()
+        }
     }
 
     private val dragListener = View.OnDragListener { _, event ->
-        return@OnDragListener when(event.action) {
+        return@OnDragListener when (event.action) {
             DragEvent.ACTION_DROP -> {
                 getProjection()?.let {
                     viewModel.flagDragActionFinished(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
@@ -143,5 +134,5 @@ class MapFragment : SupportMapFragment() {
         }
     }
 
-    fun getProjection() : Projection? = map?.projection
+    fun getProjection(): Projection? = map?.projection
 }
