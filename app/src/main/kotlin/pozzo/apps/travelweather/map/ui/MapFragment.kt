@@ -2,13 +2,13 @@ package pozzo.apps.travelweather.map.ui
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.view.DragEvent
 import android.view.View
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
@@ -115,7 +115,7 @@ class MapFragment : SupportMapFragment() {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
                 .anchor(1F, 1F)
-                .title(getString(mapPoint.title!!))//todo is it ok to request it all the time?
+                .title(mapPoint.getTitle(requireContext()))
                 .icon(mapPoint.icon)
                 .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)
