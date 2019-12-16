@@ -11,7 +11,7 @@ import retrofit2.http.Query
  */
 interface OpenWeatherApi {
     @Headers("Content-Type: application/json", "Accept: application/json")
-    @GET("data/2.5/forecast")
+    @GET("data/2.5/forecast?units=imperial")
     fun forecast(@Query("lat") latitude: Double, @Query("lon") longitude: Double,
                  @Query("appid") key: String): Call<ResponseBody>
 }

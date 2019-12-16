@@ -35,8 +35,8 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
         }.map {
             Forecast(text = it.get("wx_desc").asString,
                     forecastType = typeMapper.getForecastType(it.get("wx_icon").asString),
-                    high = it.get("temp_c").asDouble,
-                    low = it.get("temp_c").asDouble
+                    high = it.get("temp_f").asDouble,
+                    low = it.get("temp_f").asDouble
             )
         }
     }

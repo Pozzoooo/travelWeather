@@ -15,7 +15,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Add temperature besides the weather icon? (or at least in the dialog?) 
+ * Add temperature besides the weather icon? (or at least in the dialog?)
+ *  - Duas modificaoes importantes a serem feitas
+ *      - - Preciso adicionar temperatura a todos os parses
+ *      - - No map Fragment preciso utilizar, e para fazer o icone com numero nao sei hein
  *
  * Another option might be https://openweathermap.org/price
  * https://www.worldweatheronline.com/developer/api/pricing2.aspx
