@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather.forecast.model.point
 
 import android.content.Context
+import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Weather
@@ -14,8 +15,10 @@ class WeatherPoint(private val weather: Weather) :
     val poweredBy: PoweredBy get() = weather.poweredBy
 
     override fun getTitle(context: Context): String {
-        //TODO translate string + can I avoid the getString?
-        val string = context.getString(forecast.forecastType?.stringId!!)
-        return string + " low: ${forecast.low} high: ${forecast.high}"
+        //TODO can I avoid the getString?
+        val forecastString = context.getString(forecast.forecastType?.stringId!!)
+        val min = context.getString(R.string.min)
+        val max = context.getString(R.string.max)
+        return "$forecastString - $min: ${forecast.low} $max: ${forecast.high}"
     }
 }

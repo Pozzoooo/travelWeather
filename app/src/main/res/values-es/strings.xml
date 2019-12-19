@@ -45,6 +45,9 @@
 	<string name="forecast_sleet">Granizo</string>
 	<string name="forecast_unknown">Desconocido</string>
 
+	<string name="min">min</string>
+	<string name="max">max</string>
+
 	<string name="day_today">Hoy</string>
 	<string name="day_tomorrow">Mañana</string>
 </resources>
