@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appName">Clima da viagem</string>
+    <string name="yes">Sim</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+    <string name="warning">Atenção</string>
+
+	<string name="search">Busca</string>
+
+    <string name="startPosition">Início</string>
+    <string name="finishPosition">Final</string>
+    <string name="removeAllMarkers">Deseja remover todas as marcações?</string>
+    <string name="title_forecastDate">Previsão para</string>
+	<string name="rateMe">Curtindo o App? Deixe-nos sua opinião na Google Play</string>
+
+	<string name="error_addressNotFound">Endereço não encontrado</string>
+	<string name="error_needsConnection">Verifique se está conectado</string>
+	<string name="error_cantReach">Sem comunicação com o servidor, verifique sua conexão com a internet ou tente novamente mais tarde</string>
+    <string name="error_pathNotFound">Não conseguimos gerar uma rota, tente colocar as bandeiras mais proximo a ruas</string>
+    <string name="error_currentLocationNotFound">Não foi possivel determinar sua localização atual</string>
+
+	<string name="warning_permissionDenied">Permissão foi negada</string>
+
+	<string name="tutorial_flags">Arraste as bandeiras para criar a rota</string>
+	<string name="tutorial_dragTheFlags">Arraste as bandeiras</string>
+	<string name="tutorial_longPressToDrag">Sempre que quiser pode mover a bandeira com um toque longo</string>
+	<string name="tutorial_daySelection">Pode alterar a data na barra superior</string>
+
+	<string name="forecast_sunny">Ensolarado</string>
+	<string name="forecast_mostlySunny">Parcialmente ensolarado</string>
+	<string name="forecast_thunderstorms">Tempestade</string>
+	<string name="forecast_scatteredThunderstorms">Tempestedes dispersas</string>
+	<string name="forecast_rain">Chuva</string>
+	<string name="forecast_scatteredShowers">Chuvas dispersas</string>
+	<string name="forecast_showers">Garoa</string>
+	<string name="forecast_partlyCloudy">Parcilamente Nublado</string>
+	<string name="forecast_mostlyCloudy">Parcilamente Nublado</string>
+	<string name="forecast_cloudy">Nublado</string>
+	<string name="forecast_snow">Neve</string>
+	<string name="forecast_rainAndSnow">Chuva e neve</string>
+	<string name="forecast_breezy">Vento</string>
+	<string name="forecast_windy">Muito vento</string>
+	<string name="forecast_fog">Neblina</string>
+	<string name="forecast_sleet">Granizo</string>
+	<string name="forecast_unknown">Desconhecido</string>
+
+	<string name="min">min</string>
+	<string name="max">max</string>
+
+	<string name="day_today">Hoje</string>
+	<string name="day_tomorrow">Amanhã</string>
+</resources>

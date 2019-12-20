@@ -14,6 +14,7 @@ class WeatherPoint(private val weather: Weather) :
     override val icon get() = forecast.icon
     val poweredBy: PoweredBy get() = weather.poweredBy
 
+    //TODO should it be part of the model? Maybe that's part of the solution for the string caching!
     override fun getTitle(context: Context): String {
         //TODO can I avoid the getString?
         val forecastString = context.getString(forecast.forecastType?.stringId!!)

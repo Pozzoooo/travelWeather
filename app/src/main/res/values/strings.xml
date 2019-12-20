@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName">Clima da viagem</string>
-    <string name="yes">Sim</string>
-    <string name="cancel">Cancelar</string>
+    <string name="appName">Travel Weather</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="warning">Atenção</string>
+    <string name="warning">Warning</string>
 
-	<string name="search">Busca</string>
+	<string name="search">Search</string>
 
-    <string name="startPosition">Início</string>
-    <string name="finishPosition">Final</string>
-    <string name="removeAllMarkers">Deseja remover todas as marcações?</string>
-    <string name="title_forecastDate">Previsão para</string>
-	<string name="rateMe">Curtindo o App? Deixe-nos sua opinião na Google Play</string>
+    <string name="startPosition">Start</string>
+    <string name="finishPosition">Finish</string>
+    <string name="removeAllMarkers">Remove all makrs?</string>
+    <string name="title_forecastDate">Forecast for</string>
+	<string name="rateMe">Are you enjoying the app? Pleas leave us your feedback on Google Play</string>
 
-	<string name="error_addressNotFound">Endereço não encontrado</string>
-	<string name="error_needsConnection">Verifique se está conectado</string>
-	<string name="error_cantReach">Sem comunicação com o servidor, verifique sua conexão com a internet ou tente novamente mais tarde</string>
-    <string name="error_pathNotFound">Não conseguimos gerar uma rota, tente colocar as bandeiras mais proximo a ruas</string>
-    <string name="error_currentLocationNotFound">Não foi possivel determinar sua localização atual</string>
+	<string name="error_addressNotFound">Address not found</string>
+	<string name="error_needsConnection">Check internet connection</string>
+	<string name="error_cantReach">Can\'t reach internet, check connection or try again later</string>
+    <string name="error_pathNotFound">Could not find a route, try adjusting the flags closer to roads</string>
+    <string name="error_currentLocationNotFound">Not able to find your current location</string>
 
-	<string name="warning_permissionDenied">Permissão foi negada</string>
+	<string name="warning_permissionDenied">Permission has been denied</string>
 
-	<string name="tutorial_flags">Arraste as bandeiras para criar a rota</string>
-	<string name="tutorial_dragTheFlags">Arraste as bandeiras</string>
-	<string name="tutorial_longPressToDrag">Sempre que quiser pode mover a bandeira com um toque longo</string>
-	<string name="tutorial_daySelection">Pode alterar a data na barra superior</string>
+	<string name="tutorial_flags">Drag the flags to create a route</string>
+	<string name="tutorial_dragTheFlags">Drag the flags</string>
+	<string name="tutorial_longPressToDrag">You can always long press the flags to move it again</string>
+	<string name="tutorial_daySelection">You can change the date at the top bar</string>
 
-	<string name="forecast_sunny">Ensolarado</string>
-	<string name="forecast_mostlySunny">Parcialmente ensolarado</string>
-	<string name="forecast_thunderstorms">Tempestade</string>
-	<string name="forecast_scatteredThunderstorms">Tempestedes dispersas</string>
-	<string name="forecast_rain">Chuva</string>
-	<string name="forecast_scatteredShowers">Chuvas dispersas</string>
-	<string name="forecast_showers">Garoa</string>
-	<string name="forecast_partlyCloudy">Parcilamente Nublado</string>
-	<string name="forecast_mostlyCloudy">Parcilamente Nublado</string>
-	<string name="forecast_cloudy">Nublado</string>
-	<string name="forecast_snow">Neve</string>
-	<string name="forecast_rainAndSnow">Chuva e neve</string>
-	<string name="forecast_breezy">Vento</string>
-	<string name="forecast_windy">Muito vento</string>
-	<string name="forecast_fog">Neblina</string>
-	<string name="forecast_sleet">Granizo</string>
-	<string name="forecast_unknown">Desconhecido</string>
+	<string name="forecast_sunny">Sunny</string>
+	<string name="forecast_mostlySunny">Mostly sunny</string>
+	<string name="forecast_thunderstorms">Thunderstorms</string>
+	<string name="forecast_scatteredThunderstorms">Scattered thunderstorms</string>
+	<string name="forecast_rain">Rain</string>
+	<string name="forecast_scatteredShowers">Scattered showers</string>
+	<string name="forecast_showers">Showers</string>
+	<string name="forecast_partlyCloudy">Partly cloudy</string>
+	<string name="forecast_mostlyCloudy">Mostly cloudy</string>
+	<string name="forecast_cloudy">Cloudy</string>
+	<string name="forecast_snow">Snow</string>
+	<string name="forecast_rainAndSnow">Rain and snow</string>
+	<string name="forecast_breezy">Breezy</string>
+	<string name="forecast_windy">Windy</string>
+	<string name="forecast_fog">Fog</string>
+	<string name="forecast_sleet">Sleet</string>
+	<string name="forecast_unknown">Unknown</string>
 
 	<string name="min">min</string>
 	<string name="max">max</string>
 
-	<string name="day_today">Hoje</string>
-	<string name="day_tomorrow">Amanhã</string>
+	<string name="day_today">Today</string>
+	<string name="day_tomorrow">Tomorrow</string>
 </resources>
