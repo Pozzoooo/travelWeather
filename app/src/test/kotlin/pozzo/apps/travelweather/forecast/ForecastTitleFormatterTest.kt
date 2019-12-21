@@ -13,7 +13,7 @@ import java.util.*
 class ForecastTitleFormatterTest {
     private val forecastTitleFormatter = ForecastTitleFormatter()
 
-    val context = mock<Context> {
+    private val context = mock<Context> {
         on { getString(R.string.min) } doReturn MIN
         on { getString(R.string.max) } doReturn MAX
         on { getString(R.string.forecast_breezy) } doReturn TITLE
