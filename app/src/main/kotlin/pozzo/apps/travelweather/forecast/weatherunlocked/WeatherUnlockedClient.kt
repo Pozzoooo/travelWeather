@@ -12,11 +12,15 @@ import retrofit2.Response
 import java.util.*
 
 class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val appId: String,
-                            private val appKey: String, private val typeMapper: ForecastTypeMapper) :
+                            private val appKey: String,
+                            private val typeMapper: ForecastTypeMapper) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyweatherunlocked)) {
 
-    override fun apiCall(coordinates: LatLng): Response<ResponseBody>? =
-            api.forecast(coordinates.latitude, coordinates.longitude, appId, appKey).execute()
+    override fun apiCall(
+            coordinates: LatLng): Response<ResponseBody>? = api.forecast(coordinates.latitude,
+            coordinates.longitude,
+            appId,
+            appKey).execute()
 
     override fun handleError(response: Response<ResponseBody>?): Boolean = false
 
@@ -36,8 +40,7 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
             Forecast(text = it.get("wx_desc").asString,
                     forecastType = typeMapper.getForecastType(it.get("wx_icon").asString),
                     high = it.get("temp_f").asDouble,
-                    low = it.get("temp_f").asDouble
-            )
+                    low = it.get("temp_f").asDouble)
         }
     }
 }

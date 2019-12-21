@@ -111,7 +111,12 @@ class MapFragment : SupportMapFragment() {
     @SuppressLint("ObjectAnimatorBinding") fun addMark(mapPoint: MapPoint): Marker? {
         if (!this.isAdded) return null
 
-        val markerOptions = MarkerOptions().position(mapPoint.position).anchor(1F, 1F).title(mapPoint.getTitle(requireContext())).icon(mapPoint.icon).draggable(mapPoint.isDraggable)
+        val markerOptions = MarkerOptions()
+                .position(mapPoint.position)
+                .anchor(1F, 1F)
+                .title(mapPoint.getTitle(requireContext()))
+                .icon(mapPoint.icon)
+                .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)?.apply {
             tag = mapPoint
             if (mapPoint.shouldFadeIn) ObjectAnimator.ofFloat(this, "alpha", 0F, 1F).setDuration(500L).start()

@@ -16,8 +16,10 @@ class OpenWeatherClient(private val api: OpenWeatherApi,
                         private val key: String) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyopenweathermap)) {
 
-    override fun apiCall(coordinates: LatLng): Response<ResponseBody>? =
-            api.forecast(coordinates.latitude, coordinates.longitude, key).execute()
+    override fun apiCall(
+            coordinates: LatLng): Response<ResponseBody>? = api.forecast(coordinates.latitude,
+            coordinates.longitude,
+            key).execute()
 
     override fun handleError(response: Response<ResponseBody>?): Boolean {
         val limitExceededErrorCode = 429
@@ -41,8 +43,7 @@ class OpenWeatherClient(private val api: OpenWeatherApi,
             Forecast(text = weather.get("description").asString,
                     forecastType = forecastTypeMapper.getForecastType(weather.get("main").asString),
                     high = main.get("temp_max").asDouble,
-                    low = main.get("temp_min").asDouble
-            )
+                    low = main.get("temp_min").asDouble)
         }
     }
 }

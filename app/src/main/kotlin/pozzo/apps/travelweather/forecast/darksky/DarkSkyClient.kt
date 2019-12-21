@@ -11,11 +11,13 @@ import pozzo.apps.travelweather.forecast.model.PoweredBy
 import retrofit2.Response
 import java.util.*
 
-class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper: ForecastTypeMapper) :
+class DarkSkyClient(private val api: DarkSkyApi,
+                    private val forecastTypeMapper: ForecastTypeMapper) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbydarksky)) {
 
-    override fun apiCall(coordinates: LatLng): Response<ResponseBody>? =
-            api.forecast(coordinates.latitude, coordinates.longitude).execute()
+    override fun apiCall(
+            coordinates: LatLng): Response<ResponseBody>? = api.forecast(coordinates.latitude,
+            coordinates.longitude).execute()
 
     override fun handleError(response: Response<ResponseBody>?): Boolean {
         val limitExceededErrorCode = 403
@@ -35,8 +37,7 @@ class DarkSkyClient(private val api: DarkSkyApi, private val forecastTypeMapper:
             Forecast(text = it.get("summary").asString,
                     forecastType = forecastTypeMapper.getForecastType(it.get("icon").asString),
                     high = it.get("temperatureHigh").asDouble,
-                    low = it.get("temperatureLow").asDouble
-            )
+                    low = it.get("temperatureLow").asDouble)
         }
     }
 }
