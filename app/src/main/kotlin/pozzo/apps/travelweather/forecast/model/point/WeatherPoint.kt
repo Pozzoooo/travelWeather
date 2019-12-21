@@ -14,6 +14,7 @@ class WeatherPoint(private val weather: Weather) :
     override val icon get() = forecast.icon
     val poweredBy: PoweredBy get() = weather.poweredBy
 
+    //TODO I need to improve performance, too many objects being created + I need string cachin
     override fun getTitle(context: Context): String {
         return ForecastTitleFormatter().createTitle(context, forecast)
     }
