@@ -15,8 +15,6 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Colocar a posicao atual
- *
  * Add temperature besides the weather icon? (or at least in the dialog?)
  *  - Duas modificaoes importantes a serem feitas
  *      - - Preciso adicionar temperatura a todos os parses

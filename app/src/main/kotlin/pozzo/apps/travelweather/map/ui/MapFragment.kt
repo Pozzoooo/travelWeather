@@ -46,10 +46,6 @@ class MapFragment : SupportMapFragment() {
         getMapAsync { onMapReady(it) }
     }
 
-    fun clearMapOverlay() {
-        map?.clear()
-    }
-
     private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
         val mapPoint = marker.tag as MapPoint
         mapPoint.redirectUrl?.let { AndroidUtil.openUrl(it, activity) }
@@ -73,18 +69,27 @@ class MapFragment : SupportMapFragment() {
             return
         }
 
-        this.map = googleMap
-
-        googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
-        googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(activity))
-        googleMap.setOnMarkerDragListener(markerDragListener)
-
+        setupMap(googleMap, activity)
         clearMapOverlay()
         addDragListener()
 
         mainThread.postDelayed({
             viewModel.onMapReady(this)
         }, 500)
+    }
+
+    private fun setupMap(googleMap: GoogleMap, context: Context) {
+        this.map = googleMap
+
+        googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
+        googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(context))
+        googleMap.setOnMarkerDragListener(markerDragListener)
+        googleMap.isMyLocationEnabled = true
+        googleMap.uiSettings.isMyLocationButtonEnabled = false
+    }
+
+    fun clearMapOverlay() {
+        map?.clear()
     }
 
     private fun addDragListener() {
