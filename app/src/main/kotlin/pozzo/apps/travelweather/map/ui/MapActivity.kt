@@ -110,7 +110,7 @@ class MapActivity : BaseActivity() {
         if (event == null || event.action != KeyEvent.ACTION_DOWN)
             return@OnEditorActionListener false
 
-        viewModel.searchAddress(textView.text.toString())
+        viewModel.toggleSearch(textView.text.toString())
         return@OnEditorActionListener true
     }
 
