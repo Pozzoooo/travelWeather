@@ -6,10 +6,6 @@ import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.FormattedTemperature
 import pozzo.apps.travelweather.forecast.model.Temperature
 
-/**
- * Pensei em fazer ele ser injetavel
- * e ai injetar somente o que for da lingua correta! Parece legal nao?
- */
 class ForecastTitleFormatter {
 
     fun createTitle(context: Context, forecast: Forecast): String {

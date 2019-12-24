@@ -15,7 +15,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * I need to check if an unknown language will default to english
+ * Colocar a posicao atual
  *
  * Add temperature besides the weather icon? (or at least in the dialog?)
  *  - Duas modificaoes importantes a serem feitas
