@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.map.viewmodel
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +11,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.App
+import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
@@ -31,6 +34,7 @@ import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
+import pozzo.apps.travelweather.map.model.MapSettings
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.route.RequestLimitReached
@@ -52,7 +56,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private var updateRouteJob: Job? = null
 
     private var route = Route()
+    private val mapSettings = MapSettings()
+
     val routeData = MutableLiveData<Route>()
+    val mapSettingsData = MutableLiveData<MapSettings>()
 
     val error = MutableLiveData<Error>()
     val warning = MutableLiveData<Warning>()
@@ -78,7 +85,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         currentLocationRequester.callback = CurrentLocationCallback()
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
+        mapSettings.isMyLocationEnabled = shouldEnableMyLocation()
+        mapSettingsData.postValue(mapSettings)
     }
+
+    private fun shouldEnableMyLocation(): Boolean = PermissionHelper.isGranted(
+            ACCESS_COARSE_LOCATION,
+            getApplication()) || PermissionHelper.isGranted(ACCESS_FINE_LOCATION, getApplication())
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
         if (route.startPoint == null) setStartAsCurrentLocation(lifecycleOwner)
@@ -271,6 +284,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    //TODO de novo, implementacao especifica, mas nome generico, nao eh legal isso
     private inner class CurrentLocationCallback : CurrentLocationRequester.Callback {
         override fun onCurrentLocation(latLng: LatLng) {
             setStartPosition(latLng)
@@ -282,9 +296,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    //TODO o nomizinho de classe ruin hein, a implementacao ta muito especifica pra esse nome
+    //TODO split
     private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Callback {
         override fun granted(lifeCycleOwner: LifecycleOwner) {
             currentLocationRequester.requestCurrentLocationRequestingPermission(lifeCycleOwner)
+            mapSettings.isMyLocationEnabled = true
+            mapSettingsData.postValue(mapSettings)
         }
 
         override fun denied() {

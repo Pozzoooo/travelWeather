@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.map.ui
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,10 +17,12 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.tools.AndroidUtil
+import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.map.model.MapSettings
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 
 class MapFragment : SupportMapFragment() {
@@ -84,8 +88,17 @@ class MapFragment : SupportMapFragment() {
         googleMap.setOnInfoWindowClickListener(goToWeatherForecastWebPage)
         googleMap.setInfoWindowAdapter(ForecastInfoWindowAdapter(context))
         googleMap.setOnMarkerDragListener(markerDragListener)
-        googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.isMyLocationButtonEnabled = false
+        viewModel.mapSettingsData.value?.let {
+            updateMapSettings(it)
+        }
+    }
+
+    fun updateMapSettings(mapSettings: MapSettings) {
+        if (PermissionHelper.isGranted(ACCESS_COARSE_LOCATION, requireContext())
+                || PermissionHelper.isGranted(ACCESS_FINE_LOCATION, requireContext())) {
+            map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled
+        }
     }
 
     fun clearMapOverlay() {

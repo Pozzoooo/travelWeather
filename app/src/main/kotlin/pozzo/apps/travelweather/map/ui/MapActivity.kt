@@ -143,6 +143,7 @@ class MapActivity : BaseActivity() {
         viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
         viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
+        viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
     }
 
     private fun showOverlay(overlay: LastRunKey) {
