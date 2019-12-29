@@ -17,18 +17,30 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.tools.AndroidUtil
+import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.model.MapSettings
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
+import javax.inject.Inject
 
 class MapFragment : SupportMapFragment() {
     private var map: GoogleMap? = null
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
+
+    @Inject protected lateinit var permissionHelper: PermissionHelper
+
+    init {
+        DaggerMapComponent.builder()
+                .appComponent(App.component())
+                .build()
+                .inject(this)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -95,8 +107,8 @@ class MapFragment : SupportMapFragment() {
     }
 
     fun updateMapSettings(mapSettings: MapSettings) {
-        if (PermissionHelper.isGranted(ACCESS_COARSE_LOCATION, requireContext())
-                || PermissionHelper.isGranted(ACCESS_FINE_LOCATION, requireContext())) {
+        if (permissionHelper.isGranted(ACCESS_COARSE_LOCATION, requireContext())
+                || permissionHelper.isGranted(ACCESS_FINE_LOCATION, requireContext())) {
             map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled
         }
     }

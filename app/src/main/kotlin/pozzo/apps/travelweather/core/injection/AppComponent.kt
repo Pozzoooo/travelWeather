@@ -5,6 +5,7 @@ import android.location.LocationManager
 import com.google.gson.Gson
 import dagger.Component
 import okhttp3.OkHttpClient
+import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.analytics.AnalyticsModule
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.CommonModule
@@ -56,37 +57,38 @@ interface AppComponent {
     fun gson(): Gson
     fun okHttpClient(): OkHttpClient
     fun retrofitBuilder(): Retrofit.Builder
-    fun networkHelper() : NetworkHelper
+    fun networkHelper(): NetworkHelper
 
     //forecast
-    fun forecastClients() : List<ForecastClient>
-    fun forecastBusiness() : ForecastBusiness
+    fun forecastClients(): List<ForecastClient>
+    fun forecastBusiness(): ForecastBusiness
 
     //direction
-    fun directionWeatherFilter() : DirectionWeatherFilter
+    fun directionWeatherFilter(): DirectionWeatherFilter
 
     //analytics
-    fun mapAnalytics() : MapAnalytics
+    fun mapAnalytics(): MapAnalytics
 
     //common
-    fun currentDate() : Calendar
-    fun preferencesBusiness() : PreferencesBusiness
+    fun currentDate(): Calendar
+    fun preferencesBusiness(): PreferencesBusiness
+    fun permissionHelper(): PermissionHelper
 
     //location
-    fun locationBusiness() : LocationBusiness
-    fun directionLineBusiness() : DirectionLineBusiness
-    fun directionParser() : GoogleDirection
-    fun currentLocationRequester() : CurrentLocationRequester
-    fun locationManager() : LocationManager?
-    fun locationLiveData() : LocationLiveData
-    fun geoCoderBusiness() : GeoCoderBusiness
+    fun locationBusiness(): LocationBusiness
+    fun directionLineBusiness(): DirectionLineBusiness
+    fun directionParser(): GoogleDirection
+    fun currentLocationRequester(): CurrentLocationRequester
+    fun locationManager(): LocationManager?
+    fun locationLiveData(): LocationLiveData
+    fun geoCoderBusiness(): GeoCoderBusiness
 
     //map
-    fun weatherToMapPointParser() : WeatherToMapPointParser
-    fun mapPointCreator() : MapPointCreator
-    fun mapTutorial() : MapTutorial
-    fun mapTutorialScript() : MapTutorialScript
+    fun weatherToMapPointParser(): WeatherToMapPointParser
+    fun mapPointCreator(): MapPointCreator
+    fun mapTutorial(): MapTutorial
+    fun mapTutorialScript(): MapTutorialScript
 
     //route
-    fun routeBusiness() : RouteBusiness
+    fun routeBusiness(): RouteBusiness
 }

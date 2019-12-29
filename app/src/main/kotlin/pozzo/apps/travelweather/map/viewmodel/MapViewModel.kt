@@ -51,6 +51,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
     @Inject protected lateinit var networkHelper: NetworkHelper
+    @Inject protected lateinit var permissionHelper: PermissionHelper
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
@@ -89,9 +90,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         mapSettingsData.postValue(mapSettings)
     }
 
-    private fun shouldEnableMyLocation(): Boolean = PermissionHelper.isGranted(
-            ACCESS_COARSE_LOCATION,
-            getApplication()) || PermissionHelper.isGranted(ACCESS_FINE_LOCATION, getApplication())
+    private fun shouldEnableMyLocation(): Boolean =
+            permissionHelper.isGranted(ACCESS_COARSE_LOCATION, getApplication())
+                    || permissionHelper.isGranted(ACCESS_FINE_LOCATION, getApplication())
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
         if (route.startPoint == null) setStartAsCurrentLocation(lifecycleOwner)
