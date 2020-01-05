@@ -7,6 +7,6 @@ import androidx.core.content.ContextCompat
 
 class PermissionChecker(private val context: Context) {
 
-    fun hasPermission(permission: String) : Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1
+    fun isGranted(permission: String) : Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1
             || ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 }

@@ -5,7 +5,6 @@ import android.location.LocationManager
 import com.google.gson.Gson
 import dagger.Component
 import okhttp3.OkHttpClient
-import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.analytics.AnalyticsModule
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.CommonModule
@@ -50,7 +49,6 @@ import javax.inject.Singleton
 interface AppComponent {
     //App
     fun app(): Application
-    fun permissionManager(): PermissionChecker
     fun lastRunRepository(): LastRunRepository
 
     //Network
@@ -72,7 +70,7 @@ interface AppComponent {
     //common
     fun currentDate(): Calendar
     fun preferencesBusiness(): PreferencesBusiness
-    fun permissionHelper(): PermissionHelper
+    fun permissionChecker(): PermissionChecker
 
     //location
     fun locationBusiness(): LocationBusiness

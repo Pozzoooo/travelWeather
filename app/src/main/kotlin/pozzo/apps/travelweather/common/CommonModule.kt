@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
-import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
+import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.injection.AppModule
 import java.util.*
 
@@ -22,5 +22,5 @@ open class CommonModule {
 
     @Provides open fun currentDate() : Calendar = Calendar.getInstance()
 
-    @Provides open fun permissionHelper() = PermissionHelper()
+    @Provides open fun permissionChecker(application: Application) = PermissionChecker(application)
 }

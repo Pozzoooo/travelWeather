@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.App
-import pozzo.apps.travelweather.PermissionHelper
+import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
@@ -33,7 +33,7 @@ class MapFragment : SupportMapFragment() {
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
-    @Inject protected lateinit var permissionHelper: PermissionHelper
+    @Inject protected lateinit var permissionChecker: PermissionChecker
 
     init {
         DaggerMapComponent.builder()
@@ -107,8 +107,8 @@ class MapFragment : SupportMapFragment() {
     }
 
     fun updateMapSettings(mapSettings: MapSettings) {
-        if (permissionHelper.isGranted(ACCESS_COARSE_LOCATION, requireContext())
-                || permissionHelper.isGranted(ACCESS_FINE_LOCATION, requireContext())) {
+        if (permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
+                || permissionChecker.isGranted(ACCESS_FINE_LOCATION)) {
             map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled
         }
     }

@@ -11,15 +11,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.App
-import pozzo.apps.travelweather.PermissionHelper
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
-import pozzo.apps.travelweather.core.BaseViewModel
+import pozzo.apps.travelweather.core.*
 import pozzo.apps.travelweather.core.CoroutineSettings.background
-import pozzo.apps.travelweather.core.Error
-import pozzo.apps.travelweather.core.LastRunRepository
-import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
@@ -51,7 +47,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
     @Inject protected lateinit var networkHelper: NetworkHelper
-    @Inject protected lateinit var permissionHelper: PermissionHelper
+    @Inject protected lateinit var permissionChecker: PermissionChecker
 
     private var dragStart = 0L
     private var updateRouteJob: Job? = null
@@ -91,8 +87,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun shouldEnableMyLocation(): Boolean =
-            permissionHelper.isGranted(ACCESS_COARSE_LOCATION, getApplication())
-                    || permissionHelper.isGranted(ACCESS_FINE_LOCATION, getApplication())
+            permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
+                    || permissionChecker.isGranted(ACCESS_FINE_LOCATION)
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
         if (route.startPoint == null) setStartAsCurrentLocation(lifecycleOwner)

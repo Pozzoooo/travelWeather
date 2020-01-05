@@ -36,7 +36,7 @@ class CurrentLocationRequesterTest {
     }
 
     @Test(expected = PermissionDeniedException::class) fun shouldFailWhenPermissionIsDenied() {
-        whenever(permissionChecker.hasPermission(any())).thenReturn(false)
+        whenever(permissionChecker.isGranted(any())).thenReturn(false)
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 
@@ -61,7 +61,7 @@ class CurrentLocationRequesterTest {
         whenever(location.latitude).thenReturn(1.0)
         whenever(location.longitude).thenReturn(2.0)
         whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenReturn(location)
-        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(permissionChecker.isGranted(any())).thenReturn(true)
     }
 
     @Test fun shouldNotCrashWhenCurrentKnownLocationIsAvailableButNoCallback() {
@@ -71,20 +71,20 @@ class CurrentLocationRequesterTest {
     }
 
     @Test fun shouldNotCrashOnFullRequestFlow() {
-        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(permissionChecker.isGranted(any())).thenReturn(true)
 
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
         currentLocationRequester.removeLocationObserver()
     }
 
     @Test fun shouldSurviveUnexpectedState() {
-        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(permissionChecker.isGranted(any())).thenReturn(true)
         whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenThrow(RuntimeException("Die!!!"))
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
     }
 
     @Test fun shouldSurviveSecurityException() {
-        whenever(permissionChecker.hasPermission(any())).thenReturn(true)
+        whenever(permissionChecker.isGranted(any())).thenReturn(true)
         whenever(locationBusiness.getCurrentKnownLocation(locationManager)).thenThrow(SecurityException("Guards!!!"))
         currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
     }

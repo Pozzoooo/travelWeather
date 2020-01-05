@@ -23,7 +23,7 @@ class CurrentLocationRequester(private val permissionChecker: PermissionChecker,
 
     @Throws(PermissionDeniedException::class)
     fun requestCurrentLocationRequestingPermission(lifecycleOwner: LifecycleOwner) {
-        if (permissionChecker.hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (permissionChecker.isGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             requestCurrentLocation(lifecycleOwner)
         } else {
             throw PermissionDeniedException()
