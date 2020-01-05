@@ -31,8 +31,6 @@ import java.util.*
 import javax.inject.Singleton
 
 /**
- * todo re organize dependencies, seems to be getting a bit messy
- *
  * Root component.
  */
 @Singleton
@@ -63,6 +61,8 @@ interface AppComponent {
 
     //direction
     fun directionWeatherFilter(): DirectionWeatherFilter
+    fun directionLineBusiness(): DirectionLineBusiness
+    fun directionParser(): GoogleDirection
 
     //analytics
     fun mapAnalytics(): MapAnalytics
@@ -74,8 +74,6 @@ interface AppComponent {
 
     //location
     fun locationBusiness(): LocationBusiness
-    fun directionLineBusiness(): DirectionLineBusiness
-    fun directionParser(): GoogleDirection
     fun currentLocationRequester(): CurrentLocationRequester
     fun locationManager(): LocationManager?
     fun locationLiveData(): LocationLiveData
@@ -84,6 +82,8 @@ interface AppComponent {
     //map
     fun weatherToMapPointParser(): WeatherToMapPointParser
     fun mapPointCreator(): MapPointCreator
+
+    //tutorial
     fun mapTutorial(): MapTutorial
     fun mapTutorialScript(): MapTutorialScript
 
