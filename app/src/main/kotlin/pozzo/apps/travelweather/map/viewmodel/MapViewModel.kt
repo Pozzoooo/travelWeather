@@ -39,7 +39,7 @@ import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
 import javax.inject.Inject
 
-class MapViewModel(application: Application) : BaseViewModel(application) {
+class MapViewModel(application: Application) : BaseViewModel(application), ErrorHandler {
     @Inject protected lateinit var geoCoderBusiness: GeoCoderBusiness
     @Inject protected lateinit var mapAnalytics: MapAnalytics
     @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
@@ -79,7 +79,9 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         shouldFinish.value = false
         routeData.value = route
         //todo it must be a better solution to make this dependency clear with injection
-        currentLocationRequester.callback = CurrentLocationCallback()
+        currentLocationRequester.callback = CurrentLocationBinder(currentLocationRequester, this) {
+            setStartPosition(it)
+        }
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
@@ -172,7 +174,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         logDragEvent("re-finishFlag")
     }
 
-    private fun postError(error: Error) {
+    //TODO I think I should isolate this one
+    override fun postError(error: Error) {
         this.error.postValue(error)
         mapAnalytics.sendErrorMessage(error)
     }
@@ -233,6 +236,7 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         }
     }
 
+    //TODO isolated from viewmodel
     private fun logDragEvent(flagName: String) {
         if (dragStart != 0L) {//wont start when set by address
             val dragTime = System.currentTimeMillis() - dragStart
@@ -276,18 +280,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
             actionRequest.postValue(rateMeActionRequest)
             lastRunRepository.setRun(LastRunKey.RATE_DIALOG.key)
             mapAnalytics.sendRateDialogShown()
-        }
-    }
-
-    //TODO de novo, implementacao especifica, mas nome generico, nao eh legal isso
-    private inner class CurrentLocationCallback : CurrentLocationRequester.Callback {
-        override fun onCurrentLocation(latLng: LatLng) {
-            setStartPosition(latLng)
-            currentLocationRequester.removeLocationObserver()
-        }
-
-        override fun onNotFound() {
-            postError(Error.CANT_FIND_CURRENT_LOCATION)
         }
     }
 }
