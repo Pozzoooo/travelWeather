@@ -78,7 +78,6 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         isShowingSearch.value = false
         shouldFinish.value = false
         routeData.value = route
-        //todo it must be a better solution to make this dependency clear with injection
         currentLocationRequester.callback = CurrentLocationBinder(currentLocationRequester, this) {
             setStartPosition(it)
         }
