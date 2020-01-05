@@ -24,7 +24,7 @@ import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.DaggerMapComponent
-import pozzo.apps.travelweather.map.model.MapSettings
+import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import javax.inject.Inject
 
@@ -109,7 +109,7 @@ class MapFragment : SupportMapFragment() {
     fun updateMapSettings(mapSettings: MapSettings) {
         if (permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
                 || permissionChecker.isGranted(ACCESS_FINE_LOCATION)) {
-            map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled
+            map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled()
         }
     }
 

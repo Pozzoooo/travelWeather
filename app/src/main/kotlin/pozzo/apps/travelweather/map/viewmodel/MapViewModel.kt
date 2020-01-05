@@ -1,7 +1,5 @@
 package pozzo.apps.travelweather.map.viewmodel
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -14,8 +12,11 @@ import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
-import pozzo.apps.travelweather.core.*
+import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.CoroutineSettings.background
+import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.core.LastRunRepository
+import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
@@ -30,7 +31,7 @@ import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
-import pozzo.apps.travelweather.map.model.MapSettings
+import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.route.RequestLimitReached
@@ -46,14 +47,13 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
     @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
+    @Inject protected lateinit var mapSettings: MapSettings
+
     @Inject protected lateinit var networkHelper: NetworkHelper
-    @Inject protected lateinit var permissionChecker: PermissionChecker
-
     private var dragStart = 0L
-    private var updateRouteJob: Job? = null
 
+    private var updateRouteJob: Job? = null
     private var route = Route()
-    private val mapSettings = MapSettings()
 
     val routeData = MutableLiveData<Route>()
     val mapSettingsData = MutableLiveData<MapSettings>()
@@ -82,13 +82,8 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         currentLocationRequester.callback = CurrentLocationCallback()
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
-        mapSettings.isMyLocationEnabled = shouldEnableMyLocation()
         mapSettingsData.postValue(mapSettings)
     }
-
-    private fun shouldEnableMyLocation(): Boolean =
-            permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
-                    || permissionChecker.isGranted(ACCESS_FINE_LOCATION)
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
         if (route.startPoint == null) setStartAsCurrentLocation(lifecycleOwner)
@@ -298,7 +293,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
     private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Callback {
         override fun granted(lifeCycleOwner: LifecycleOwner) {
             currentLocationRequester.requestCurrentLocationRequestingPermission(lifeCycleOwner)
-            mapSettings.isMyLocationEnabled = true
             mapSettingsData.postValue(mapSettings)
         }
 
