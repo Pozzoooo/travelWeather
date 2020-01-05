@@ -21,6 +21,7 @@ import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.ForecastModule
 import pozzo.apps.travelweather.location.*
 import pozzo.apps.travelweather.map.MapModule
+import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.MapPointCreator
@@ -82,6 +83,7 @@ interface AppComponent {
     //map
     fun weatherToMapPointParser(): WeatherToMapPointParser
     fun mapPointCreator(): MapPointCreator
+    fun mapSettings(): MapSettings
 
     //tutorial
     fun mapTutorial(): MapTutorial

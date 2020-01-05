@@ -93,7 +93,10 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
         try {
             currentLocationRequester.requestCurrentLocationRequestingPermission(lifecycleOwner)
         } catch (e: PermissionDeniedException) {
-            permissionRequest.postValue(LocationPermissionRequest(LocationPermissionRequestCallback()))
+            permissionRequest.postValue(LocationPermissionRequest(
+                    OnLocationPermissionChange(currentLocationRequester, warning) {
+                        mapSettingsData.postValue(mapSettings)
+                    }))
         }
     }
 
@@ -285,19 +288,6 @@ class MapViewModel(application: Application) : BaseViewModel(application) {
 
         override fun onNotFound() {
             postError(Error.CANT_FIND_CURRENT_LOCATION)
-        }
-    }
-
-    //TODO o nomizinho de classe ruin hein, a implementacao ta muito especifica pra esse nome
-    //TODO split
-    private inner class LocationPermissionRequestCallback : LocationPermissionRequest.Callback {
-        override fun granted(lifeCycleOwner: LifecycleOwner) {
-            currentLocationRequester.requestCurrentLocationRequestingPermission(lifeCycleOwner)
-            mapSettingsData.postValue(mapSettings)
-        }
-
-        override fun denied() {
-            warn(Warning.PERMISSION_DENIED)
         }
     }
 }
