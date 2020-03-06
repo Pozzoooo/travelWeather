@@ -15,20 +15,9 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Add temperature besides the weather icon? (or at least in the dialog?)
- *  - Duas modificaoes importantes a serem feitas
- *      - - Preciso adicionar temperatura a todos os parses
- *      - - No map Fragment preciso utilizar, e para fazer o icone com numero nao sei hein
- *
- * Another option might be https://openweathermap.org/price
- * https://www.worldweatheronline.com/developer/api/pricing2.aspx
- *
  * Anyway to track a specific time?
  *
  * Remove search after it has been done, so the user can see the selected day back again
- *
- * Br apenas
- * http://servicos.cptec.inpe.br/XML/
  *
  * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
  *  has not finished yet
@@ -56,6 +45,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Outra fonte para busca de previsao do tempo
  * Finish Dagger refactoring
  * Increase test coverage
+ *
+ * Another option might be https://www.worldweatheronline.com/developer/api/pricing2.aspx
+ * Br apenas
+ * http://servicos.cptec.inpe.br/XML/
  */
 class App : Application() {
     companion object {
