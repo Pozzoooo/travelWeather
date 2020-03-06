@@ -9,12 +9,12 @@ apply from: '../scripts/jacoco.gradle'
 apply from: '../scripts/keys.gradle'
 
 android {
-	compileSdkVersion 28
+	compileSdkVersion 29
 
 	defaultConfig {
 		applicationId "pozzo.apps.travelweather"
 		minSdkVersion 21
-		targetSdkVersion 28
+		targetSdkVersion 29
 		versionCode 33
 		versionName "1.4.1-SNAPSHOT"
 
