@@ -1,1 +1,33 @@
-[{"outputType":{"type":"APK"},"apkData":{"type":"MAIN","splits":[],"versionCode":32,"versionName":"1.4.0","enabled":true,"outputFile":"travelWeather-1.4.0-32-release.apk","fullName":"release","baseName":"release","dirName":""},"path":"travelWeather-1.4.0-32-release.apk","properties":{}}]
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "pozzo.apps.travelweather",
+  "variantName": "processReleaseResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [
+        {
+          "key": "packageId",
+          "value": "pozzo.apps.travelweather"
+        },
+        {
+          "key": "split",
+          "value": ""
+        },
+        {
+          "key": "minSdkVersion",
+          "value": "21"
+        }
+      ],
+      "versionCode": 33,
+      "versionName": "1.4.1",
+      "enabled": true,
+      "outputFile": "travelWeather-1.4.1-33-release.apk"
+    }
+  ]
+}
