@@ -156,6 +156,7 @@ class MapActivity : BaseActivity() {
             LastRunKey.DRAG_THE_FLAG -> mapTutorial.playDragTheFlag(this)
             LastRunKey.DRAG_AGAIN -> mapTutorial.playDragAgain(this)
             LastRunKey.DAY_SELECTION -> mapTutorial.playDaySelectionTutorial(this)
+            LastRunKey.FORECAST_DETAILS -> mapTutorial.playOpenForecastDetails(this)
             else -> Bug.get().logException("Missing show overlay $overlay")
         }
     }

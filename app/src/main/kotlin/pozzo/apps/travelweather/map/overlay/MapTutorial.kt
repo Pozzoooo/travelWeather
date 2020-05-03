@@ -32,4 +32,11 @@ class MapTutorial {
                 .build()
                 .show()
     }
+
+    fun playOpenForecastDetails(activity: Activity) {
+        FancyShowCaseView.Builder(activity)
+                .title(activity.getString(R.string.tutorial_openForecastDetails))
+                .build()
+                .show()
+    }
 }

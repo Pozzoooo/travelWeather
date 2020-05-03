@@ -17,15 +17,11 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  *
  * Anyway to track a specific time?
  *
- * Remove search after it has been done, so the user can see the selected day back again
- *
  * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
  *  has not finished yet
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
- * Add extra tutorial to check weather deatails.
- * 
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Feedback Pedro: Wind speed (good for motorcycle trip)

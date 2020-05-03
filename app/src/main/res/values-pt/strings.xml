@@ -27,6 +27,7 @@
 	<string name="tutorial_dragTheFlags">Arraste as bandeiras</string>
 	<string name="tutorial_longPressToDrag">Sempre que quiser pode mover a bandeira com um toque longo</string>
 	<string name="tutorial_daySelection">Pode alterar a data na barra superior</string>
+	<string name="tutorial_openForecastDetails">Toque o icone para abrir os detalhes</string>
 
 	<string name="forecast_sunny">Ensolarado</string>
 	<string name="forecast_mostlySunny">Parcialmente ensolarado</string>

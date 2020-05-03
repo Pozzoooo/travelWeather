@@ -10,18 +10,22 @@ class MapTutorialScript(private val lastRunRepository: LastRunRepository) {
     }
 
     fun onFinishPositionSet() {
-        playIfNotPlayed(LastRunKey.DRAG_AGAIN)
+        if(!playIfNotPlayed(LastRunKey.DRAG_AGAIN)) {
+            playIfNotPlayed(LastRunKey.FORECAST_DETAILS)
+        }
     }
 
     fun onUserRequestCurrentLocation() {
         playIfNotPlayed(LastRunKey.DAY_SELECTION)
     }
 
-    private fun playIfNotPlayed(tutorial: LastRunKey) {
+    private fun playIfNotPlayed(tutorial: LastRunKey): Boolean {
         if (!hasPlayed(tutorial)) {
             playTutorialCallback(tutorial)
             setTutorialPlayed(tutorial)
+            return true
         }
+        return false
     }
 
     fun hasPlayed(tutorial: LastRunKey) = lastRunRepository.hasRun(tutorial.key)
