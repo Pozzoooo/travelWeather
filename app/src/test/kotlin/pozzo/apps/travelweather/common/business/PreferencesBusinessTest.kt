@@ -5,12 +5,11 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.forecast.model.Day
@@ -32,8 +31,7 @@ class PreferencesBusinessTest {
     }
 
     @Test fun assertSavingDay() {
-        val editor = Mockito.mock(SharedPreferences.Editor::class.java)
-        whenever(preferences.edit()).thenReturn(editor)
+        val editor = mockEditor()
 
         preferencesBusiness.setSelectedDay(Day.TOMORROW)
 
@@ -41,11 +39,41 @@ class PreferencesBusinessTest {
         verify(editor).apply()
     }
 
-    @Test fun assertReadinSelctionCount() {
+    private fun mockEditor(): SharedPreferences.Editor {
+        val editor = mock(SharedPreferences.Editor::class.java)
+        whenever(editor.putInt(any(), any())).thenReturn(editor)
+        whenever(editor.putLong(any(), any())).thenReturn(editor)
+
+        whenever(preferences.edit()).thenReturn(editor)
+        return editor
+    }
+
+    @Test fun assertPreferencesAreBeingRead() {
         whenever(preferences.getInt("daySelectionCount", 0)).thenReturn(100)
+        whenever(preferences.getInt("usedRequestCount", 0)).thenReturn(7)
+        whenever(preferences.getLong("lastRemainingRequestReset", 0)).thenReturn(900L)
 
-        val count = preferencesBusiness.getDaySelectionCount()
+        assertEquals(100, preferencesBusiness.getDaySelectionCount())
+        assertEquals(7, preferencesBusiness.getUsedRequestCount())
+        assertEquals(900L, preferencesBusiness.getLastRemainingRequestReset())
+    }
 
-        Assert.assertEquals(100, count)
+    @Test fun assertUsedRequestCountAddition() {
+        whenever(preferences.getInt("usedRequestCount", 0)).thenReturn(7)
+        val editor = mockEditor()
+
+        preferencesBusiness.addUsedRequestCount(20)
+
+        verify(editor).putInt("usedRequestCount", 27)
+        verify(editor).apply()
+    }
+
+    @Test fun assertUsedRequestCountReset() {
+        val editor = mockEditor()
+
+        preferencesBusiness.resetUsedRequestCount()
+
+        verify(editor).putInt("usedRequestCount", 0)
+        verify(editor).apply()
     }
 }
