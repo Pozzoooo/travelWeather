@@ -24,8 +24,13 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
+ * Add extra tutorial to check weather deatails.
+ * 
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
+ * Feedback Pedro: Wind speed (good for motorcycle trip)
+ * Feedback Dwight: 10 day forecast at once.
+ * 
  *
  * Make the number of weather dynamic based on the size of the route.
  *  So if the route is really big, then I add fewer weather requests as they probably matter less anyway.
