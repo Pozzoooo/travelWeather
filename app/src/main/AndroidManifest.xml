@@ -4,6 +4,7 @@
     package="pozzo.apps.travelweather" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".App"
@@ -33,6 +34,9 @@
 		<meta-data
 			android:name="com.google.firebase.messaging.default_notification_channel_id"
 			android:value="@string/notificationChannel_default"/>
+		<meta-data
+			android:name="com.google.android.gms.ads.APPLICATION_ID"
+			android:value="ca-app-pub-4203395906383965~9509283966"/>
 
         <activity
             android:name=".map.ui.MapActivity"

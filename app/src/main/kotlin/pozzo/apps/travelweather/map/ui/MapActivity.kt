@@ -13,6 +13,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -23,6 +26,7 @@ import kotlinx.android.synthetic.main.group_top_bar.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
+import pozzo.apps.travelweather.BuildConfig
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
@@ -47,7 +51,6 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import java.lang.NullPointerException
 import java.util.*
 
-//todo colocar data da previsao junto ao texto da previsao
 class MapActivity : BaseActivity() {
     private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
 
@@ -72,6 +75,7 @@ class MapActivity : BaseActivity() {
         setupMapFragment()
         setupView()
         observeViewModel()
+        showAdd()
     }
 
     private fun setupViewModel() {
@@ -335,6 +339,25 @@ class MapActivity : BaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (!permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun showAdd() {
+        if (Random().nextInt(100) == 7) {
+            setupTestDevices()
+            MobileAds.initialize(this) {
+                val adRequest = AdRequest.Builder().build()
+                adView.loadAd(adRequest)
+            }
+        }
+    }
+
+    private fun setupTestDevices() {
+        if (BuildConfig.DEBUG) {
+            //search for "Use RequestConfiguration.Builder"
+            val testDeviceIds = listOf("9E8F0A1C9CCFBB1C6000A97B644FBE47")
+            val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+            MobileAds.setRequestConfiguration(configuration)
         }
     }
 }

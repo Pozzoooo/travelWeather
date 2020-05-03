@@ -57,10 +57,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  */
 class App : Application() {
     companion object {
-        private var appComponent: AppComponent? = null
+        private lateinit var appComponent: AppComponent
 
         fun component(): AppComponent {
-            return appComponent!!//It should be initiated
+            return appComponent
         }
 
         fun setComponent(component: AppComponent) {
