@@ -8,7 +8,7 @@ import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 class ClearActionRequestTest {
 
     @Test fun assertBound() {
-        val mapViewModel = mock<MapViewModel>()
+        val mapViewModel: MapViewModel = mock()
 
         ClearActionRequest(mapViewModel).execute()
 

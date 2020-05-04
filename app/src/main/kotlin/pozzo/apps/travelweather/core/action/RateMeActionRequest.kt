@@ -1,13 +1,13 @@
 package pozzo.apps.travelweather.core.action
 
 import android.content.Context
-import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import pozzo.apps.travelweather.common.Util
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.bugtracker.Bug
-import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.overlay.LastRunKey
+import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 
 class RateMeActionRequest(private val context: Context, private val mapAnalytics: MapAnalytics)
     : ActionRequest(R.string.rateMe) {
@@ -18,7 +18,7 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
 
     override fun execute() {
         mapAnalytics.sendIWantToRate()
-        if (!AndroidUtil.openUrl(context.getString(R.string.googlePlay), context)) {
+        if (!Util().openUrl(context.getString(R.string.googlePlay), context)) {
             Bug.get().logException("Hmm, seems like we have an Android that can't display google play links...")
         }
     }

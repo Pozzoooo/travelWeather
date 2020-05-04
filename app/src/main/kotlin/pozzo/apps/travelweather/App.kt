@@ -2,6 +2,8 @@ package pozzo.apps.travelweather
 
 import android.app.Application
 import kotlinx.coroutines.Dispatchers
+import pozzo.apps.travelweather.common.Android
+import pozzo.apps.travelweather.common.Util
 import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.bugtracker.FabricBug
@@ -69,6 +71,7 @@ class App : Application() {
         initBugTracker()
         initComponent()
         initCoroutines()
+        initUtil()
 	}
 
     private fun initBugTracker() {
@@ -92,5 +95,9 @@ class App : Application() {
     private fun initCoroutines() {
         CoroutineSettings.background = Dispatchers.Default
         CoroutineSettings.ui = Dispatchers.Main
+    }
+
+    private fun initUtil() {
+        Util.instance = Android()
     }
 }
