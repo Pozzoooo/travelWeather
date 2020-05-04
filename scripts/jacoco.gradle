@@ -49,7 +49,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/databinding/**',
 			'**/*Tutorial*',
 			'**/*LiveData*',
-			'**/PermissionChecker.class'
+			'**/PermissionChecker.class',
+			'**/*Factory.class'
 	]
 	// generated classes
 	getClassDirectories().setFrom(fileTree(
