@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 
 class NetworkHelper {
 
+    //TODO replace deprecated code
     fun isConnected(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
         val activeNetworkInfo = connectivityManager?.activeNetworkInfo

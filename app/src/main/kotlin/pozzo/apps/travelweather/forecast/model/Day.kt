@@ -20,7 +20,8 @@ enum class Day(val index: Int, val title: Int? = null) {
     IDX_10(10),
     IDX_11(11);
 
-    override fun toString() = title?.let { getTitleFromStringResource(it) } ?: getTitleFromDate(index)
+    override fun toString() = title?.let { getTitleFromStringResource(it) }
+            ?: getTitleFromDate(index)
 
     private fun getTitleFromStringResource(stringId: Int) = App.component().app().getString(stringId)
 
@@ -38,8 +39,8 @@ enum class Day(val index: Int, val title: Int? = null) {
         val DEFAULT = TOMORROW
 
         fun getByIndex(index: Int): Day =
-                Day.values().firstOrNull {
+                values().firstOrNull {
                     it.index == index
-                }?.let { it } ?: DEFAULT
+                } ?: DEFAULT
     }
 }

@@ -1,12 +1,15 @@
 package pozzo.apps.travelweather.map.manager
 
-import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.map.factory.AdapterFactory
 
-class DaySelectionListManager(private val spinnerDaySelection: Spinner, callback: AdapterView.OnItemSelectedListener) {
+class DaySelectionListManager(private val spinnerDaySelection: Spinner,
+                              private val adapterFactory: AdapterFactory,
+                              callback: OnItemSelectedListener) {
     companion object {
         private const val DEFAULT_SIZE = 7
     }
@@ -18,8 +21,8 @@ class DaySelectionListManager(private val spinnerDaySelection: Spinner, callback
 
     fun updateDaySelections(size: Int) {
         val newSize = calculateNewSize(size)
-        val adapter = ArrayAdapter<Day>(spinnerDaySelection.context,
-                android.R.layout.simple_list_item_1, createNewListBasedOnSize(newSize))
+        val adapter = adapterFactory.createArrayAdapter(
+                spinnerDaySelection.context, createNewListBasedOnSize(newSize))
         updateAdapterAndSelection(adapter, calculateNewSelection(newSize))
     }
 
@@ -30,7 +33,7 @@ class DaySelectionListManager(private val spinnerDaySelection: Spinner, callback
 
     private fun createNewListBasedOnSize(size: Int) = Day.values().copyOfRange(0, size)
 
-    private fun calculateNewSelection(size: Int) : Int {
+    private fun calculateNewSelection(size: Int): Int {
         val currentSelection = spinnerDaySelection.selectedItemPosition
         return if (currentSelection >= size) size - 1 else currentSelection
     }

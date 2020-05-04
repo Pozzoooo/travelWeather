@@ -43,6 +43,7 @@ import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.ReturnAnimation
+import pozzo.apps.travelweather.map.factory.AdapterFactory
 import pozzo.apps.travelweather.map.manager.DaySelectionListManager
 import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.LastRunKey
@@ -101,7 +102,8 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupDaySelection() {
-        daySelectionListManager = DaySelectionListManager(spinnerDaySelection, object : AdapterView.OnItemSelectedListener {
+        daySelectionListManager = DaySelectionListManager(spinnerDaySelection, AdapterFactory(),
+                object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) { }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
