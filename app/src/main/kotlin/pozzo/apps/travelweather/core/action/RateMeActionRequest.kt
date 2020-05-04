@@ -23,7 +23,8 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
         }
     }
 
-    fun isTimeToDisplay(mapTutorialScript: MapTutorialScript, lastRunRepository: LastRunRepository, daySelectionCount: Int) : Boolean {
+    fun isTimeToDisplay(mapTutorialScript: MapTutorialScript, lastRunRepository: LastRunRepository,
+                        daySelectionCount: Int): Boolean {
         return !lastRunRepository.hasRun(LastRunKey.RATE_DIALOG.key)
                 && daySelectionCount > AMOUNT_OF_OCCURRENCES
                 && mapTutorialScript.hasPlayed(LastRunKey.DRAG_AGAIN)
