@@ -15,7 +15,7 @@ class ForecastTypeMapperOpenWeather : ForecastTypeMapper {
     override fun getForecastType(type: String) : ForecastType {
         val forecastType = forecastTypeMap[type.toLowerCase(Locale.US)]
         return if (forecastType == null) {
-            Bug.get().logException("Unknown forecast ${type}")
+            Bug.get().logException("Unknown forecast $type")
             ForecastType.UNKNOWN
         } else {
             forecastType

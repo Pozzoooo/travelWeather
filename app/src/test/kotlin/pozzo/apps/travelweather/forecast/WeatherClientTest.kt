@@ -18,10 +18,11 @@ import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.forecast.darksky.DarkSkyClient
 import pozzo.apps.travelweather.forecast.darksky.ForecastModuleDarkSky
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.forecast.openweather.ForecastModuleOpenWeather
+import pozzo.apps.travelweather.forecast.openweather.OpenWeatherClient
 import pozzo.apps.travelweather.forecast.weatherunlocked.ForecastModuleWeatherUnlocked
 import pozzo.apps.travelweather.forecast.weatherunlocked.WeatherUnlockedClient
 import java.lang.Exception
-import java.util.*
 
 class WeatherClientTest {
     companion object {
@@ -54,7 +55,7 @@ class WeatherClientTest {
     @Test fun assertHappyPathRequest() {
         setupAllClients()
 
-        forecastClients.forEach {
+        forEachClient {
             val weather = it.fromCoordinates(LAT_LNG)!!
 
             Assert.assertTrue(weather.forecasts.isNotEmpty())
@@ -70,6 +71,7 @@ class WeatherClientTest {
     private fun setupAllClients(shouldMockResponse: Boolean = true) {
         setupWeatherUnlocked(if (shouldMockResponse) "weatherUnlockedSample.json" else null)
         setupDarkSky(if (shouldMockResponse) "darkSkySample.json" else null)
+        setupOpenWeatherClient(if (shouldMockResponse) "openWeatherSample.json" else null)
     }
 
     private fun setupWeatherUnlocked(mockedResponseJsonFile: String?) {
@@ -95,10 +97,24 @@ class WeatherClientTest {
         forecastClients.add(DarkSkyClient(api, module.forecastTypeMapper()))
     }
 
+    private fun setupOpenWeatherClient(mockedResponseJsonFile: String?) {
+        val module = ForecastModuleOpenWeather()
+        val api = module.createApi(appComponent.retrofitBuilder(), enqueueRequest(mockedResponseJsonFile))
+
+        forecastClients.add(OpenWeatherClient(api, module.forecastTypeMapper(), ""))
+    }
+
+    private fun forEachClient(each: (ForecastClient) -> Unit) {
+        forecastClients.forEach {
+            println(" >>>> ${it::class.java.simpleName} <<<< ")
+            each(it)
+        }
+    }
+
     @Test fun shouldNotCrashOnRequestError() {
         setupAllClients(false)
 
-        forecastClients.forEach {
+        forEachClient {
             val weather = it.fromCoordinates(LAT_LNG)
 
             Assert.assertNull(weather)
@@ -107,10 +123,15 @@ class WeatherClientTest {
     }
 
     @Test fun shouldNotCrashAndReportOnErrorFormat() {
-        setupAllClients()
+        val maxProvidersCount = 10
+        repeat(maxProvidersCount) {
+            enqueueRequest("googleDirectionResponseSample.json")
+        }
 
-        forecastClients.reverse()
-        forecastClients.forEach {
+        setupAllClients(false)
+        assert(maxProvidersCount > forecastClients.size)
+
+        forEachClient {
             val weather = it.fromCoordinates(LAT_LNG)
 
             Assert.assertNull(weather)
