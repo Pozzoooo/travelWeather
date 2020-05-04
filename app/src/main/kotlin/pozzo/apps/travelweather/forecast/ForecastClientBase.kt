@@ -33,38 +33,38 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
             apiCall(coordinates)
         } catch (e: Exception) {
             Bug.get().logException(e)
-            return null
+            null
         }
     }
 
     private fun validateResponse(response: Response<ResponseBody>): String? {
         val result = response.body()?.string()
-        return if (result?.isEmpty() != false || !response.isSuccessful) {
+        if (result?.isEmpty() != false || !response.isSuccessful) {
             if(!handleError(response)) {
                 Bug.get().logException(Exception("Null body ${this.javaClass.simpleName}, " +
                         "code: ${response.code()}, error: ${response.errorBody()?.string()}"))
             }
-            null
-        } else {
-            result
+            return null
         }
+        return result
     }
 
     private fun handleSuccessResponseBody(body: String) : List<Forecast>? {
-        return try {
-            parseResult(body)
+        try {
+            return parseResult(body)
         } catch (e: JsonParseException) {
-            Bug.get().logException(Exception("Unexpected body format: $body", e))
-            null
+            logException(body, e)
         } catch (e: IllegalStateException) {
-            Bug.get().logException(Exception("Unexpected body format: $body", e))
-            null
+            logException(body, e)
         } catch (e: IndexOutOfBoundsException) {
-            Bug.get().logException(e)
-            null
+            logException(body, e)
         } catch (e: NullPointerException) {
-            Bug.get().logException(e)
-            null
+            logException(body, e)
         }
+        return null
+    }
+
+    private fun logException(body: String, e: Exception) {
+        Bug.get().logException(Exception("Unexpected body format: $body", e))
     }
 }
