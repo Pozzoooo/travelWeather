@@ -6,7 +6,7 @@ import pozzo.apps.travelweather.common.Android
 import pozzo.apps.travelweather.common.Util
 import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
-import pozzo.apps.travelweather.core.bugtracker.FabricBug
+import pozzo.apps.travelweather.core.bugtracker.FirebaseBug
 import pozzo.apps.travelweather.core.bugtracker.LogBug
 import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.core.injection.AppModule
@@ -78,7 +78,7 @@ class App : Application() {
         val bugInstance = if (BuildConfig.DEBUG) {
             LogBug()
         } else {
-            FabricBug()
+            FirebaseBug()
         }
         Bug.setInstance(bugInstance)
     }
