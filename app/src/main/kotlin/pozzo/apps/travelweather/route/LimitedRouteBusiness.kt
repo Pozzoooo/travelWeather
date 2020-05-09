@@ -6,8 +6,9 @@ import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 
 class LimitedRouteBusiness(
-        private val unlimitedRouteBusiness : UnlimitedRouteBusiness,
+        private val unlimitedRouteBusiness: UnlimitedRouteBusiness,
         private val preferencesBusiness: PreferencesBusiness) : RouteBusiness {
+
     companion object {
         private const val DAILY_MAX_FREE_REQUESTS = 100
         private const val RESET_SPAN_MILLI = 24L * 60L * 60L * 1000L
@@ -15,10 +16,9 @@ class LimitedRouteBusiness(
 
     override fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {
         assertRemainingRequests()
-        val route = unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
-        preferencesBusiness.getDaySelectionCount()
-        incrementCounter(route)
-        return route
+        return unlimitedRouteBusiness.createRoute(startPoint, finishPoint).also {
+            incrementCounter(it)
+        }
     }
 
     private fun assertRemainingRequests() {
@@ -49,7 +49,7 @@ class LimitedRouteBusiness(
         - adicionar analytics para entender como esta sendo utilizado
         - olhar analytics para decidir qual um maximo apropriado
      */
-    fun getMaxRequest() : Int {
+    fun getMaxRequest(): Int {
         return DAILY_MAX_FREE_REQUESTS //todo add paid ones
     }//todo sera que seria uma boa usar live data pra esses caras?
 
