@@ -23,6 +23,7 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
         }
     }
 
+    //TODO estou misturando business com request aqui
     fun isTimeToDisplay(mapTutorialScript: MapTutorialScript, lastRunRepository: LastRunRepository,
                         daySelectionCount: Int): Boolean {
         return !lastRunRepository.hasRun(LastRunKey.RATE_DIALOG.key)

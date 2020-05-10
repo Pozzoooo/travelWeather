@@ -40,7 +40,6 @@ class MapViewModelTest {
     @Mock private lateinit var application: Application
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
 
-    val address by lazy { "address" }
     val start by lazy { LatLng(1.0, 2.0) }
     val finish by lazy { LatLng(3.0, 4.0) }
     val emptyRoute by lazy { Route() }
@@ -184,6 +183,8 @@ class MapViewModelTest {
     }
 
     @Test fun assertSearchIsHappening() {
+        val address = "address"
+
         whenever(locationModuleFake.geoCoderBusiness.getPositionFromFirst(address)).thenReturn(start)
         mapViewModel.searchAddress(address)
         assertEquals(start, mapViewModel.routeData.value!!.startPoint!!.position)

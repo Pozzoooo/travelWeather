@@ -188,7 +188,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     private fun handleConnectionError(ioException: IOException) {
-        if (error.value != null) return //there is a popup showing already, so no botherr
+        if (error.value != null) return //there is a popup showing already, so no bother
         if (!networkHelper.isConnected(getApplication())) postError(Error.NO_CONNECTION)
         else postError(Error.CANT_REACH)
     }
