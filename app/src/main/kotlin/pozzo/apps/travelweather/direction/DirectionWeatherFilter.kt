@@ -2,46 +2,65 @@ package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import kotlin.math.abs
 
 /**
  * The idea here is to pick where the weathers are gonna be shown in the direction line.
  */
 class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
     companion object {
-        private const val MIN_SIZE = 1000
         private const val PADDING = 350
+        private const val MIN_SIZE = 1300
+        private const val MEDIUM_DIRECTION_THRESHOLD = 12000
+        private const val LONG_DIRECTION_THRESHOLD = 35000
+        private const val SUPER_LONG_DIRECTION_THRESHOLD = 70000
     }
 
-    private lateinit var directionLine : List<LatLng>
+    private lateinit var directionLine: List<LatLng>
 
-    fun getWeatherPointsLocations(directionLine: List<LatLng>) : List<LatLng> {
+    fun getWeatherPointsLocations(directionLine: List<LatLng>): List<LatLng> {
         this.directionLine = directionLine
 
         return when {
             directionLine.isEmpty() -> emptyDirectionLine()
             isShortDirection() -> createShortDirectionList()
-            else -> createLongDirectionList()
+            isMediumDirection() -> creteWeatherPoints(.5)
+            isLongDirection() -> creteWeatherPoints(1.5)
+            isSuperLongDirection() -> creteWeatherPoints(2.5)
+            else -> creteWeatherPoints(7.0)
         }
     }
 
-    private fun emptyDirectionLine() : List<LatLng> {
+    private fun emptyDirectionLine(): List<LatLng> {
         mapAnalytics.sendEmptyForecastCountByRoute()
         return emptyList()
     }
 
-    private fun isShortDirection() : Boolean = directionLine.size < MIN_SIZE
+    private fun isShortDirection(): Boolean = directionLine.size < MIN_SIZE
 
-    private fun createShortDirectionList() : List<LatLng> {
+    private fun createShortDirectionList(): List<LatLng> {
         mapAnalytics.sendSingleForecastCountByRoute(directionLine.size)
         return listOf(meanPoint())
     }
 
-    private fun meanPoint() : LatLng = directionLine[directionLine.size / 2]
+    private fun meanPoint(): LatLng = directionLine[directionLine.size / 2]
+    private fun isMediumDirection(): Boolean = directionLine.size < MEDIUM_DIRECTION_THRESHOLD
+    private fun isLongDirection(): Boolean = directionLine.size < LONG_DIRECTION_THRESHOLD
+    private fun isSuperLongDirection(): Boolean = directionLine.size < SUPER_LONG_DIRECTION_THRESHOLD
+    private fun startPoint(): LatLng = directionLine[PADDING]
+    private fun lastPoint(): LatLng = directionLine[directionLine.size - PADDING]
 
-    private fun createLongDirectionList() : List<LatLng> {
+    private fun creteWeatherPoints(minDistance: Double): List<LatLng> {
         val filteredPoints = mutableListOf<LatLng>()
         addStartAndFinish(filteredPoints)
-        addMiddlePoints(filteredPoints)
+        var lastForecast = filteredPoints[0]
+        for (i in 600 until directionLine.size - 700 step 250) {
+            val latLng = directionLine[i]
+            if (isMinDistanceToForecast(latLng, lastForecast, minDistance)) {
+                lastForecast = latLng
+                filteredPoints.add(latLng)
+            }
+        }
         mapAnalytics.sendForecastCountByRoute(filteredPoints.size, directionLine.size)
         return filteredPoints
     }
@@ -51,27 +70,8 @@ class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
         filteredPoints.add(lastPoint())
     }
 
-    private fun startPoint() : LatLng = directionLine[PADDING]
-    private fun lastPoint() : LatLng = directionLine[directionLine.size - PADDING]
-
-    private fun addMiddlePoints(filteredPoints: MutableList<LatLng>) {
-        var lastForecast = filteredPoints[0]
-        for (i in 500 until directionLine.size - 500) {
-            val latLng = directionLine[i]
-            if (isGoodFitForWeather(i, latLng, lastForecast)) {
-                lastForecast = latLng
-                filteredPoints.add(latLng)
-            }
-        }
-    }
-
-    private fun isGoodFitForWeather(position: Int, latLng: LatLng, lastForecast: LatLng) : Boolean {
-        return position % 250 == 1 //Um mod para nao checar em todos os pontos, sao muitos
-                && isMinDistanceToForecast(latLng, lastForecast)
-    }
-
-    fun isMinDistanceToForecast(from: LatLng, to: LatLng): Boolean {
-        val distance = Math.abs(from.latitude - to.latitude) + Math.abs(from.longitude - to.longitude)
-        return distance > 0.5
+    fun isMinDistanceToForecast(from: LatLng, to: LatLng, minDistance: Double): Boolean {
+        val distance = abs(from.latitude - to.latitude) + abs(from.longitude - to.longitude)
+        return distance > minDistance
     }
 }
