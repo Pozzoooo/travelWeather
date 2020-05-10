@@ -21,12 +21,13 @@ class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
     fun getWeatherPointsLocations(directionLine: List<LatLng>): List<LatLng> {
         this.directionLine = directionLine
 
+        val size = directionLine.size
         return when {
-            directionLine.isEmpty() -> emptyDirectionLine()
-            isShortDirection() -> createShortDirectionList()
-            isMediumDirection() -> creteWeatherPoints(.5)
-            isLongDirection() -> creteWeatherPoints(1.5)
-            isSuperLongDirection() -> creteWeatherPoints(2.5)
+            0 == size -> emptyDirectionLine()
+            MIN_SIZE > size -> createShortDirectionList()
+            MEDIUM_DIRECTION_THRESHOLD > size -> creteWeatherPoints(.5)
+            LONG_DIRECTION_THRESHOLD > size -> creteWeatherPoints(1.5)
+            SUPER_LONG_DIRECTION_THRESHOLD > size -> creteWeatherPoints(2.5)
             else -> creteWeatherPoints(7.0)
         }
     }
@@ -36,39 +37,29 @@ class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
         return emptyList()
     }
 
-    private fun isShortDirection(): Boolean = directionLine.size < MIN_SIZE
-
     private fun createShortDirectionList(): List<LatLng> {
         mapAnalytics.sendSingleForecastCountByRoute(directionLine.size)
         return listOf(meanPoint())
     }
 
     private fun meanPoint(): LatLng = directionLine[directionLine.size / 2]
-    private fun isMediumDirection(): Boolean = directionLine.size < MEDIUM_DIRECTION_THRESHOLD
-    private fun isLongDirection(): Boolean = directionLine.size < LONG_DIRECTION_THRESHOLD
-    private fun isSuperLongDirection(): Boolean = directionLine.size < SUPER_LONG_DIRECTION_THRESHOLD
-    private fun startPoint(): LatLng = directionLine[PADDING]
-    private fun lastPoint(): LatLng = directionLine[directionLine.size - PADDING]
 
     private fun creteWeatherPoints(minDistance: Double): List<LatLng> {
-        val filteredPoints = mutableListOf<LatLng>()
-        addStartAndFinish(filteredPoints)
-        var lastForecast = filteredPoints[0]
+        val weatherPoints = mutableListOf(startPoint(), lastPoint())
+        var lastForecast = weatherPoints[0]
         for (i in 600 until directionLine.size - 700 step 250) {
             val latLng = directionLine[i]
             if (isMinDistanceToForecast(latLng, lastForecast, minDistance)) {
                 lastForecast = latLng
-                filteredPoints.add(latLng)
+                weatherPoints.add(latLng)
             }
         }
-        mapAnalytics.sendForecastCountByRoute(filteredPoints.size, directionLine.size)
-        return filteredPoints
+        mapAnalytics.sendForecastCountByRoute(weatherPoints.size, directionLine.size)
+        return weatherPoints
     }
 
-    private fun addStartAndFinish(filteredPoints: MutableList<LatLng>) {
-        filteredPoints.add(startPoint())
-        filteredPoints.add(lastPoint())
-    }
+    private fun startPoint(): LatLng = directionLine[PADDING]
+    private fun lastPoint(): LatLng = directionLine[directionLine.size - PADDING]
 
     fun isMinDistanceToForecast(from: LatLng, to: LatLng, minDistance: Double): Boolean {
         val distance = abs(from.latitude - to.latitude) + abs(from.longitude - to.longitude)
