@@ -15,6 +15,12 @@ android {
 	}
 }
 
+//Jacoco won't run in JDK 9+
+//tasks.withType(Test) {
+//	jacoco.includeNoLocationClasses = true
+//	jacoco.excludes = ['jdk.internal.*']
+//}
+
 task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports for Debug build"
@@ -35,8 +41,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 			'**/Manifest*.*',
 			'**/*Test*.*',
 			'android/**/*.*',
-			'**/model/*.*',
-			'**/model/point/*.*',
 			'**/*Fragment*',
 			'**/*Activity*',
 			'**/*Adapter*',
