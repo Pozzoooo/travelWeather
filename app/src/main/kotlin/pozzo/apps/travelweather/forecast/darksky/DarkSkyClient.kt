@@ -34,8 +34,12 @@ class DarkSkyClient(private val api: DarkSkyApi,
         val dailyData = jsonResult.getAsJsonObject("daily").getAsJsonArray("data")
 
         return dailyData.map { it.asJsonObject }.map {
+            val dateTime = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"))
+            dateTime.timeInMillis = it.getAsJsonPrimitive("time").asLong * 1000L
+
             Forecast(text = it.get("summary").asString,
                     forecastType = forecastTypeMapper.getForecastType(it.get("icon").asString),
+                    dateTime = dateTime,
                     high = it.get("temperatureHigh").asDouble,
                     low = it.get("temperatureLow").asDouble)
         }

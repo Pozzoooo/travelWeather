@@ -13,6 +13,7 @@ data class Weather(
     val latLng: LatLng
         get() = address.latLng
 
+    //Passo 2 - E ai ao inves de passar o dia eu passo timestamp e pego o proximo
     fun getForecast(day: Day): Forecast {
         val index = day.index
         return if (index < 0 || index >= forecasts.size) {
@@ -24,3 +25,7 @@ data class Weather(
         }
     }
 }
+
+//Passo 3 - E posso deixar o fato da progressao pela rota como um proximo passo?
+//Mas uma forma bem simples seria pegar sempre o proximo...
+//Passo 4+ - E num futuro ainda mais distante da pra tentar usar o google direction para uma precisao de tempo melhor
