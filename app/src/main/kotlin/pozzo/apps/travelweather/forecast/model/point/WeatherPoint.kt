@@ -10,7 +10,7 @@ class WeatherPoint(private val weather: Weather) :
         MapPoint(null, weather.latLng, weather.url, false, true) {
 
     val forecastSize = weather.forecasts.size
-    val forecast: Forecast get() = weather.getForecast(day)
+    val forecast: Forecast get() = weather.getForecast(day.toCalendar())
     override val icon get() = forecast.icon
     val poweredBy: PoweredBy get() = weather.poweredBy
 

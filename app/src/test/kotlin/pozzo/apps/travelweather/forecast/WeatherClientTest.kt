@@ -23,6 +23,8 @@ import pozzo.apps.travelweather.forecast.openweather.OpenWeatherClient
 import pozzo.apps.travelweather.forecast.weatherunlocked.ForecastModuleWeatherUnlocked
 import pozzo.apps.travelweather.forecast.weatherunlocked.WeatherUnlockedClient
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 class WeatherClientTest {
     companion object {
@@ -63,7 +65,7 @@ class WeatherClientTest {
             Assert.assertNotNull(weather.url)
             Assert.assertNotNull(weather.poweredBy)
 
-            val forecast = weather.getForecast(Day.TODAY)
+            val forecast = weather.getForecast(GregorianCalendar.getInstance())
             Assert.assertEquals(ForecastType.SNOW, forecast.forecastType)
         }
     }

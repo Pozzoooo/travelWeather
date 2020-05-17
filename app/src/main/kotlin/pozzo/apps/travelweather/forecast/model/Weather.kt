@@ -1,8 +1,8 @@
 package pozzo.apps.travelweather.forecast.model
 
 import com.google.android.gms.maps.model.LatLng
-import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.map.model.Address
+import java.util.*
 
 data class Weather(
     val url: String,
@@ -10,19 +10,23 @@ data class Weather(
     val address: Address,
     val poweredBy: PoweredBy) {
 
+    companion object {
+        private const val PAST_LIMIT = 2L * 60L * 60L * 1000L
+    }
+
     val latLng: LatLng
         get() = address.latLng
 
-    //Passo 2 - E ai ao inves de passar o dia eu passo timestamp e pego o proximo
-    fun getForecast(day: Day): Forecast {
-        val index = day.index
-        return if (index < 0 || index >= forecasts.size) {
-            Bug.get().logException(ArrayIndexOutOfBoundsException(
-                    "Forecast out of range, tried: $index, but size was ${forecasts.size}"))
-            forecasts.last()
-        } else {
-            forecasts.getOrNull(day.index) ?: forecasts.last()
+    fun getForecast(date: Calendar): Forecast {
+        var closer: Forecast? = null
+        forecasts.forEach {
+            val isInClosePastOrFuture = date.timeInMillis < it.dateTime.timeInMillis + PAST_LIMIT
+            val isEvenCloser = it.dateTime.timeInMillis < closer?.dateTime?.timeInMillis ?: Long.MAX_VALUE
+            if (isInClosePastOrFuture && isEvenCloser) {
+                closer = it
+            }
         }
+        return closer ?: forecasts.last()
     }
 }
 
