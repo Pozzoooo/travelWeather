@@ -39,9 +39,12 @@ class OpenWeatherClient(private val api: OpenWeatherApi,
         return dailyData.map { it.asJsonObject }.map {
             val main = it.getAsJsonObject("main")
             val weather = it.getAsJsonArray("weather").get(0).asJsonObject
+            val date = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"))
+            date.timeInMillis = it.getAsJsonPrimitive("dt").asLong * 1000L
 
             Forecast(text = weather.get("description").asString,
                     forecastType = forecastTypeMapper.getForecastType(weather.get("main").asString),
+                    date = date,
                     high = main.get("temp_max").asDouble,
                     low = main.get("temp_min").asDouble)
         }
