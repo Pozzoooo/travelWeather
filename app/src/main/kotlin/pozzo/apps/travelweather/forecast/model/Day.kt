@@ -35,6 +35,12 @@ enum class Day(val index: Int, val title: Int? = null) {
         }
     }
 
+    fun toCalendar(): Calendar {
+        return GregorianCalendar.getInstance().apply {
+            roll(Calendar.DAY_OF_YEAR, index)
+        }
+    }
+
     companion object {
         val DEFAULT = TOMORROW
 
