@@ -32,13 +32,16 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
     override fun parseResult(body: String): List<Forecast>? {
         val jsonResult = JsonParser().parse(body).asJsonObject
         val dailyData = jsonResult.getAsJsonArray("Days")
+        val dateParser = DateParserWeatherUnlocked()
 
-        return dailyData.map {
-            val timeFrames = it.asJsonObject.getAsJsonArray("Timeframes")
-            timeFrames.get(timeFrames.size() / 2).asJsonObject
+        return dailyData.flatMap {
+            it.asJsonObject.getAsJsonArray("Timeframes")
+        }.map {
+            it.asJsonObject
         }.map {
             Forecast(text = it.get("wx_desc").asString,
                     forecastType = typeMapper.getForecastType(it.get("wx_icon").asString),
+                    date = dateParser.parse(it),
                     high = it.get("temp_f").asDouble,
                     low = it.get("temp_f").asDouble)
         }
