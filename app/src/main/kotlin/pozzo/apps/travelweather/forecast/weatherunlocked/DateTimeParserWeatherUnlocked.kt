@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateParserWeatherUnlocked {
+class DateTimeParserWeatherUnlocked {
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.US)
 
     fun parse(timeframe: JsonObject): Calendar {

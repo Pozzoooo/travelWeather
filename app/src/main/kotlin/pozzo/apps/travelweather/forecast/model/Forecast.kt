@@ -7,7 +7,7 @@ import java.util.*
 //TODO reorder once the feature is fully implemented
 data class Forecast(var text: String,
                     var forecastType: ForecastType,
-                    var high: Double, var low: Double, var date: Calendar = null!!) {
+                    var high: Double, var low: Double, var dateTime: Calendar = null!!) {
 
     val icon: BitmapDescriptor?
         get() {

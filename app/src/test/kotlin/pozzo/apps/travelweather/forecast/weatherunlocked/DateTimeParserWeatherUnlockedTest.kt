@@ -6,8 +6,8 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
-class DateParserWeatherUnlockedTest {
-    private val parser = DateParserWeatherUnlocked()
+class DateTimeParserWeatherUnlockedTest {
+    private val parser = DateTimeParserWeatherUnlocked()
 
     @Test fun assertParsing() {
         val timeframe = JsonObject().apply {
