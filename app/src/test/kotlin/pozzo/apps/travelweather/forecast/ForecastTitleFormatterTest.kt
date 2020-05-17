@@ -3,8 +3,7 @@ package pozzo.apps.travelweather.forecast
 import android.content.Context
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import org.junit.Assert.*
-import org.junit.Before
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.forecast.model.Forecast
@@ -21,7 +20,7 @@ class ForecastTitleFormatterTest {
 
     @Test fun shouldParseToCelsiusTitle() {
         Locale.setDefault(Locale.UK)
-        val forecast = Forecast(TITLE, ForecastType.BREEZY, HIGH_F, LOW_F)
+        val forecast = Forecast(TITLE, ForecastType.BREEZY, Calendar.getInstance(), HIGH_F, LOW_F)
 
         val title = forecastTitleFormatter.createTitle(context, forecast)
 
@@ -30,7 +29,7 @@ class ForecastTitleFormatterTest {
 
     @Test fun shouldParseToFarenhitTitle() {
         Locale.setDefault(Locale.US)
-        val forecast = Forecast(TITLE, ForecastType.BREEZY, HIGH_F, LOW_F)
+        val forecast = Forecast(TITLE, ForecastType.BREEZY, Calendar.getInstance(), HIGH_F, LOW_F)
 
         val title = forecastTitleFormatter.createTitle(context, forecast)
 
