@@ -3,7 +3,9 @@ package pozzo.apps.travelweather.map.parser
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
@@ -16,11 +18,19 @@ class MapPointCreator(
         val mapPoints = Channel<MapPoint>()
         GlobalScope.launch(background) {
             weatherPointLocation.asSequence()
+                    .mapIndexed(::sparseCalls)
                     .mapNotNull(forecastBusiness::forecast)
                     .mapNotNull(weatherToMapPointParser::parse)
                     .forEach { mapPoints.send(it) }
             mapPoints.close()
         }
         return mapPoints
+    }
+
+    private fun sparseCalls(sparseBy: Int, latLng: LatLng): LatLng {
+        runBlocking {
+            delay(sparseBy * 100L)
+        }
+        return latLng
     }
 }
