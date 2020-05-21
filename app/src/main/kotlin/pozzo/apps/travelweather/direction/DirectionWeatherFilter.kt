@@ -45,7 +45,7 @@ class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
     private fun meanPoint(): LatLng = directionLine[directionLine.size / 2]
 
     private fun creteWeatherPoints(minDistance: Double): List<LatLng> {
-        val weatherPoints = mutableListOf(startPoint(), lastPoint())
+        val weatherPoints = mutableListOf(startPoint())
         var lastForecast = weatherPoints[0]
         for (i in 600 until directionLine.size - 700 step 250) {
             val latLng = directionLine[i]
@@ -54,6 +54,7 @@ class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
                 weatherPoints.add(latLng)
             }
         }
+        weatherPoints.add(lastPoint())
         mapAnalytics.sendForecastCountByRoute(weatherPoints.size, directionLine.size)
         return weatherPoints
     }

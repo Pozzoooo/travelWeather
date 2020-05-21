@@ -24,6 +24,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
+ * Feedback Vassilis: Manual override for temperature scale
  * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Feedback Pedro: Wind speed (good for motorcycle trip)
