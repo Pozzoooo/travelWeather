@@ -40,9 +40,9 @@ class MapViewModelTest {
     @Mock private lateinit var application: Application
     @Mock private lateinit var lifecycleOwner: LifecycleOwner
 
-    val start by lazy { LatLng(1.0, 2.0) }
-    val finish by lazy { LatLng(3.0, 4.0) }
-    val emptyRoute by lazy { Route() }
+    private val start by lazy(LazyThreadSafetyMode.NONE) { LatLng(1.0, 2.0) }
+    private val finish by lazy(LazyThreadSafetyMode.NONE) { LatLng(3.0, 4.0) }
+    private val emptyRoute by lazy(LazyThreadSafetyMode.NONE) { Route() }
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
