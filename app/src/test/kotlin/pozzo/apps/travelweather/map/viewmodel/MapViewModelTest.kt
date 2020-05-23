@@ -24,7 +24,6 @@ import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionModuleFake
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
-import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.location.PermissionDeniedException
@@ -216,7 +215,7 @@ class MapViewModelTest {
     }
 
     @Test fun assertRateMeDialogIsDisplayed() {
-        mapViewModel.selectedDayChanged(Day.TODAY)
+        mapViewModel.setSelectedDay(0)
         assertNull(mapViewModel.actionRequest.value)
     }
 }
