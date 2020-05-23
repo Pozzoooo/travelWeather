@@ -6,5 +6,5 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 
 class WeatherToMapPointParser {
 
-    fun parse(weather: Weather) : MapPoint? = WeatherPoint(weather)
+    fun parse(weather: Weather) : WeatherPoint = WeatherPoint(weather)
 }

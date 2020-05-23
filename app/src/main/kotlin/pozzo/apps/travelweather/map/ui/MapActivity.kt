@@ -251,7 +251,7 @@ class MapActivity : BaseActivity() {
                 if (isFinishing) break
 
                 //todo should this logic be moved somewhere else?
-                if (!hasResizedDays && it is WeatherPoint) {
+                if (!hasResizedDays) {
                     daySelectionListManager.updateDaySelections(it.forecastSize)
                     hasResizedDays = true
                 }

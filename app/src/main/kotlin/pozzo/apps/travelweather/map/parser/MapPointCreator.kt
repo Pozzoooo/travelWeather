@@ -8,14 +8,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.forecast.ForecastBusiness
-import pozzo.apps.travelweather.forecast.model.point.MapPoint
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 
 class MapPointCreator(
         private val forecastBusiness: ForecastBusiness,
         private val weatherToMapPointParser: WeatherToMapPointParser) {
 
-    fun createMapPointsAsync(weatherPointLocation: List<LatLng>) : Channel<MapPoint> {
-        val mapPoints = Channel<MapPoint>()
+    fun createMapPointsAsync(weatherPointLocation: List<LatLng>) : Channel<WeatherPoint> {
+        val mapPoints = Channel<WeatherPoint>()
         GlobalScope.launch(background) {
             weatherPointLocation.asSequence()
                     .mapIndexed(::sparseCalls)
