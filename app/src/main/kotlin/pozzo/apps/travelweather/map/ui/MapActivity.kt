@@ -12,7 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
@@ -80,8 +80,8 @@ class MapActivity : BaseActivity() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        preferencesViewModel = ViewModelProviders.of(this).get(PreferencesViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
+        preferencesViewModel = ViewModelProvider(this).get(PreferencesViewModel::class.java)
     }
 
     private fun setupDataBind() {
