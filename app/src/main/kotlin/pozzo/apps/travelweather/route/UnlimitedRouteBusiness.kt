@@ -29,7 +29,7 @@ class UnlimitedRouteBusiness(
         val mapPoints = mapPointCreator.createMapPointsAsync(weatherPointLocation)
 
         return Route(startPoint = startPoint, finishPoint = finishPoint, polyline = directionLine,
-                mapPoints = mapPoints, weatherLocationCount = weatherPointLocation.size)
+                weatherPoints = mapPoints, weatherLocationCount = weatherPointLocation.size)
     }
 
     private fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {

@@ -5,6 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -24,9 +26,13 @@ import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionModuleFake
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
+import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Weather
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.LocationModuleFake
 import pozzo.apps.travelweather.location.PermissionDeniedException
+import pozzo.apps.travelweather.map.model.Address
 import java.io.IOException
 
 class MapViewModelTest {
@@ -134,6 +140,43 @@ class MapViewModelTest {
         mapViewModel.setFinishPosition(finish)
 
         assertFalse(mapViewModel.isShowingProgress.value!!)
+    }
+
+    @Test fun assertWeatherPointsAreBeingAdded() {
+        runBlocking {
+            val point = mockWeatherPoint()
+            mockRoute(point)
+            for (it in mapViewModel.weatherPoints.value!!) {
+                assertEquals(point, it)
+            }
+        }
+    }
+
+    private suspend fun mockRoute(weatherPoint: WeatherPoint) {
+        val weatherPoints = Channel<WeatherPoint>(1)
+        weatherPoints.send(weatherPoint)
+        weatherPoints.close()
+        val route = Route(weatherPoints = weatherPoints)
+        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(route)
+
+        createSampleRoute()
+    }
+
+    private fun mockWeatherPoint() =
+            WeatherPoint(Weather("", emptyList(), Address(LatLng(.0, .0), ""), PoweredBy(0)))
+
+    @Test fun assertWeatherPointsAreBeingRefreshed() {
+        runBlocking {
+            val point = mockWeatherPoint()
+            mockRoute(point)
+            mapViewModel.weatherPoints.value = null
+
+            mapViewModel.setSelectedDay(2)
+
+            for (it in mapViewModel.weatherPoints.value!!) {
+                assertEquals(point, it)
+            }
+        }
     }
 
     @Test fun assertRouteNotFindErrorBeingHandled() {

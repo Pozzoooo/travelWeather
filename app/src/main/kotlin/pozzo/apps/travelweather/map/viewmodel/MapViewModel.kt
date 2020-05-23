@@ -87,7 +87,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
-        selectedDay.value = preferencesBusiness.getSelectedDay()
+        selectedDay.value = getSelectedDay()
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -136,15 +136,16 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     private fun setRoute(route: Route) {
         this.route = route
         routeData.postValue(route)
-        updateWeatherPoints()
     }
 
     private fun updateWeatherPoints() {
         GlobalScope.launch(background) {
-            val weatherPointsChannel = Channel<WeatherPoint>()
+            val weatherPointsChannel = Channel<WeatherPoint>(1)
+            val day = getSelectedDay()
             weatherPoints.postValue(weatherPointsChannel)
 
             for (it in route.weatherPoints) {
+                it.date = day.toCalendar()
                 cachedWeatherPoints.add(it)
                 weatherPointsChannel.send(it)
             }
@@ -154,10 +155,12 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private fun refreshRoute() {
         GlobalScope.launch(background) {
-            val weatherPointsChannel = Channel<WeatherPoint>()
+            val weatherPointsChannel = Channel<WeatherPoint>(1)
+            val day = getSelectedDay()
             weatherPoints.postValue(weatherPointsChannel)
 
             for (it in cachedWeatherPoints) {
+                it.date = day.toCalendar()
                 weatherPointsChannel.send(it)
             }
             weatherPointsChannel.close()
@@ -183,7 +186,10 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         updateRouteJob = GlobalScope.launch(background) {
             try {
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
-                if (isActive) setRoute(route)
+                if (isActive) {
+                    setRoute(route)
+                    updateWeatherPoints()
+                }
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
             } catch (e: RequestLimitReached) {
@@ -305,7 +311,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     fun setSelectedDay(index: Int) {
         val day = Day.getByIndex(index)
-        if (day != preferencesBusiness.getSelectedDay()) {
+        if (day != getSelectedDay()) {
             preferencesBusiness.setSelectedDay(day)
             refreshRoute()
             mightShowRateMeDialog()

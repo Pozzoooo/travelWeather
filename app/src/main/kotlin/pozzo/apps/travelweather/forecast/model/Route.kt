@@ -11,7 +11,7 @@ class Route(baseRoute: Route? = null,
             finishPoint: FinishPoint? = null,
             polyline: PolylineOptions? = null,
             weatherLocationCount: Int? = null,
-            mapPoints: Channel<WeatherPoint>? = null) {
+            weatherPoints: Channel<WeatherPoint>? = null) {
 
     val startPoint: StartPoint?
     val finishPoint: FinishPoint?
@@ -23,7 +23,7 @@ class Route(baseRoute: Route? = null,
         this.startPoint = startPoint ?: baseRoute?.startPoint
         this.finishPoint = finishPoint ?: baseRoute?.finishPoint
         this.polyline = polyline ?: baseRoute?.polyline
-        this.weatherPoints = mapPoints ?: baseRoute?.weatherPoints ?: Channel(0)
+        this.weatherPoints = weatherPoints ?: baseRoute?.weatherPoints ?: Channel(0)
         this.weatherLocationCount = weatherLocationCount ?: baseRoute?.weatherLocationCount ?: 0
     }
 
