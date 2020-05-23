@@ -19,17 +19,16 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.BuildConfig
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
-import pozzo.apps.travelweather.common.viewmodel.PreferencesViewModel
 import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.CoroutineSettings.ui
 import pozzo.apps.travelweather.core.Error
@@ -49,18 +48,14 @@ import pozzo.apps.travelweather.map.manager.PermissionManager
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
-import java.lang.NullPointerException
 import java.util.*
 
 class MapActivity : BaseActivity() {
-    private var mapMarkerToWeather = HashMap<Marker, MapPoint>()
-
     private lateinit var mainThread: Handler
     private lateinit var returnAnimation: ReturnAnimation
 
     private lateinit var mapFragment: MapFragment
     private lateinit var viewModel: MapViewModel
-    private lateinit var preferencesViewModel: PreferencesViewModel
     private lateinit var permissionManager: PermissionManager
     private lateinit var daySelectionListManager: DaySelectionListManager
 
@@ -81,7 +76,6 @@ class MapActivity : BaseActivity() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
-        preferencesViewModel = ViewModelProvider(this).get(PreferencesViewModel::class.java)
     }
 
     private fun setupDataBind() {
@@ -107,7 +101,7 @@ class MapActivity : BaseActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) { }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                preferencesViewModel.setSelectedDay(position)
+                viewModel.setSelectedDay(position)
             }
         })
     }
@@ -137,10 +131,10 @@ class MapActivity : BaseActivity() {
     }
 
     private fun observeViewModel() {
-        preferencesViewModel.selectedDay.observe(this, Observer { it?.let { changeSelectedDay(it) } })
-
         viewModel.routeData.observe(this, Observer { updateRoute(it) })
 
+        viewModel.weatherPoints.observe(this, Observer { updateWeatherPoints(it) })
+        viewModel.selectedDay.observe(this, Observer { daySelectionListManager.safeSelection(it.index) })
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingSearch.observe(this, Observer { if (it == true) showSearch() else hideSearch() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
@@ -171,7 +165,6 @@ class MapActivity : BaseActivity() {
             route.polyline?.let { mapFragment.plotRoute(it) }
             setStartPoint(route.startPoint)
             setFinishPoint(route)
-            showMapPoints(route)
             pointMapToRoute(route)
         }
 
@@ -217,9 +210,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun clearMap() {
-        mapMarkerToWeather.clear()
         mapFragment.clearMapOverlay()
-
     }
 
     private fun moveFlagsBackToShelf() {
@@ -244,10 +235,14 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    private fun showMapPoints(route: Route) {
+    //TODO Quero remover essa parada toda da activity
+    private fun updateWeatherPoints(weatherPoints: Channel<WeatherPoint>) {
         GlobalScope.launch(ui) {
+            val day = viewModel.getSelectedDay()
+            var date = day.toCalendar()
+            val twoHours = 2L * 60L * 60L * 1000L
             var hasResizedDays = false
-            for (it in route.mapPoints) {
+            for (it in weatherPoints) {
                 if (isFinishing) break
 
                 //todo should this logic be moved somewhere else?
@@ -256,7 +251,11 @@ class MapActivity : BaseActivity() {
                     hasResizedDays = true
                 }
 
-                addMark(it)
+                it.marker?.remove()
+                addMark(it, date)
+                date = GregorianCalendar().apply {
+                    timeInMillis = date.timeInMillis + twoHours
+                }
             }
         }
     }
@@ -268,10 +267,10 @@ class MapActivity : BaseActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState?.getParcelable<LatLng?>("startPosition")?.let { viewModel.setStartPosition(it) }
-        savedInstanceState?.getParcelable<LatLng?>("finishPosition")?.let { viewModel.setFinishPosition(it) }
+        savedInstanceState.getParcelable<LatLng?>("startPosition")?.let { viewModel.setStartPosition(it) }
+        savedInstanceState.getParcelable<LatLng?>("finishPosition")?.let { viewModel.setFinishPosition(it) }
     }
 
     override fun onBackPressed() {
@@ -315,28 +314,11 @@ class MapActivity : BaseActivity() {
         AndroidUtil.showKeyboard(this, eSearch)
     }
 
-    private fun changeSelectedDay(newSelection: Day) {
-        daySelectionListManager.safeSelection(newSelection.index)
-        refreshMarkers(newSelection)
-        viewModel.selectedDayChanged(newSelection)
-    }
-
-    //todo now that the mapPoint contains the marker, maybe I can find a simpler solution without the cached markers
-    private fun refreshMarkers(day: Day) {
-        val markerWeathers = this.mapMarkerToWeather
-        this.mapMarkerToWeather = HashMap()
-        markerWeathers.forEach {
-            it.key.remove()
-            addMark(it.value, day)
-        }
-    }
-
-    private fun addMark(mapPoint: MapPoint, day: Day = preferencesViewModel.selectedDay.value!!) {
-        mapPoint.day = day
+    private fun addMark(mapPoint: MapPoint, date: Calendar = GregorianCalendar.getInstance()) {
+        mapPoint.date = date
 
         val marker = mapFragment.addMark(mapPoint)
         mapPoint.marker = marker
-        if (marker != null) mapMarkerToWeather[marker] = mapPoint
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

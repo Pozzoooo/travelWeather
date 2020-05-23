@@ -6,17 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
-import pozzo.apps.travelweather.core.BaseViewModel
+import pozzo.apps.travelweather.core.*
 import pozzo.apps.travelweather.core.CoroutineSettings.background
-import pozzo.apps.travelweather.core.Error
-import pozzo.apps.travelweather.core.LastRunRepository
-import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
@@ -27,6 +25,7 @@ import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
@@ -37,6 +36,7 @@ import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.route.RequestLimitReached
 import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application), ErrorHandler {
@@ -54,8 +54,10 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private var updateRouteJob: Job? = null
     private var route = Route()
+    private val cachedWeatherPoints = ArrayList<WeatherPoint>()
 
     val routeData = MutableLiveData<Route>()
+    val weatherPoints = MutableLiveData<Channel<WeatherPoint>>()
     val mapSettingsData = MutableLiveData<MapSettings>()
 
     val error = MutableLiveData<Error>()
@@ -63,6 +65,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     val actionRequest = MutableLiveData<ActionRequest>()
     val permissionRequest = MutableLiveData<PermissionRequest>()
     val overlay = MutableLiveData<LastRunKey>()
+    val selectedDay = MutableLiveData<Day>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingSearch = MutableLiveData<Boolean>()
@@ -84,6 +87,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
+        selectedDay.value = preferencesBusiness.getSelectedDay()
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -130,8 +134,34 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     private fun setRoute(route: Route) {
-      this.route = route
-      routeData.postValue(route)
+        this.route = route
+        routeData.postValue(route)
+        updateWeatherPoints()
+    }
+
+    private fun updateWeatherPoints() {
+        GlobalScope.launch(background) {
+            val weatherPointsChannel = Channel<WeatherPoint>()
+            weatherPoints.postValue(weatherPointsChannel)
+
+            for (it in route.weatherPoints) {
+                cachedWeatherPoints.add(it)
+                weatherPointsChannel.send(it)
+            }
+            weatherPointsChannel.close()
+        }
+    }
+
+    private fun refreshRoute() {
+        GlobalScope.launch(background) {
+            val weatherPointsChannel = Channel<WeatherPoint>()
+            weatherPoints.postValue(weatherPointsChannel)
+
+            for (it in cachedWeatherPoints) {
+                weatherPointsChannel.send(it)
+            }
+            weatherPointsChannel.close()
+        }
     }
 
     fun clearFinishPosition() {
@@ -273,7 +303,17 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         actionRequest.value = null
     }
 
-    fun selectedDayChanged(newSelection: Day) {
+    fun setSelectedDay(index: Int) {
+        val day = Day.getByIndex(index)
+        if (day != preferencesBusiness.getSelectedDay()) {
+            preferencesBusiness.setSelectedDay(day)
+            refreshRoute()
+            mightShowRateMeDialog()
+            selectedDay.postValue(day)
+        }
+    }
+
+    private fun mightShowRateMeDialog() {
         val rateMeActionRequest = RateMeActionRequest(getApplication(), mapAnalytics)
         if (rateMeActionRequest.isTimeToDisplay(mapTutorialScript, lastRunRepository, preferencesBusiness.getDaySelectionCount())) {
             actionRequest.postValue(rateMeActionRequest)
@@ -281,4 +321,6 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
             mapAnalytics.sendRateDialogShown()
         }
     }
+
+    fun getSelectedDay() = preferencesBusiness.getSelectedDay()
 }

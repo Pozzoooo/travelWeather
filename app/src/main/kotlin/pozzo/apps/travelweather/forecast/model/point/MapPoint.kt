@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import pozzo.apps.travelweather.forecast.model.Day
+import java.util.*
 
 //todo is there a way to remove the nullability on all those fields?
 abstract class MapPoint(open val icon: BitmapDescriptor?,
@@ -12,7 +12,7 @@ abstract class MapPoint(open val icon: BitmapDescriptor?,
                         open val redirectUrl: String?,
                         val isDraggable: Boolean = false,
                         val shouldFadeIn: Boolean = true,
-                        var day: Day = Day.DEFAULT,
+                        var date: Calendar = GregorianCalendar.getInstance(),
                         var marker: Marker? = null) {
 
     abstract fun getTitle(context: Context): String
