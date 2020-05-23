@@ -214,7 +214,7 @@
       {
         "time": 1548468000,
         "summary": "Partly cloudy starting in the evening.",
-        "icon": "partly-cloudy-day",
+        "icon": "snow",
         "sunriseTime": 1548492129,
         "sunsetTime": 1548539868,
         "moonPhase": 0.7,
@@ -255,7 +255,7 @@
       {
         "time": 1548554400,
         "summary": "Partly cloudy throughout the day.",
-        "icon": "partly-cloudy-day",
+        "icon": "snow",
         "sunriseTime": 1548578572,
         "sunsetTime": 1548626251,
         "moonPhase": 0.74,
@@ -296,7 +296,7 @@
       {
         "time": 1548640800,
         "summary": "Partly cloudy starting in the afternoon.",
-        "icon": "partly-cloudy-day",
+        "icon": "snow",
         "sunriseTime": 1548665016,
         "sunsetTime": 1548712632,
         "moonPhase": 0.77,
