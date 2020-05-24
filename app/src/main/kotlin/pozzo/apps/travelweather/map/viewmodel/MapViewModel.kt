@@ -33,6 +33,7 @@ import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
+import pozzo.apps.travelweather.map.parser.WeatherPointsAdapter
 import pozzo.apps.travelweather.route.RequestLimitReached
 import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
@@ -54,10 +55,10 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private var updateRouteJob: Job? = null
     private var route = Route()
-    private val cachedWeatherPoints = ArrayList<WeatherPoint>()
+    private val weatherPointsAdapter: WeatherPointsAdapter
 
     val routeData = MutableLiveData<Route>()
-    val weatherPoints = MutableLiveData<Channel<WeatherPoint>>()
+    val weatherPointsData = MutableLiveData<Channel<WeatherPoint>>()
     val mapSettingsData = MutableLiveData<MapSettings>()
 
     val error = MutableLiveData<Error>()
@@ -88,6 +89,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
         selectedDay.value = getSelectedDay()
+        weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -138,39 +140,6 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         routeData.postValue(route)
     }
 
-    private fun updateWeatherPoints() {
-        GlobalScope.launch(background) {
-            val day = getSelectedDay()
-            val weatherPointsChannel = createWeatherPointsChannel()
-
-            for (it in route.weatherPoints) {
-                it.date = day.toCalendar()
-                cachedWeatherPoints.add(it)
-                weatherPointsChannel.send(it)
-            }
-            weatherPointsChannel.close()
-        }
-    }
-
-    private fun createWeatherPointsChannel(): Channel<WeatherPoint> {
-        return Channel<WeatherPoint>(1).also {
-            weatherPoints.postValue(it)
-        }
-    }
-
-    private fun refreshRoute() {
-        GlobalScope.launch(background) {
-            val day = getSelectedDay()
-            val weatherPointsChannel = createWeatherPointsChannel()
-
-            for (it in cachedWeatherPoints) {
-                it.date = day.toCalendar()
-                weatherPointsChannel.send(it)
-            }
-            weatherPointsChannel.close()
-        }
-    }
-
     fun clearFinishPosition() {
         setRoute(Route(startPoint = route.startPoint))
     }
@@ -192,7 +161,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) {
                     setRoute(route)
-                    updateWeatherPoints()
+                    weatherPointsAdapter.updateWeatherPoints(getSelectedDay(), route)
                 }
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
@@ -317,7 +286,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         val day = Day.getByIndex(index)
         if (day != getSelectedDay()) {
             preferencesBusiness.setSelectedDay(day)
-            refreshRoute()
+            weatherPointsAdapter.refreshRoute(day)
             mightShowRateMeDialog()
             selectedDay.postValue(day)
         }

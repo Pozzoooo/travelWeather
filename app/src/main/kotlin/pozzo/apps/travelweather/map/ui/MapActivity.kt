@@ -36,7 +36,6 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
-import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -133,7 +132,7 @@ class MapActivity : BaseActivity() {
     private fun observeViewModel() {
         viewModel.routeData.observe(this, Observer { updateRoute(it) })
 
-        viewModel.weatherPoints.observe(this, Observer { updateWeatherPoints(it) })
+        viewModel.weatherPointsData.observe(this, Observer { updateWeatherPoints(it) })
         viewModel.selectedDay.observe(this, Observer { daySelectionListManager.safeSelection(it.index) })
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingSearch.observe(this, Observer { if (it == true) showSearch() else hideSearch() })
@@ -235,7 +234,7 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    //TODO Quero remover essa parada toda da activity
+    //TODO Quero remover essa parada toda da activity --
     private fun updateWeatherPoints(weatherPoints: Channel<WeatherPoint>) {
         GlobalScope.launch(ui) {
             val day = viewModel.getSelectedDay()

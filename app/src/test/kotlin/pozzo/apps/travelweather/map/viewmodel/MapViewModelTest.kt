@@ -146,7 +146,7 @@ class MapViewModelTest {
         runBlocking {
             val point = mockWeatherPoint()
             mockRoute(point)
-            for (it in mapViewModel.weatherPoints.value!!) {
+            for (it in mapViewModel.weatherPointsData.value!!) {
                 assertEquals(point, it)
             }
         }
@@ -169,11 +169,11 @@ class MapViewModelTest {
         runBlocking {
             val point = mockWeatherPoint()
             mockRoute(point)
-            mapViewModel.weatherPoints.value = null
+            mapViewModel.weatherPointsData.value = null
 
             mapViewModel.setSelectedDay(2)
 
-            for (it in mapViewModel.weatherPoints.value!!) {
+            for (it in mapViewModel.weatherPointsData.value!!) {
                 assertEquals(point, it)
             }
         }
