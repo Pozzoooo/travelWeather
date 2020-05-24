@@ -140,9 +140,8 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private fun updateWeatherPoints() {
         GlobalScope.launch(background) {
-            val weatherPointsChannel = Channel<WeatherPoint>(1)
             val day = getSelectedDay()
-            weatherPoints.postValue(weatherPointsChannel)
+            val weatherPointsChannel = createWeatherPointsChannel()
 
             for (it in route.weatherPoints) {
                 it.date = day.toCalendar()
@@ -153,11 +152,16 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         }
     }
 
+    private fun createWeatherPointsChannel(): Channel<WeatherPoint> {
+        return Channel<WeatherPoint>(1).also {
+            weatherPoints.postValue(it)
+        }
+    }
+
     private fun refreshRoute() {
         GlobalScope.launch(background) {
-            val weatherPointsChannel = Channel<WeatherPoint>(1)
             val day = getSelectedDay()
-            weatherPoints.postValue(weatherPointsChannel)
+            val weatherPointsChannel = createWeatherPointsChannel()
 
             for (it in cachedWeatherPoints) {
                 it.date = day.toCalendar()
