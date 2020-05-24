@@ -234,12 +234,8 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    //TODO Quero remover essa parada toda da activity --
     private fun updateWeatherPoints(weatherPoints: Channel<WeatherPoint>) {
         GlobalScope.launch(ui) {
-            val day = viewModel.getSelectedDay()
-            var date = day.toCalendar()
-            val twoHours = 2L * 60L * 60L * 1000L
             var hasResizedDays = false
             for (it in weatherPoints) {
                 if (isFinishing) break
@@ -251,10 +247,7 @@ class MapActivity : BaseActivity() {
                 }
 
                 it.marker?.remove()
-                addMark(it, date)
-                date = GregorianCalendar().apply {
-                    timeInMillis = date.timeInMillis + twoHours
-                }
+                addMark(it)
             }
         }
     }
@@ -313,9 +306,7 @@ class MapActivity : BaseActivity() {
         AndroidUtil.showKeyboard(this, eSearch)
     }
 
-    private fun addMark(mapPoint: MapPoint, date: Calendar = GregorianCalendar.getInstance()) {
-        mapPoint.date = date
-
+    private fun addMark(mapPoint: MapPoint) {
         val marker = mapFragment.addMark(mapPoint)
         mapPoint.marker = marker
     }
