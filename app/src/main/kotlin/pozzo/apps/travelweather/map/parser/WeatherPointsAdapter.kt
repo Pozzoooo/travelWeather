@@ -11,7 +11,6 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
-//TODO write specific tests
 class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channel<WeatherPoint>>) {
     companion object {
         private const val TWO_HOURS = 2L * 60L * 60L * 1000L
