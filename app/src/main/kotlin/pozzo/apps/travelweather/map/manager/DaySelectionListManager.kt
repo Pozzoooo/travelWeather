@@ -14,16 +14,20 @@ class DaySelectionListManager(private val spinnerDaySelection: Spinner,
         private const val DEFAULT_SIZE = 7
     }
 
+    private var size = 0
+
     init {
         updateDaySelections(DEFAULT_SIZE)
         spinnerDaySelection.onItemSelectedListener = callback
     }
 
-    fun updateDaySelections(size: Int) {
-        val newSize = calculateNewSize(size)
-        val adapter = adapterFactory.createArrayAdapter(
-                spinnerDaySelection.context, createNewListBasedOnSize(newSize))
-        updateAdapterAndSelection(adapter, calculateNewSelection(newSize))
+    fun updateDaySelections(newSize: Int) {
+        if (size != newSize && size != calculateNewSize(newSize)) {
+            size = calculateNewSize(newSize)
+            val adapter = adapterFactory.createArrayAdapter(
+                    spinnerDaySelection.context, createNewListBasedOnSize(size))
+            updateAdapterAndSelection(adapter, calculateNewSelection(size))
+        }
     }
 
     private fun calculateNewSize(size: Int): Int {

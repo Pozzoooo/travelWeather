@@ -236,16 +236,9 @@ class MapActivity : BaseActivity() {
 
     private fun updateWeatherPoints(weatherPoints: Channel<WeatherPoint>) {
         GlobalScope.launch(ui) {
-            var hasResizedDays = false
             for (it in weatherPoints) {
                 if (isFinishing) break
-
-                //todo should this logic be moved somewhere else?
-                if (!hasResizedDays) {
-                    daySelectionListManager.updateDaySelections(it.forecastSize)
-                    hasResizedDays = true
-                }
-
+                daySelectionListManager.updateDaySelections(it.forecastSize)
                 it.marker?.remove()
                 addMark(it)
             }
