@@ -107,6 +107,14 @@ class MapActivity : BaseActivity() {
                 viewModel.setSelectedDay(position)
             }
         })
+        timeSelectionListManager = TimeSelectionListManager(spinnerTimeSelection, AdapterFactory(),
+                object: AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) { }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.setSelectedTime(Time(position))
+            }
+        })
     }
 
     private val onSearchGo = TextView.OnEditorActionListener { textView, _, event ->
