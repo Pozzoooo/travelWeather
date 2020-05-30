@@ -30,6 +30,5 @@ data class Weather(
     }
 }
 
-//Passo 4 Criar opcao para inserir horario de saida
 //Passo 5 - E posso deixar o fato da progressao pela rota como um proximo passo?
 //Passo 6 - E num futuro ainda mais distante da pra tentar usar o google direction para uma precisao de tempo melhor

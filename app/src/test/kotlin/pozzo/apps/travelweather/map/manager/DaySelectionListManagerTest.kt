@@ -24,10 +24,10 @@ class DaySelectionListManagerTest {
     private val daySelectionListManager =
             DaySelectionListManager(spinnerDaySelection, adapterFactory, callback)
 
-    @Test fun assertStandardArraySize() {
-        daySelectionListManager.updateDaySelections(7)
+    @Test fun assertLowerArraySize() {
+        daySelectionListManager.updateDaySelections(6)
 
-        assertNewArraySize(7)
+        assertNewArraySize(6)
     }
 
     private fun assertNewArraySize(size: Int) {

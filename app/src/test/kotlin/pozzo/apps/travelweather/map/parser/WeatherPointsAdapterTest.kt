@@ -7,7 +7,9 @@ import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.channels.Channel
 import org.junit.Test
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 
 //TODO write these tests
@@ -19,7 +21,7 @@ class WeatherPointsAdapterTest {
         val weatherPoints = Channel<WeatherPoint>()
         val route = Route(weatherPoints = weatherPoints)
 
-        weatherPointsAdapter.updateWeatherPoints(Day.TOMORROW, route)
+        weatherPointsAdapter.updateWeatherPoints(DayTime(Day.TOMORROW, Time.getDefault()), route)
 
         verify(weatherPointsData).postValue(any())
     }
