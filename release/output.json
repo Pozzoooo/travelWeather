@@ -24,10 +24,10 @@
           "value": "21"
         }
       ],
-      "versionCode": 33,
-      "versionName": "1.4.1",
+      "versionCode": 34,
+      "versionName": "1.5.0",
       "enabled": true,
-      "outputFile": "travelWeather-1.4.1-33-release.apk"
+      "outputFile": "travelWeather-1.5.0-34-release.apk"
     }
   ]
 }
