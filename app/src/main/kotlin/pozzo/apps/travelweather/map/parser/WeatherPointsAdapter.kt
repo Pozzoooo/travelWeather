@@ -5,7 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import pozzo.apps.travelweather.core.CoroutineSettings
-import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import java.util.*
@@ -16,27 +16,28 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
         private const val TWO_HOURS = 2L * 60L * 60L * 1000L
     }
 
-    private lateinit var cachedWeatherPoints: ArrayList<WeatherPoint>
+    private var cachedWeatherPoints: ArrayList<WeatherPoint>? = null
     private lateinit var weatherPointsChannel: Channel<WeatherPoint>
     private lateinit var date: Calendar
 
-    fun updateWeatherPoints(day: Day, route: Route) {
+    fun updateWeatherPoints(dayTime: DayTime, route: Route) {
         GlobalScope.launch(CoroutineSettings.background) {
-            cachedWeatherPoints = ArrayList()
-            setup(day)
+            val weatherPoints = ArrayList<WeatherPoint>()
+            setup(dayTime)
 
             for (it in route.weatherPoints) {
                 inLoop(it)
-                cachedWeatherPoints.add(it)
+                weatherPoints.add(it)
             }
             cleanup()
+            cachedWeatherPoints = weatherPoints
         }
     }
 
-    private fun setup(day: Day) {
+    private fun setup(dayTime: DayTime) {
         weatherPointsChannel = Channel(1)
         weatherPointsData.postValue(weatherPointsChannel)
-        date = day.toCalendar()
+        date = dayTime.toCalendar()
     }
 
     private suspend fun inLoop(weatherPoint: WeatherPoint) {
@@ -51,11 +52,13 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
         weatherPointsChannel.close()
     }
 
-    fun refreshRoute(day: Day) {
-        GlobalScope.launch(CoroutineSettings.background) {
-            setup(day)
+    fun refreshRoute(dayTime: DayTime) {
+        if (cachedWeatherPoints == null) return
 
-            for (it in cachedWeatherPoints) {
+        GlobalScope.launch(CoroutineSettings.background) {
+            setup(dayTime)
+
+            for (it in cachedWeatherPoints!!) {
                 inLoop(it)
             }
             cleanup()

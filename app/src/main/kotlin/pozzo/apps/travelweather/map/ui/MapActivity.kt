@@ -36,7 +36,9 @@ import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.databinding.ActivityMapsBinding
+import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
@@ -44,6 +46,7 @@ import pozzo.apps.travelweather.map.ReturnAnimation
 import pozzo.apps.travelweather.map.factory.AdapterFactory
 import pozzo.apps.travelweather.map.manager.DaySelectionListManager
 import pozzo.apps.travelweather.map.manager.PermissionManager
+import pozzo.apps.travelweather.map.manager.TimeSelectionListManager
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
@@ -57,6 +60,7 @@ class MapActivity : BaseActivity() {
     private lateinit var viewModel: MapViewModel
     private lateinit var permissionManager: PermissionManager
     private lateinit var daySelectionListManager: DaySelectionListManager
+    private lateinit var timeSelectionListManager: TimeSelectionListManager
 
     private var lastDisplayedRoute = Route()
 
@@ -133,7 +137,7 @@ class MapActivity : BaseActivity() {
         viewModel.routeData.observe(this, Observer { updateRoute(it) })
 
         viewModel.weatherPointsData.observe(this, Observer { updateWeatherPoints(it) })
-        viewModel.selectedDay.observe(this, Observer { daySelectionListManager.safeSelection(it.index) })
+        viewModel.selectedDayTime.observe(this, Observer { updateDayTime(it) })
         viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
         viewModel.isShowingSearch.observe(this, Observer { if (it == true) showSearch() else hideSearch() })
         viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
@@ -143,6 +147,11 @@ class MapActivity : BaseActivity() {
         viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
         viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
+    }
+
+    private fun updateDayTime(dayTime: DayTime) {
+        daySelectionListManager.safeSelection(dayTime.day.index)
+        timeSelectionListManager.setSelection(dayTime.time)
     }
 
     private fun showOverlay(overlay: LastRunKey) {
@@ -288,6 +297,7 @@ class MapActivity : BaseActivity() {
         eSearch.visibility = View.GONE
         lDaySelection.visibility = View.VISIBLE
         spinnerDaySelection.visibility = View.VISIBLE
+        spinnerTimeSelection.visibility = View.VISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
     }
 
@@ -295,6 +305,7 @@ class MapActivity : BaseActivity() {
         eSearch.visibility = View.VISIBLE
         lDaySelection.visibility = View.GONE
         spinnerDaySelection.visibility = View.GONE
+        spinnerTimeSelection.visibility = View.GONE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
     }

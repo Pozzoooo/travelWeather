@@ -8,6 +8,7 @@ import pozzo.apps.travelweather.core.CoroutineSettings.background
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.forecast.model.Time
 
 class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val forecastClient: List<ForecastClient>) {
     private val topProvider : String by lazy { forecastClient.getOrNull(0)?.javaClass?.simpleName ?: "no provider" }
@@ -47,6 +48,12 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, day.name)
         firebaseAnalytics.logEvent("daySelection", bundle)
+    }
+
+    fun sendTimeSelectionChanged(time: Time) = GlobalScope.launch(background) {
+        val bundle = Bundle()
+        bundle.putInt(FirebaseAnalytics.Param.ITEM_NAME, time.hour)
+        firebaseAnalytics.logEvent("timeSelection", bundle)
     }
 
     fun sendErrorMessage(it: Error) = GlobalScope.launch(background) {

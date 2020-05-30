@@ -22,7 +22,9 @@ import pozzo.apps.travelweather.core.userinputrequest.LocationPermissionRequest
 import pozzo.apps.travelweather.core.userinputrequest.PermissionRequest
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.forecast.model.Day
+import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
@@ -37,7 +39,6 @@ import pozzo.apps.travelweather.map.parser.WeatherPointsAdapter
 import pozzo.apps.travelweather.route.RequestLimitReached
 import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 class MapViewModel(application: Application) : BaseViewModel(application), ErrorHandler {
@@ -56,6 +57,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     private var updateRouteJob: Job? = null
     private var route = Route()
     private val weatherPointsAdapter: WeatherPointsAdapter
+    private var selectedTime = Time.getDefault()
 
     val routeData = MutableLiveData<Route>()
     val weatherPointsData = MutableLiveData<Channel<WeatherPoint>>()
@@ -66,7 +68,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     val actionRequest = MutableLiveData<ActionRequest>()
     val permissionRequest = MutableLiveData<PermissionRequest>()
     val overlay = MutableLiveData<LastRunKey>()
-    val selectedDay = MutableLiveData<Day>()
+    val selectedDayTime = MutableLiveData<DayTime>()
 
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingSearch = MutableLiveData<Boolean>()
@@ -88,7 +90,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
-        selectedDay.value = getSelectedDay()
+        selectedDayTime.value = getSelectedDayTime()
         weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData)
     }
 
@@ -161,7 +163,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) {
                     setRoute(route)
-                    weatherPointsAdapter.updateWeatherPoints(getSelectedDay(), route)
+                    weatherPointsAdapter.updateWeatherPoints(getSelectedDayTime(), route)
                 }
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
@@ -286,9 +288,9 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         val day = Day.getByIndex(index)
         if (day != getSelectedDay()) {
             preferencesBusiness.setSelectedDay(day)
-            weatherPointsAdapter.refreshRoute(day)
+            weatherPointsAdapter.refreshRoute(getSelectedDayTime())
             mightShowRateMeDialog()
-            selectedDay.postValue(day)
+            selectedDayTime.postValue(getSelectedDayTime())
         }
     }
 
@@ -301,5 +303,16 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         }
     }
 
-    fun getSelectedDay() = preferencesBusiness.getSelectedDay()
+    private fun getSelectedDay() = preferencesBusiness.getSelectedDay()
+
+    fun setSelectedTime(time: Time) {
+        if (time != selectedTime) {
+            selectedTime = time
+            weatherPointsAdapter.refreshRoute(getSelectedDayTime())
+            selectedDayTime.postValue(getSelectedDayTime())//TODO duplicated code with selected day
+            mapAnalytics.sendTimeSelectionChanged(time)
+        }
+    }
+
+    private fun getSelectedDayTime() = DayTime(getSelectedDay(), selectedTime)
 }

@@ -12,41 +12,28 @@ class PreferencesBusiness(private val preferences: SharedPreferences, private va
         private const val KEY_USED_REQUEST_COUNT = "usedRequestCount"
     }
 
-    fun getSelectedDay() : Day {
+    fun getSelectedDay(): Day {
         val selectedDay = preferences.getInt(KEY_SELECTED_DAY, Day.DEFAULT.index)
         return Day.getByIndex(selectedDay)
     }
 
     fun setSelectedDay(day: Day) {
-        val editor = preferences.edit()
-
-        updateDateSelection(day, editor)
-        incrementDaySelectionCount(editor)
-
-        editor.apply()
-
-        notifyAnalyticsDaySelectionChange(day)
-    }
-
-    private fun updateDateSelection(day: Day, editor: SharedPreferences.Editor) {
-        editor.putInt(KEY_SELECTED_DAY, day.index)
-    }
-
-    private fun incrementDaySelectionCount(editor: SharedPreferences.Editor) {
         val count = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
-        editor.putInt(KEY_DAY_SELECTION_COUNT, count + 1)
-    }
 
-    fun getDaySelectionCount() : Int = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
+        preferences.edit()
+                .putInt(KEY_SELECTED_DAY, day.index)
+                .putInt(KEY_DAY_SELECTION_COUNT, count + 1)
+                .apply()
 
-    private fun notifyAnalyticsDaySelectionChange(day: Day) {
         mapAnalytics.sendDaySelectionChanged(day)
     }
 
-    fun getLastRemainingRequestReset() : Long =
+    fun getDaySelectionCount(): Int = preferences.getInt(KEY_DAY_SELECTION_COUNT, 0)
+
+    fun getLastRemainingRequestReset(): Long =
             preferences.getLong(KEY_LAST_REMAINING_REQUEST_RESET_TIME, 0L)
 
-    fun getUsedRequestCount() : Int =
+    fun getUsedRequestCount(): Int =
             preferences.getInt(KEY_USED_REQUEST_COUNT, 0)
 
     fun addUsedRequestCount(countToAdd: Int) {
