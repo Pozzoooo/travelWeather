@@ -20,6 +20,7 @@ import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
+import pozzo.apps.travelweather.forecast.ForecastTitleFormatter
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
@@ -34,6 +35,7 @@ class MapFragment : SupportMapFragment() {
     private lateinit var mainThread: Handler
 
     @Inject protected lateinit var permissionChecker: PermissionChecker
+    @Inject protected lateinit var forecastTitleFormatter: ForecastTitleFormatter
 
     init {
         DaggerMapComponent.builder()
@@ -106,7 +108,7 @@ class MapFragment : SupportMapFragment() {
         }
     }
 
-    fun updateMapSettings(mapSettings: MapSettings) {
+    @SuppressLint("MissingPermission") fun updateMapSettings(mapSettings: MapSettings) {
         if (permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
                 || permissionChecker.isGranted(ACCESS_FINE_LOCATION)) {
             map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled()
@@ -144,7 +146,7 @@ class MapFragment : SupportMapFragment() {
         val markerOptions = MarkerOptions()
                 .position(mapPoint.position)
                 .anchor(1F, 1F)
-                .title(mapPoint.getTitle(requireContext()))
+                .title(mapPoint.getTitle(requireContext(), forecastTitleFormatter))
                 .icon(mapPoint.icon)
                 .draggable(mapPoint.isDraggable)
         return map?.addMarker(markerOptions)?.apply {

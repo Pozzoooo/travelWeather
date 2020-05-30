@@ -5,8 +5,9 @@ import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.FormattedTemperature
 import pozzo.apps.travelweather.forecast.model.Temperature
+import javax.inject.Inject
 
-class ForecastTitleFormatter {
+class ForecastTitleFormatter @Inject constructor() {
 
     fun createTitle(context: Context, forecast: Forecast): String {
         val forecastString = context.getString(forecast.forecastType.stringId)
