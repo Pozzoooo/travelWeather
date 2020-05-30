@@ -20,8 +20,6 @@
 			android:id="@+id/vgTopBar"
 			android:layout_width="0dp"
 			android:layout_height="@dimen/button_size"
-			android:paddingEnd="@dimen/margin_bigger"
-			android:paddingStart="@dimen/margin_bigger"
 			android:layout_weight="1">
 
 			<EditText
@@ -29,6 +27,8 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="@dimen/margin_big"
+				android:layout_marginStart="@dimen/margin_bigger"
+				android:layout_marginEnd="@dimen/margin_bigger"
 				android:hint="@string/search"
 				android:imeOptions="actionGo"
 				android:inputType="text"
@@ -41,6 +41,8 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="3dp"
+				android:layout_marginStart="@dimen/margin_bigger"
+				android:layout_marginEnd="@dimen/margin_bigger"
 				android:textSize="12sp"
 				android:text="@string/title_forecastDate"/>
 
@@ -64,7 +66,6 @@
 			android:layout_height="@dimen/button_size"
 			android:background="@null"
 			android:contentDescription="@android:string/search_go"
-			android:elevation="@dimen/elevation_floatingButton"
 			android:onClick="@{() -> viewModel.toggleSearch(eSearch.getText().toString())}"
 			android:src="@android:drawable/ic_menu_search"/>
 	</LinearLayout>
