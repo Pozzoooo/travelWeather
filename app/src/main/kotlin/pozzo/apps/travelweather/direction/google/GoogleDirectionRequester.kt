@@ -11,17 +11,16 @@ import java.net.URL
 class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
 
     fun request(start: LatLng, end: LatLng): String? {
-        try {
+        return try {
             val url = createUrl(start, end)
             val request = Request.Builder().url(url).build()
-            return okHttp.newCall(request).execute()?.body()?.string()
+            okHttp.newCall(request).execute().body()?.string()
         } catch (e: IOException) {
             throw e
         } catch (e: Exception) {
             Bug.get().logException(e)
+            null
         }
-
-        return null
     }
 
     private fun createUrl(start: LatLng, end: LatLng) : URL {

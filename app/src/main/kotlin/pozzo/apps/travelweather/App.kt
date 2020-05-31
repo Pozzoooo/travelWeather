@@ -29,6 +29,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Feedback Pedro: Wind speed (good for motorcycle trip)
  * Feedback Dwight: 10 day forecast at once.
+ *
+ * I can add distance and time with new fields from Direction
  * 
  * Mover mapa quando estiver arrastando e atinger o canto do mapa
  * Animar as flags voltando para a lateral quando apertar o clear
