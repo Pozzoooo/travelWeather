@@ -11,7 +11,7 @@ android:
     - extra-android-m2repository
 
 script:
-  - ./gradlew app:clean app:testDebug jacocoTestReport --continue --no-daemon
+  - ./gradlew app:clean app:testDebug lintDebug jacocoTestReport --continue --no-daemon
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
