@@ -9,7 +9,7 @@ import org.junit.Test
 import pozzo.apps.travelweather.core.TestInjector
 import pozzo.apps.travelweather.core.injection.AppComponent
 
-@Ignore
+@Ignore("For integration only")
 class GoogleDirectionIntegrationTest {
     private lateinit var directionBusiness: GoogleDirection
     private lateinit var requester: GoogleDirectionRequester

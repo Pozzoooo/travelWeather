@@ -12,9 +12,9 @@ import pozzo.apps.travelweather.forecast.openweather.ForecastModuleOpenWeather
 import pozzo.apps.travelweather.forecast.openweather.OpenWeatherClient
 import pozzo.apps.travelweather.forecast.weatherunlocked.ForecastModuleWeatherUnlocked
 import pozzo.apps.travelweather.forecast.weatherunlocked.WeatherUnlockedClient
-import java.util.ArrayList
+import java.util.*
 
-@Ignore
+@Ignore("For integration only")
 class WeatherClientIntegrationTest {
     companion object {
         private const val LATITUDE = -23.565939
