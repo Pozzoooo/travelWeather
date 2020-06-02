@@ -7,8 +7,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pozzo.apps.travelweather.core.CoroutineSettings.background
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastBusiness
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
+import java.util.concurrent.CancellationException
 
 class MapPointCreator(
         private val forecastBusiness: ForecastBusiness,
@@ -21,7 +23,13 @@ class MapPointCreator(
                     .mapIndexed(::sparseCalls)
                     .mapNotNull(forecastBusiness::forecast)
                     .mapNotNull(weatherToMapPointParser::parse)
-                    .forEach { mapPoints.send(it) }
+                    .forEach {
+                        try {
+                            mapPoints.send(it)
+                        } catch (e: CancellationException) {
+                            Bug.get().logException(e)
+                        }
+                    }
             mapPoints.close()
         }
         return mapPoints
