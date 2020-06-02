@@ -16,7 +16,7 @@ android {
 		minSdkVersion 21
 		targetSdkVersion 29
 		versionCode 35
-		versionName "1.5.1-SNAPSHOT"
+		versionName "1.5.1"
 
 		//todo Maybe I could use firebase to store my keys!
 		def keys = getKeys('../../keystore/keys.properties')
