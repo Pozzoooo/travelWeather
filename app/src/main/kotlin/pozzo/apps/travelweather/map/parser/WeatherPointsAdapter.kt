@@ -24,7 +24,7 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
     private lateinit var date: Calendar
 
     fun updateWeatherPoints(dayTime: DayTime, route: Route) {
-        job?.cancel(CancellationException("Die!"))
+        job?.cancel()
         job = GlobalScope.launch(CoroutineSettings.background) {
             val weatherPoints = ArrayList<WeatherPoint>()
             val weatherPointsChannel = setup(dayTime)
