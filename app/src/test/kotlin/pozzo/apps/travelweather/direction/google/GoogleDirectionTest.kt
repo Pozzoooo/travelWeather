@@ -32,7 +32,7 @@ class GoogleDirectionTest {
 
         val direction = directionBusiness.getDirection(start, end)
 
-        Assert.assertEquals(78, direction!!.size)
+        Assert.assertEquals(78, direction!!.steps.size)
     }
 
     @Test fun shouldBeHandlingNullResponse() {

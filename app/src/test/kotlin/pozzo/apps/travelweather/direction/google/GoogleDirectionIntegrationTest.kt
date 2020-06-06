@@ -34,6 +34,6 @@ class GoogleDirectionIntegrationTest {
     @Test fun assertReturnAsExpected() {
         val direction = directionBusiness.getDirection(start, end)
 
-        Assert.assertEquals(78, direction!!.size)
+        Assert.assertEquals(78, direction!!.steps.size)
     }
 }

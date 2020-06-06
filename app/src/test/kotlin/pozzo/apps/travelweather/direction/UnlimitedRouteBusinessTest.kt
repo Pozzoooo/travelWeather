@@ -45,7 +45,8 @@ class UnlimitedRouteBusinessTest {
             fail()
         } catch (e : DirectionNotFoundException) { /*success*/ }
 
-        whenever(googleDirection.getDirection(startPoint.position, finishPoint.position)).thenReturn(emptyList())
+        whenever(googleDirection.getDirection(startPoint.position, finishPoint.position))
+                .thenReturn(Direction(emptyList(), null, null))
         unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
     }
 
@@ -54,7 +55,7 @@ class UnlimitedRouteBusinessTest {
         val finishPoint = FinishPoint(LatLng(0.0, 0.0))
 
         whenever(googleDirection.getDirection(startPoint.position, finishPoint.position))
-                .thenReturn(listOf(LatLng(0.0, 1.0), LatLng(2.0, 3.0)))
+                .thenReturn(Direction(listOf(LatLng(0.0, 1.0), LatLng(2.0, 3.0)), null, null))
 
         val route = unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
 
