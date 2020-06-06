@@ -301,7 +301,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         val day = Day.getByIndex(index)
         if (day != getSelectedDay()) {
             preferencesBusiness.setSelectedDay(day)
-            weatherPointsAdapter.refreshRoute(getSelectedDayTime())
+            weatherPointsAdapter.refreshRoute(getSelectedDayTime(), route)
             mightShowRateMeDialog()
             selectedDayTime.postValue(getSelectedDayTime())
         }
@@ -321,7 +321,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     fun setSelectedTime(time: Time) {
         if (time != selectedTime) {
             selectedTime = time
-            weatherPointsAdapter.refreshRoute(getSelectedDayTime())
+            weatherPointsAdapter.refreshRoute(getSelectedDayTime(), route)
             selectedDayTime.postValue(getSelectedDayTime())//TODO duplicated code with selected day
             mapAnalytics.sendTimeSelectionChanged(time)
         }

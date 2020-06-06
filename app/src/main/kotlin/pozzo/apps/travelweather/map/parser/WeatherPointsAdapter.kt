@@ -25,6 +25,11 @@ class WeatherPointsAdapter(
     private var job: Job? = null
     private lateinit var date: Calendar
 
+    private fun calculateGap(route: Route): Long {
+        val distance = route.direction?.duration?.getMillis() ?: return TWO_HOURS
+        return distance / route.weatherLocationCount
+    }
+
     fun updateWeatherPoints(dayTime: DayTime, route: Route) {
         job?.cancel()
         job = scope.launch(CoroutineSettings.background) {
@@ -34,7 +39,7 @@ class WeatherPointsAdapter(
             try {
                 weatherPointsData.postValue(weatherPointsChannel)
                 for (it in route.weatherPoints) {
-                    inLoop(it, weatherPointsChannel)
+                    inLoop(it, route, weatherPointsChannel)
                     weatherPoints.add(it)
                 }
                 cachedWeatherPoints = weatherPoints
@@ -51,10 +56,11 @@ class WeatherPointsAdapter(
         return Channel<WeatherPoint>(1)
     }
 
-    private suspend fun inLoop(weatherPoint: WeatherPoint, weatherPointsChannel: Channel<WeatherPoint>) {
+    private suspend fun inLoop(weatherPoint: WeatherPoint, route: Route,
+                               weatherPointsChannel: Channel<WeatherPoint>) {
         weatherPoint.date = date
         date = GregorianCalendar().apply {
-            timeInMillis = date.timeInMillis + TWO_HOURS
+            timeInMillis = date.timeInMillis + calculateGap(route)
         }
         weatherPointsChannel.send(weatherPoint)
     }
@@ -63,7 +69,7 @@ class WeatherPointsAdapter(
         weatherPointsChannel.close()
     }
 
-    fun refreshRoute(dayTime: DayTime) {
+    fun refreshRoute(dayTime: DayTime, route: Route) {
         scope.launch(CoroutineSettings.background) {
             if (job?.isActive == true) job?.join()
             val cachedWeatherPoints = cachedWeatherPoints ?: return@launch
@@ -74,7 +80,7 @@ class WeatherPointsAdapter(
                 try {
                     weatherPointsData.postValue(weatherPointsChannel)
                     cachedWeatherPoints.forEach {
-                        inLoop(it, weatherPointsChannel)
+                        inLoop(it, route, weatherPointsChannel)
                     }
                 } finally {
                     cleanup(weatherPointsChannel)

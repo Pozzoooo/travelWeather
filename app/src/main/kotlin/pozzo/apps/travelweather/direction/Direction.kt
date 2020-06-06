@@ -7,5 +7,7 @@ data class Direction(val steps: List<LatLng>, val duration: Duration?, val dista
     fun isEmpty() = steps.isEmpty()
 }
 
-data class Duration(val value: Int, val text: String)
 data class Distance(val value: Int, val text: String)
+data class Duration(val value: Int, val text: String) {
+    fun getMillis(): Long = value * 1000L
+}
