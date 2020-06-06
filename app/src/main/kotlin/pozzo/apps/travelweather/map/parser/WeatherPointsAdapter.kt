@@ -1,7 +1,7 @@
 package pozzo.apps.travelweather.map.parser
 
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -13,7 +13,10 @@ import java.util.*
 import java.util.concurrent.CancellationException
 import kotlin.collections.ArrayList
 
-class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channel<WeatherPoint>>) {
+class WeatherPointsAdapter(
+        private val weatherPointsData: MutableLiveData<Channel<WeatherPoint>>,
+        private val scope: CoroutineScope) {
+
     companion object {
         private const val TWO_HOURS = 2L * 60L * 60L * 1000L
     }
@@ -24,7 +27,7 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
 
     fun updateWeatherPoints(dayTime: DayTime, route: Route) {
         job?.cancel()
-        job = GlobalScope.launch(CoroutineSettings.background) {
+        job = scope.launch(CoroutineSettings.background) {
             val weatherPoints = ArrayList<WeatherPoint>()
             val weatherPointsChannel = setup(dayTime)
 
@@ -61,11 +64,11 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
     }
 
     fun refreshRoute(dayTime: DayTime) {
-        GlobalScope.launch(CoroutineSettings.background) {
+        scope.launch(CoroutineSettings.background) {
             if (job?.isActive == true) job?.join()
             val cachedWeatherPoints = cachedWeatherPoints ?: return@launch
 
-            job = GlobalScope.launch(CoroutineSettings.background) {
+            job = scope.launch(CoroutineSettings.background) {
                 val weatherPointsChannel = setup(dayTime)
 
                 try {

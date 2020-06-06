@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
@@ -13,8 +13,11 @@ import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
-import pozzo.apps.travelweather.core.*
+import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.CoroutineSettings.background
+import pozzo.apps.travelweather.core.Error
+import pozzo.apps.travelweather.core.LastRunRepository
+import pozzo.apps.travelweather.core.Warning
 import pozzo.apps.travelweather.core.action.ActionRequest
 import pozzo.apps.travelweather.core.action.ClearActionRequest
 import pozzo.apps.travelweather.core.action.RateMeActionRequest
@@ -59,6 +62,9 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     private val weatherPointsAdapter: WeatherPointsAdapter
     private var selectedTime = Time.getDefault()
 
+    private val job = Job()
+    private val scope = CoroutineScope(job + background)
+
     val routeData = MutableLiveData<Route>()
     val weatherPointsData = MutableLiveData<Channel<WeatherPoint>>()
     val mapSettingsData = MutableLiveData<MapSettings>()
@@ -80,6 +86,8 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                 .build()
                 .inject(this)
 
+        job.start()
+
         isShowingProgress.value = false
         isShowingSearch.value = false
         shouldFinish.value = false
@@ -91,7 +99,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
         selectedDayTime.value = getSelectedDayTime()
-        weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData)
+        weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData, scope)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -107,6 +115,11 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                         mapSettingsData.postValue(mapSettings)
                     }))
         }
+    }
+
+    override fun onCleared() {
+        job.complete()
+        super.onCleared()
     }
 
     fun setStartAsCurrentLocationRequestedByUser(lifecycleOwner: LifecycleOwner) {
@@ -158,7 +171,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
         showProgress()
         updateRouteJob?.cancel()
-        updateRouteJob = GlobalScope.launch(background) {
+        updateRouteJob = scope.launch(background) {
             try {
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) {
