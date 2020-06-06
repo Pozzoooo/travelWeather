@@ -13,7 +13,6 @@ import java.util.*
 import java.util.concurrent.CancellationException
 import kotlin.collections.ArrayList
 
-//TODO any readability improvement I can make here?
 class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channel<WeatherPoint>>) {
     companion object {
         private const val TWO_HOURS = 2L * 60L * 60L * 1000L
@@ -64,15 +63,14 @@ class WeatherPointsAdapter(private val weatherPointsData: MutableLiveData<Channe
     fun refreshRoute(dayTime: DayTime) {
         GlobalScope.launch(CoroutineSettings.background) {
             if (job?.isActive == true) job?.join()
-            if (cachedWeatherPoints == null) return@launch
+            val cachedWeatherPoints = cachedWeatherPoints ?: return@launch
 
-            job?.cancel()
             job = GlobalScope.launch(CoroutineSettings.background) {
                 val weatherPointsChannel = setup(dayTime)
 
                 try {
                     weatherPointsData.postValue(weatherPointsChannel)
-                    cachedWeatherPoints?.forEach {
+                    cachedWeatherPoints.forEach {
                         inLoop(it, weatherPointsChannel)
                     }
                 } finally {
