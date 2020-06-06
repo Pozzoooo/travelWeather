@@ -1,6 +1,5 @@
 package pozzo.apps.travelweather.route
 
-import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
@@ -9,7 +8,6 @@ import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.parser.MapPointCreator
-import java.io.IOException
 
 class UnlimitedRouteBusiness(
         private val directionLineBusiness: DirectionLineBusiness,
@@ -17,22 +15,17 @@ class UnlimitedRouteBusiness(
         private val googleDirection: GoogleDirection,
         private val directionWeatherFilter: DirectionWeatherFilter) : RouteBusiness {
 
-    @Throws(DirectionNotFoundException::class, IOException::class)
     override fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {
         if (startPoint == null || finishPoint == null) return Route(startPoint = startPoint, finishPoint = finishPoint)
 
-        val direction = getDirections(startPoint.position, finishPoint.position)
+        val direction = googleDirection.getDirection(startPoint.position, finishPoint.position)
         if (direction?.isEmpty() != false) throw DirectionNotFoundException()
 
-        val directionLine = directionLineBusiness.createDirectionLine(direction)
-        val weatherPointLocation = directionWeatherFilter.getWeatherPointsLocations(direction)
+        val directionLine = directionLineBusiness.createDirectionLine(direction.steps)
+        val weatherPointLocation = directionWeatherFilter.getWeatherPointsLocations(direction.steps)
         val mapPoints = mapPointCreator.createMapPointsAsync(weatherPointLocation)
 
         return Route(startPoint = startPoint, finishPoint = finishPoint, polyline = directionLine,
                 weatherPoints = mapPoints, weatherLocationCount = weatherPointLocation.size)
-    }
-
-    private fun getDirections(startPosition: LatLng, finishPosition: LatLng): List<LatLng>? {
-        return googleDirection.getDirection(startPosition, finishPosition)
     }
 }

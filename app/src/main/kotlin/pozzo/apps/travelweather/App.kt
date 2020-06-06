@@ -31,6 +31,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Feedback Dwight: 10 day forecast at once.
  *
  * I can add distance and time with new fields from Direction
+ *
+ * Should I create some espresso tests for integration?
  * 
  * Mover mapa quando estiver arrastando e atinger o canto do mapa
  * Animar as flags voltando para a lateral quando apertar o clear
