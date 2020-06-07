@@ -15,7 +15,7 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.model.Address
 import java.util.concurrent.CancellationException
 
-//TODO this test is being ignore by jacoco, I should add it back
+//TODO this test is being ignored by jacoco, I should add it back
 @ExperimentalCoroutinesApi class WeatherPointsAdapterTest {
     private val scope = TestCoroutineScope()
     private val weatherPointsData = mock<MutableLiveData<Channel<WeatherPoint>>>()
@@ -75,14 +75,14 @@ import java.util.concurrent.CancellationException
     }
 
     @Test fun assertNotRefreshingIfNotCached() = scope.runBlockingTest {
-        weatherPointsAdapter.refreshRoute(tomorrow)
+        weatherPointsAdapter.refreshRoute(tomorrow, route)
 
         verify(weatherPointsData, never()).postValue(any())
     }
 
     @Test fun assertRefreshing() = scope.runBlockingTest {
         weatherPointsAdapter.updateWeatherPoints(tomorrow, route)
-        weatherPointsAdapter.refreshRoute(tomorrow)
+        weatherPointsAdapter.refreshRoute(tomorrow, route)
 
         weatherPoints.send(weatherPoint)
         weatherPoints.close()
