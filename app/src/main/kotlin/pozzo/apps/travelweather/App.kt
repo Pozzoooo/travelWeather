@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import pozzo.apps.travelweather.common.Android
 import pozzo.apps.travelweather.common.Util
@@ -17,7 +18,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Anyway to track a specific time?
+ * Mover mapa quando estiver arrastando e atinger o canto do mapa
+ *
  *
  * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
  *  has not finished yet
@@ -25,16 +27,16 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Feedback Vassilis: Manual override for temperature scale
- * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Feedback Pedro: Wind speed (good for motorcycle trip)
  * Feedback Dwight: 10 day forecast at once.
  *
+ * Multiple waypoints
+ *
  * I can add distance and time with new fields from Direction
  *
  * Should I create some espresso tests for integration?
- * 
- * Mover mapa quando estiver arrastando e atinger o canto do mapa
+ *
  * Animar as flags voltando para a lateral quando apertar o clear
  * I might need to better hide some keys? (Google maps, Firebase, Mint)
  * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
@@ -52,6 +54,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Br apenas
  * http://servicos.cptec.inpe.br/XML/
  */
+@HiltAndroidApp
 class App : Application() {
     companion object {
         private lateinit var appComponent: AppComponent
