@@ -2,15 +2,18 @@ package pozzo.apps.travelweather.direction
 
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.map.parser.MapPointCreator
-import pozzo.apps.travelweather.route.LimitedRouteBusiness
 import pozzo.apps.travelweather.route.RouteBusiness
 import pozzo.apps.travelweather.route.UnlimitedRouteBusiness
 
-@Module open class DirectionModule {
+@Module
+@InstallIn(ApplicationComponent::class)
+open class DirectionModule {
     @Provides open fun routeBusiness(googleDirection: GoogleDirection,
                            directionLineBusiness: DirectionLineBusiness,
                            mapPointCreator: MapPointCreator,

@@ -2,6 +2,8 @@ package pozzo.apps.travelweather.map
 
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.forecast.ForecastBusiness
@@ -11,6 +13,7 @@ import pozzo.apps.travelweather.map.parser.MapPointCreator
 import pozzo.apps.travelweather.map.parser.WeatherToMapPointParser
 
 @Module
+@InstallIn(ApplicationComponent::class)
 open class MapModule {
     @Provides open fun weatherToMapPointParser() = WeatherToMapPointParser()
     @Provides open fun mapTutorial() = MapTutorial()

@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
@@ -34,7 +34,6 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
-import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
@@ -44,17 +43,19 @@ import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
 import javax.inject.Inject
 
-class MapViewModel(application: Application) : BaseViewModel(application), ErrorHandler {
+@ActivityScoped
+class MapViewModel @Inject constructor(
+        application: Application, private val currentLocationRequester: CurrentLocationRequester,
+        private val mapTutorialScript: MapTutorialScript, private val mapSettings: MapSettings,
+        private val preferencesBusiness: PreferencesBusiness
+) : BaseViewModel(application), ErrorHandler {
+
     @Inject protected lateinit var geoCoderBusiness: GeoCoderBusiness
     @Inject protected lateinit var mapAnalytics: MapAnalytics
-    @Inject protected lateinit var preferencesBusiness: PreferencesBusiness
     @Inject protected lateinit var routeBusiness: RouteBusiness
-    @Inject protected lateinit var currentLocationRequester: CurrentLocationRequester
-    @Inject protected lateinit var mapTutorialScript: MapTutorialScript
     @Inject protected lateinit var lastRunRepository: LastRunRepository
-    @Inject protected lateinit var mapSettings: MapSettings
-
     @Inject protected lateinit var networkHelper: NetworkHelper
+
     private var dragStart = 0L
 
     private var updateRouteJob: Job? = null
@@ -81,11 +82,6 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     val shouldFinish = MutableLiveData<Boolean>()
 
     init {
-        DaggerMapComponent.builder()
-                .appComponent(App.component())
-                .build()
-                .inject(this)
-
         job.start()
 
         isShowingProgress.value = false

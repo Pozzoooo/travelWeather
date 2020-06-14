@@ -5,7 +5,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import pozzo.apps.travelweather.core.TestInjector
-import pozzo.apps.travelweather.core.injection.AppComponent
 import pozzo.apps.travelweather.forecast.darksky.DarkSkyClient
 import pozzo.apps.travelweather.forecast.darksky.ForecastModuleDarkSky
 import pozzo.apps.travelweather.forecast.openweather.ForecastModuleOpenWeather

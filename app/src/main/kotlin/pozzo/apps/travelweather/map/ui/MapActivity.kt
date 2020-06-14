@@ -19,6 +19,7 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_top_bar.*
@@ -51,13 +52,15 @@ import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorial
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MapActivity : BaseActivity() {
     private lateinit var mainThread: Handler
     private lateinit var returnAnimation: ReturnAnimation
 
     private lateinit var mapFragment: MapFragment
-    private lateinit var viewModel: MapViewModel
+    @Inject lateinit var viewModel: MapViewModel
     private lateinit var permissionManager: PermissionManager
     private lateinit var daySelectionListManager: DaySelectionListManager
     private lateinit var timeSelectionListManager: TimeSelectionListManager
@@ -66,7 +69,6 @@ class MapActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel()
         this.mainThread = Handler()
         this.permissionManager = PermissionManager(this, viewModel)
         this.returnAnimation = ReturnAnimation(resources)
@@ -75,10 +77,6 @@ class MapActivity : BaseActivity() {
         setupView()
         observeViewModel()
         showAdd()
-    }
-
-    private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
     }
 
     private fun setupDataBind() {

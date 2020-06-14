@@ -9,11 +9,6 @@ import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.core.bugtracker.FirebaseBug
 import pozzo.apps.travelweather.core.bugtracker.LogBug
-import pozzo.apps.travelweather.core.injection.AppComponent
-import pozzo.apps.travelweather.core.injection.AppModule
-import pozzo.apps.travelweather.core.injection.DaggerAppComponent
-import pozzo.apps.travelweather.core.injection.NetworkModule
-import pozzo.apps.travelweather.forecast.ForecastModuleAll
 
 /**
  * TODO
@@ -56,22 +51,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  */
 @HiltAndroidApp
 class App : Application() {
-    companion object {
-        private lateinit var appComponent: AppComponent
-
-        fun component(): AppComponent {
-            return appComponent
-        }
-
-        fun setComponent(component: AppComponent) {
-            appComponent = component
-        }
-    }
 
     override fun onCreate() {
         super.onCreate()
         initBugTracker()
-        initComponent()
         initCoroutines()
         initUtil()
 	}
@@ -83,15 +66,6 @@ class App : Application() {
             FirebaseBug()
         }
         Bug.setInstance(bugInstance)
-    }
-
-    private fun initComponent() {//todo pq eu nao preciso de todos os compoenents aqui? E da pra usar da forma q usamos no trampo?
-        setComponent(DaggerAppComponent.builder()
-                .appModule(AppModule(this))
-                .networkModule(NetworkModule())
-                .forecastModule(ForecastModuleAll())
-                .build()
-        )
     }
 
     private fun initCoroutines() {

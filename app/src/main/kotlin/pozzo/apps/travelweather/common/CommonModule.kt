@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.PermissionChecker
@@ -12,6 +14,7 @@ import pozzo.apps.travelweather.core.injection.AppModule
 import java.util.*
 
 @Module(includes = [AppModule::class])
+@InstallIn(ApplicationComponent::class)
 open class CommonModule {
 
     @Provides open fun preferencesBusiness(preferences: SharedPreferences, mapAnalytics: MapAnalytics) =

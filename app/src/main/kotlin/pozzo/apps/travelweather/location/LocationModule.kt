@@ -7,6 +7,8 @@ import android.location.LocationManager
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.direction.DirectionLineBusiness
@@ -16,6 +18,7 @@ import pozzo.apps.travelweather.direction.google.GoogleResponseParser
 import pozzo.apps.travelweather.direction.google.PolylineDecoder
 
 @Module
+@InstallIn(ApplicationComponent::class)
 open class LocationModule {
     @Provides open fun locationBusiness() = LocationBusiness()
     @Provides open fun directionLineBusiness() = DirectionLineBusiness()

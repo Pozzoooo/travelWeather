@@ -16,37 +16,29 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import dagger.hilt.android.AndroidEntryPoint
 import pozzo.apps.tools.AndroidUtil
-import pozzo.apps.travelweather.App
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastTitleFormatter
 import pozzo.apps.travelweather.forecast.adapter.ForecastInfoWindowAdapter
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.viewmodel.MapViewModel
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MapFragment : SupportMapFragment() {
     private var map: GoogleMap? = null
-    private lateinit var viewModel: MapViewModel
+    @Inject protected lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
     @Inject protected lateinit var permissionChecker: PermissionChecker
     @Inject protected lateinit var forecastTitleFormatter: ForecastTitleFormatter
 
-    init {
-        DaggerMapComponent.builder()
-                .appComponent(App.component())
-                .build()
-                .inject(this)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.viewModel = ViewModelProviders.of(activity!!).get(MapViewModel::class.java)
         this.mainThread = Handler()
     }
 
