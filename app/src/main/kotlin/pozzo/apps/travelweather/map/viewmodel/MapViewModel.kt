@@ -1,10 +1,10 @@
 package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -43,8 +43,7 @@ import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
 import javax.inject.Inject
 
-@ActivityScoped
-class MapViewModel @Inject constructor(
+class MapViewModel @ViewModelInject constructor(
         application: Application, private val currentLocationRequester: CurrentLocationRequester,
         private val mapTutorialScript: MapTutorialScript, private val mapSettings: MapSettings,
         private val preferencesBusiness: PreferencesBusiness

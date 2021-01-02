@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.map.parser.MapPointCreator
@@ -20,6 +19,4 @@ open class DirectionModule {
                            preferencesBusiness: PreferencesBusiness,
                            directionWeatherFilter: DirectionWeatherFilter): RouteBusiness =
             UnlimitedRouteBusiness(directionLineBusiness, mapPointCreator, googleDirection, directionWeatherFilter)
-
-    @Provides open fun directionWeatherFilter(mapAnalytics: MapAnalytics) = DirectionWeatherFilter(mapAnalytics)
 }

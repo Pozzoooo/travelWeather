@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -59,8 +60,8 @@ class MapActivity : BaseActivity() {
     private lateinit var mainThread: Handler
     private lateinit var returnAnimation: ReturnAnimation
 
+    private val viewModel: MapViewModel by viewModels()
     private lateinit var mapFragment: MapFragment
-    @Inject lateinit var viewModel: MapViewModel
     private lateinit var permissionManager: PermissionManager
     private lateinit var daySelectionListManager: DaySelectionListManager
     private lateinit var timeSelectionListManager: TimeSelectionListManager

@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.DragEvent
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
@@ -31,9 +31,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MapFragment : SupportMapFragment() {
     private var map: GoogleMap? = null
-    @Inject protected lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
+    private val viewModel: MapViewModel by activityViewModels()
     @Inject protected lateinit var permissionChecker: PermissionChecker
     @Inject protected lateinit var forecastTitleFormatter: ForecastTitleFormatter
 

@@ -2,8 +2,9 @@ package pozzo.apps.travelweather.core
 
 import android.content.Context
 import android.content.SharedPreferences
+import javax.inject.Inject
 
-class LastRunRepository(context: Context) {
+class LastRunRepository @Inject constructor(context: Context) {
     companion object {
         private const val LAST_RUN_PREFERENCES = "lastRunPreferences"
     }

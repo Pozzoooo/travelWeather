@@ -9,9 +9,14 @@ import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.forecast.ForecastClient
 import pozzo.apps.travelweather.forecast.model.Day
 import pozzo.apps.travelweather.forecast.model.Time
+import javax.inject.Inject
 
-class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val forecastClient: List<ForecastClient>) {
-    private val topProvider : String by lazy { forecastClient.getOrNull(0)?.javaClass?.simpleName ?: "no provider" }
+class MapAnalytics @Inject constructor(private val firebaseAnalytics: FirebaseAnalytics,
+                                       private val forecastClient: List<ForecastClient>) {
+
+    private val topProvider: String by lazy {
+        forecastClient.getOrNull(0)?.javaClass?.simpleName ?: "no provider"
+    }
 
     fun sendFirebaseUserRequestedCurrentLocationEvent() = GlobalScope.launch(background) {
         sendFirebaseFab("currentLocation")
@@ -35,11 +40,11 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val
         firebaseAnalytics.logEvent("dragDuration", bundle)
     }
 
-    private fun dragLevel(dragTime: Long) : String {
+    private fun dragLevel(dragTime: Long): String {
         return when {
             dragTime < 300L -> "0.3"
             dragTime < 700L -> "0.7"
-            dragTime < 2000L-> "2.0"
+            dragTime < 2000L -> "2.0"
             else -> "2+"
         }
     }

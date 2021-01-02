@@ -3,8 +3,10 @@ package pozzo.apps.travelweather.common.business
 import android.content.SharedPreferences
 import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.forecast.model.Day
+import javax.inject.Inject
 
-class PreferencesBusiness(private val preferences: SharedPreferences, private val mapAnalytics: MapAnalytics) {
+class PreferencesBusiness @Inject constructor(private val preferences: SharedPreferences,
+                                              private val mapAnalytics: MapAnalytics) {
     companion object {
         private const val KEY_SELECTED_DAY = "selectedDay"
         private const val KEY_DAY_SELECTION_COUNT = "daySelectionCount"

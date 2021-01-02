@@ -2,12 +2,13 @@ package pozzo.apps.travelweather.direction
 
 import com.google.android.gms.maps.model.LatLng
 import pozzo.apps.travelweather.analytics.MapAnalytics
+import javax.inject.Inject
 import kotlin.math.abs
 
 /**
  * The idea here is to pick where the weathers are gonna be shown in the direction line.
  */
-class DirectionWeatherFilter(private val mapAnalytics: MapAnalytics) {
+class DirectionWeatherFilter @Inject constructor(private val mapAnalytics: MapAnalytics) {
     companion object {
         private const val PADDING = 350
         private const val MIN_SIZE = 1300

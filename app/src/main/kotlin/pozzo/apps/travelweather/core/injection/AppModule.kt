@@ -10,7 +10,4 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-open class AppModule {
-
-    @Provides @Singleton open fun lastRunRepository(application: Application) = LastRunRepository(application)
-}
+open class AppModule
