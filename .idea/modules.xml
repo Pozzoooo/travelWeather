@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="travelWeather/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dev-projs-travelWeather.iml" filepath="$PROJECT_DIR$/.idea/modules/dev-projs-travelWeather.iml" group="travelWeather" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/projs-travelWeather.iml" filepath="$PROJECT_DIR$/.idea/modules/projs-travelWeather.iml" group="travelWeather" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/projs-travelWeather-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/projs-travelWeather-app.iml" group="travelWeather/app" />
-      <module fileurl="file://$PROJECT_DIR$/travelWeather.iml" filepath="$PROJECT_DIR$/travelWeather.iml" group="travelWeather" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/travelWeather-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/travelWeather-app.iml" group="travelWeather/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/travelWeather.iml" filepath="$PROJECT_DIR$/.idea/modules/travelWeather.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/travelWeather.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/travelWeather.app.iml" />
     </modules>
   </component>
 </project>
