@@ -9,6 +9,7 @@ import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import retrofit2.Response
+import java.net.UnknownHostException
 import java.util.*
 
 class OpenWeatherClient(private val api: OpenWeatherApi,
@@ -16,10 +17,19 @@ class OpenWeatherClient(private val api: OpenWeatherApi,
                         private val key: String) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyopenweathermap)) {
 
-    override fun apiCall(
-            coordinates: LatLng): Response<ResponseBody>? = api.forecast(coordinates.latitude,
-            coordinates.longitude,
-            key).execute()
+    override fun apiCall(coordinates: LatLng): Response<ResponseBody>? {
+        return try {
+            call(coordinates)
+        } catch (e: UnknownHostException) {
+            call(coordinates)//We try twice as there seems to be some dns issue related to this host
+        }
+    }
+
+    private fun call(coordinates: LatLng): Response<ResponseBody>? {
+        return api.forecast(coordinates.latitude,
+                coordinates.longitude,
+                key).execute()
+    }
 
     override fun handleError(response: Response<ResponseBody>?): Boolean {
         val limitExceededErrorCode = 429
