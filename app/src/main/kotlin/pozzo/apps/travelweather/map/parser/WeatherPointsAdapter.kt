@@ -53,7 +53,7 @@ class WeatherPointsAdapter(
 
     private fun setup(dayTime: DayTime): Channel<WeatherPoint> {
         date = dayTime.toCalendar()
-        return Channel<WeatherPoint>(1)
+        return Channel(1)
     }
 
     private suspend fun inLoop(weatherPoint: WeatherPoint, route: Route,
