@@ -33,7 +33,8 @@ class OpenWeatherClient(private val api: OpenWeatherApi,
 
     override fun handleError(response: Response<ResponseBody>?): Boolean {
         val limitExceededErrorCode = 429
-        return response?.code() == limitExceededErrorCode
+        val minuteLimitMaybe = 403
+        return response?.code() == limitExceededErrorCode || response?.code() == minuteLimitMaybe
     }
 
     override fun getLinkForFullForecast(coordinates: LatLng): String {
