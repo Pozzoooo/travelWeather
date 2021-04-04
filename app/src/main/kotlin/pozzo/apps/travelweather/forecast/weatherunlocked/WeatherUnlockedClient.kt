@@ -22,7 +22,10 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
             appId,
             appKey).execute()
 
-    override fun handleError(response: Response<ResponseBody>?): Boolean = false
+    override fun handleError(response: Response<ResponseBody>?): Boolean {
+        val limitExceededErrorCode = 403
+        return response?.code() == limitExceededErrorCode
+    }
 
     override fun getLinkForFullForecast(coordinates: LatLng): String {
         val language = Locale.getDefault().isO3Language
