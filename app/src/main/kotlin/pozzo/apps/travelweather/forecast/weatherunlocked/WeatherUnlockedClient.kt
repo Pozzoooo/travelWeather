@@ -1,9 +1,11 @@
 package pozzo.apps.travelweather.forecast.weatherunlocked
 
+import android.system.ErrnoException
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParser
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.R
+import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastClientBase
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
@@ -16,11 +18,17 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
                             private val typeMapper: ForecastTypeMapper) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyweatherunlocked)) {
 
-    override fun apiCall(
-            coordinates: LatLng): Response<ResponseBody>? = api.forecast(coordinates.latitude,
-            coordinates.longitude,
-            appId,
-            appKey).execute()
+    override fun apiCall(coordinates: LatLng): Response<ResponseBody>? {
+        return try {
+            api.forecast(coordinates.latitude,
+                    coordinates.longitude,
+                    appId,
+                    appKey).execute()
+        } catch (e: ErrnoException) {
+            Bug.get().logEvent(e.toString())//Might be a proxy blocking the lack of ssl
+            null
+        }
+    }
 
     override fun handleError(response: Response<ResponseBody>?): Boolean {
         val limitExceededErrorCode = 403
