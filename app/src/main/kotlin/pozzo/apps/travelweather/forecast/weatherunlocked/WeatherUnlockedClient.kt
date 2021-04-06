@@ -5,17 +5,19 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParser
 import okhttp3.ResponseBody
 import pozzo.apps.travelweather.R
-import pozzo.apps.travelweather.core.bugtracker.Bug
+import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.forecast.ForecastClientBase
 import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import retrofit2.Response
+import java.net.SocketException
 import java.util.*
 
 class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val appId: String,
                             private val appKey: String,
-                            private val typeMapper: ForecastTypeMapper) :
+                            private val typeMapper: ForecastTypeMapper,
+                            private val mapAnalytics: MapAnalytics) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyweatherunlocked)) {
 
     override fun apiCall(coordinates: LatLng): Response<ResponseBody>? {
@@ -25,7 +27,10 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
                     appId,
                     appKey).execute()
         } catch (e: ErrnoException) {
-            Bug.get().logEvent(e.toString())//Might be a proxy blocking the lack of ssl
+            mapAnalytics.sendKnownException("MissingSSL", e.toString())
+            null
+        } catch (e: SocketException) {
+            mapAnalytics.sendKnownException("Timeout", e.toString())
             null
         }
     }
