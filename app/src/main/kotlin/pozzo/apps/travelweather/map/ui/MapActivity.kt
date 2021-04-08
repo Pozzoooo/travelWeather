@@ -16,7 +16,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.android.synthetic.main.activity_maps.*
@@ -70,6 +72,7 @@ class MapActivity : BaseActivity() {
         this.mainThread = Handler()
         this.permissionManager = PermissionManager(this, viewModel)
         this.returnAnimation = ReturnAnimation(resources)
+        setupMaps()
         setupDataBind()
         setupMapFragment()
         setupView()
@@ -79,6 +82,14 @@ class MapActivity : BaseActivity() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
+    }
+
+    private fun setupMaps() {
+        try {
+            MapsInitializer.initialize(this)
+        } catch (e: GooglePlayServicesNotAvailableException) {
+            Bug.get().logException(e)
+        }
     }
 
     private fun setupDataBind() {

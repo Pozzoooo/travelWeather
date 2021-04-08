@@ -11,7 +11,6 @@ import android.os.Handler
 import android.view.DragEvent
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -59,11 +58,6 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun initializeMaps() {
-        try {
-            MapsInitializer.initialize(context)
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            Bug.get().logException(e)
-        }
         getMapAsync { onMapReady(it) }
     }
 
