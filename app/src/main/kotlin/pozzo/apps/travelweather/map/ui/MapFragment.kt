@@ -16,8 +16,11 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.App
+import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastTitleFormatter
@@ -70,10 +73,12 @@ class MapFragment : SupportMapFragment() {
     }
 
     fun updateCamera(cameraUpdate: CameraUpdate) {
-        try {
-            map?.animateCamera(cameraUpdate)
-        } catch (e: IllegalStateException) {
-            Bug.get().logException(e)
+        GlobalScope.launch(CoroutineSettings.ui) {
+            try {
+                map?.animateCamera(cameraUpdate)
+            } catch (e: IllegalStateException) {
+                Bug.get().logException(e)
+            }
         }
     }
 
