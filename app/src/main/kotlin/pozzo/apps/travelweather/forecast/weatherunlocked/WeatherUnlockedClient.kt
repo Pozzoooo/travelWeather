@@ -11,6 +11,8 @@ import pozzo.apps.travelweather.forecast.ForecastTypeMapper
 import pozzo.apps.travelweather.forecast.model.Forecast
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import retrofit2.Response
+import java.io.EOFException
+import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
@@ -28,10 +30,16 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
                     appId,
                     appKey).execute()
         } catch (e: ErrnoException) {
-//            mapAnalytics.sendKnownException("MissingSSL", e.toString())
+//            mapAnalytics.sendKnownException("WU MissingSSL", e.toString())
             null
         } catch (e: SocketException) {
-//            mapAnalytics.sendKnownException("Timeout", e.toString())
+//            mapAnalytics.sendKnownException("WU Timeout", e.toString())
+            null
+        } catch (e: EOFException) {
+//            mapAnalytics.sendKnownException("WU End of file", e.toString())
+            null
+        } catch (e: IOException) {
+//            mapAnalytics.sendKnownException("WU IO", e.toString())
             null
         }
     }
