@@ -16,8 +16,9 @@ import java.util.*
 
 class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val appId: String,
                             private val appKey: String,
-                            private val typeMapper: ForecastTypeMapper,
-                            private val mapAnalytics: MapAnalytics) :
+                            private val typeMapper: ForecastTypeMapper
+////TODO                            ,private val mapAnalytics: MapAnalytics
+                            ) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyweatherunlocked)) {
 
     override fun apiCall(coordinates: LatLng): Response<ResponseBody>? {
@@ -27,10 +28,10 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
                     appId,
                     appKey).execute()
         } catch (e: ErrnoException) {
-            mapAnalytics.sendKnownException("MissingSSL", e.toString())
+//            mapAnalytics.sendKnownException("MissingSSL", e.toString())
             null
         } catch (e: SocketException) {
-            mapAnalytics.sendKnownException("Timeout", e.toString())
+//            mapAnalytics.sendKnownException("Timeout", e.toString())
             null
         }
     }
