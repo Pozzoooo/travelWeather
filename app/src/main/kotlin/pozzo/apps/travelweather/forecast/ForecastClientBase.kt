@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.forecast
 
+import android.util.MalformedJsonException
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParseException
 import okhttp3.ResponseBody
@@ -52,6 +53,8 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
     private fun handleSuccessResponseBody(body: String) : List<Forecast>? {
         try {
             return parseResult(body)
+        } catch (e: MalformedJsonException) {
+            logException(body, e)
         } catch (e: JsonParseException) {
             logException(body, e)
         } catch (e: IllegalStateException) {
@@ -65,6 +68,9 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
     }
 
     private fun logException(body: String, e: Exception) {
-        Bug.get().logException(Exception("Unexpected body format: $body", e))
+        Bug.get().apply {
+            logEvent(body)
+            logException(Exception("Unexpected body format: $body", e))
+        }
     }
 }
