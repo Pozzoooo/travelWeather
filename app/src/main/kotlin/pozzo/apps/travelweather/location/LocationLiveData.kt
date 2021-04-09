@@ -19,8 +19,8 @@ class LocationLiveData constructor(private val locationManager: LocationManager?
 
     private val listener = object : LocationListener {
         override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) { }
-        override fun onProviderEnabled(p0: String?) { }
-        override fun onProviderDisabled(p0: String?) { }
+        override fun onProviderEnabled(p0: String) { }
+        override fun onProviderDisabled(p0: String) { }
 
         override fun onLocationChanged(location: Location) {
             value = location
