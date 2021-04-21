@@ -35,9 +35,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * I can add distance and time with new fields from Direction
  *
  * Should I create some espresso tests for integration?
- * 
- * Mover mapa quando estiver arrastando e atinger o canto do mapa
- * Animar as flags voltando para a lateral quando apertar o clear
+ *
  * I might need to better hide some keys? (Google maps, Firebase, Mint)
  * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
  * Add more days, after after tomorrow, but I need to think in a proper way ot display it

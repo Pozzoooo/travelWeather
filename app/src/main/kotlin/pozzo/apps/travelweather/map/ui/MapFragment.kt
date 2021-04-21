@@ -66,10 +66,10 @@ class MapFragment : SupportMapFragment() {
         mapPoint.redirectUrl?.let { AndroidUtil.openUrl(it, activity) }
     }
 
-    fun updateCamera(cameraUpdate: CameraUpdate) {
+    fun updateCamera(cameraUpdate: CameraUpdate, speed: Int = 1000) {
         GlobalScope.launch(CoroutineSettings.ui) {
-            try {
-                map?.animateCamera(cameraUpdate)
+            try {//TODO ta bem basicao a mudanca ainda, mas parece que funciona
+                map?.animateCamera(cameraUpdate, speed, null)
             } catch (e: IllegalStateException) {
                 Bug.get().logException(e)
             }
@@ -136,7 +136,12 @@ class MapFragment : SupportMapFragment() {
             viewModel.dragStarted()
         }
 
-        override fun onMarkerDrag(marker: Marker) {}
+        override fun onMarkerDrag(marker: Marker) {
+            getProjection()?.let {
+                val cameraUpdate = viewModel.checkEdge(it.visibleRegion.latLngBounds, marker.position)
+                if (cameraUpdate != null) updateCamera(cameraUpdate, 1)
+            }
+        }
     }
 
     @SuppressLint("ObjectAnimatorBinding") fun addMark(mapPoint: MapPoint): Marker? {
@@ -166,7 +171,14 @@ class MapFragment : SupportMapFragment() {
                 viewModel.dragStarted()
                 true
             }
-            else -> false
+            else -> {
+                getProjection()?.let {
+                    val cameraUpdate = viewModel.checkEdge(it.visibleRegion.latLngBounds,
+                            it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                    if (cameraUpdate != null) updateCamera(cameraUpdate, 1)
+                }
+                false
+            }
         }
     }
 

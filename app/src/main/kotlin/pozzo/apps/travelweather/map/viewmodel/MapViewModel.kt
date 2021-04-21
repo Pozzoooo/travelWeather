@@ -1,9 +1,13 @@
 package pozzo.apps.travelweather.map.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -328,4 +332,40 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     private fun getSelectedDayTime() = DayTime(getSelectedDay(), selectedTime)
+
+    //TODO not here?
+    fun checkEdge(bounds: LatLngBounds, position: LatLng): CameraUpdate? {
+        val edgeRegionFactor = 10.0
+        val moveFactor = 0.01
+
+        val northeast = bounds.northeast
+        val southwest = bounds.southwest
+
+        val height = northeast.longitude - southwest.longitude
+        val width = northeast.latitude - southwest.latitude
+
+        val heightBorderSize = height / edgeRegionFactor
+        val widthBorderSize = width / edgeRegionFactor
+
+        val northBorder = northeast.latitude - heightBorderSize
+        val eastBorder = northeast.longitude - widthBorderSize
+        val southBorder = southwest.latitude + heightBorderSize
+        val westBorder = southwest.longitude + widthBorderSize
+
+        val isOnNorthBorder = position.latitude > northBorder
+        val isOnEastBorder = position.longitude > eastBorder
+        val isOnSouthBorder = position.latitude < southBorder
+        val isOnWestBorder = position.longitude < westBorder
+
+        Log.i("BORDER", "north: $isOnNorthBorder -- east: $isOnEastBorder -- " +
+                "south: $isOnSouthBorder -- west: $isOnWestBorder")
+
+        if (isOnNorthBorder) {
+            return CameraUpdateFactory.newLatLngBounds(LatLngBounds(
+                    LatLng(bounds.southwest.latitude + moveFactor, bounds.southwest.longitude),
+                    LatLng(bounds.northeast.latitude + moveFactor, bounds.northeast.longitude)
+            ), 0)
+        }
+        return null
+    }
 }
