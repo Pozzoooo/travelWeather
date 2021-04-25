@@ -38,7 +38,7 @@ import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.MapSettings
-import pozzo.apps.travelweather.map.movement.EdgeDectection
+import pozzo.apps.travelweather.map.movement.EdgeDetection
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.WeatherPointsAdapter
@@ -333,7 +333,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     private fun getSelectedDayTime() = DayTime(getSelectedDay(), selectedTime)
 
     fun checkEdge(bounds: LatLngBounds, position: LatLng): CameraUpdate? {
-        val movement = EdgeDectection().checkEdge(bounds, position)
+        val movement = EdgeDetection().checkEdge(bounds, position)
         if(movement.hasMovement()) {
             return movement.buildCameraUpdate(bounds)
         }

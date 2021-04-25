@@ -7,13 +7,13 @@ import com.google.android.gms.maps.model.LatLngBounds
 
 class Movement {
     companion object {
-        private const val MOVE_FACTOR = 0.01
+        private const val MOVE_FACTOR = 0.07
     }
 
-    var north = false
-    var south = false
-    var east = false
-    var west = false
+    val north = Direction()
+    val south = Direction()
+    val east = Direction()
+    val west = Direction()
 
     fun buildCameraUpdate(initialBound: LatLngBounds): CameraUpdate {
         var southwestLatitude = initialBound.southwest.latitude
@@ -21,22 +21,14 @@ class Movement {
         var northeastLatitude = initialBound.northeast.latitude
         var northeastLongitude = initialBound.northeast.longitude
 
-        if (north) {
-            southwestLatitude += MOVE_FACTOR
-            northeastLatitude += MOVE_FACTOR
-        }
-        if (south) {
-            southwestLatitude -= MOVE_FACTOR
-            northeastLatitude -= MOVE_FACTOR
-        }
-        if (east) {
-            southwestLongitude += MOVE_FACTOR
-            northeastLongitude += MOVE_FACTOR
-        }
-        if (west) {
-            southwestLongitude -= MOVE_FACTOR
-            northeastLongitude -= MOVE_FACTOR
-        }
+        northeastLatitude += north.value * MOVE_FACTOR
+        southwestLatitude += north.value * MOVE_FACTOR
+        southwestLatitude -= south.value * MOVE_FACTOR
+        northeastLatitude -= south.value * MOVE_FACTOR
+        northeastLongitude += east.value * MOVE_FACTOR
+        southwestLongitude += east.value * MOVE_FACTOR
+        southwestLongitude -= west.value * MOVE_FACTOR
+        northeastLongitude -= west.value * MOVE_FACTOR
 
         return CameraUpdateFactory.newLatLngBounds(LatLngBounds(
                 LatLng(southwestLatitude, southwestLongitude),
@@ -45,6 +37,6 @@ class Movement {
     }
 
     fun hasMovement(): Boolean {
-        return north || south || east || west
+        return north.hasValue() || south.hasValue() || east.hasValue() || west.hasValue()
     }
 }

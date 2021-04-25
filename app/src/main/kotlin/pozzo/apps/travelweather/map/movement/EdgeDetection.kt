@@ -3,10 +3,10 @@ package pozzo.apps.travelweather.map.movement
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 
-class EdgeDectection {
+class EdgeDetection {
 
-    companion object {//TODO o que acha de mudar para aceleracao? Ao inves de boleanos posso ter um fator!
-        private const val EDGE_REGION_FACTOR = .05
+    companion object {
+        private const val EDGE_REGION_FACTOR = .1
     }
 
     fun checkEdge(bounds: LatLngBounds, position: LatLng): Movement {
@@ -26,10 +26,10 @@ class EdgeDectection {
 
         val movement = Movement()
 
-        movement.north = position.latitude > northBorder
-        movement.east = position.longitude > eastBorder
-        movement.south = position.latitude < southBorder
-        movement.west = position.longitude < westBorder
+        movement.north.value = position.latitude - northBorder
+        movement.east.value = position.longitude - eastBorder
+        movement.south.value = southBorder - position.latitude
+        movement.west.value = westBorder - position.longitude
 
         return movement
     }

@@ -5,10 +5,10 @@ import com.google.android.gms.maps.model.LatLngBounds
 import org.junit.Assert
 import org.junit.Test
 
-class EdgeDectectionTest {
+class EdgeDetectionTest {
 
     @Test fun moveOnBorderNortheast() {
-        val edgeMovement = EdgeDectection()
+        val edgeMovement = EdgeDetection()
 
         val result = edgeMovement.checkEdge(
                 LatLngBounds(LatLng(.0, .0), LatLng(1.0, 1.0)),
@@ -19,7 +19,7 @@ class EdgeDectectionTest {
     }
 
     @Test fun moveOnBorderSouthwest() {
-        val edgeMovement = EdgeDectection()
+        val edgeMovement = EdgeDetection()
 
         val result = edgeMovement.checkEdge(
                 LatLngBounds(LatLng(.0, .0), LatLng(1.0, 1.0)),
@@ -30,7 +30,7 @@ class EdgeDectectionTest {
     }
 
     @Test fun dontMoveOnCenter() {
-        val edgeMovement = EdgeDectection()
+        val edgeMovement = EdgeDetection()
 
         val result = edgeMovement.checkEdge(
                 LatLngBounds(LatLng(.0, .0), LatLng(1.0, 1.0)),
