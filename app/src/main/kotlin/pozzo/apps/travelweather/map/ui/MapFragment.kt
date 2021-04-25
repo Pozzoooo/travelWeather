@@ -8,9 +8,10 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.DragEvent
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -48,8 +49,8 @@ class MapFragment : SupportMapFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.viewModel = ViewModelProviders.of(activity!!).get(MapViewModel::class.java)
-        this.mainThread = Handler()
+        this.viewModel = ViewModelProvider(activity!!).get(MapViewModel::class.java)
+        this.mainThread = Handler(Looper.getMainLooper())
     }
 
     override fun onCreate(bundle: Bundle?) {
@@ -64,6 +65,10 @@ class MapFragment : SupportMapFragment() {
     private val goToWeatherForecastWebPage = GoogleMap.OnInfoWindowClickListener { marker ->
         val mapPoint = marker.tag as MapPoint
         mapPoint.redirectUrl?.let { AndroidUtil.openUrl(it, activity) }
+    }
+
+    fun updateCameraQuick(cameraUpdate: CameraUpdate) {
+        updateCamera(cameraUpdate, 1)
     }
 
     fun updateCamera(cameraUpdate: CameraUpdate, speed: Int = 1000) {
@@ -138,8 +143,8 @@ class MapFragment : SupportMapFragment() {
 
         override fun onMarkerDrag(marker: Marker) {
             getProjection()?.let {
-                val cameraUpdate = viewModel.checkEdge(it.visibleRegion.latLngBounds, marker.position)
-                if (cameraUpdate != null) updateCamera(cameraUpdate, 1)
+                viewModel.checkEdge(it.visibleRegion.latLngBounds, marker.position)
+                        ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
             }
         }
     }
@@ -173,9 +178,9 @@ class MapFragment : SupportMapFragment() {
             }
             else -> {
                 getProjection()?.let {
-                    val cameraUpdate = viewModel.checkEdge(it.visibleRegion.latLngBounds,
+                    viewModel.checkEdge(it.visibleRegion.latLngBounds,
                             it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
-                    if (cameraUpdate != null) updateCamera(cameraUpdate, 1)
+                            ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
                 }
                 false
             }
