@@ -17,36 +17,25 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Anyway to track a specific time?
- *
  * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
  *  has not finished yet
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Feedback Vassilis: Manual override for temperature scale
- * Feedback Lisa: Developer, please add departure times to this app
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
+ * Feedback Kathie: Multiplas rotas.
  * Feedback Pedro: Wind speed (good for motorcycle trip)
  * Feedback Dwight: 10 day forecast at once.
- * Feedback Kathie: Multiplas rotas.
  * Feedback Kathie: Save route for future use.
  *
  * I can add distance and time with new fields from Direction
  *
  * Should I create some espresso tests for integration?
  *
- * I might need to better hide some keys? (Google maps, Firebase, Mint)
- * I need to reflect about the business layer, does this naming makes sense? It somehow fits too much, I feel like I need more specific namings.
- * Add more days, after after tomorrow, but I need to think in a proper way ot display it
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem
- * A distancia entre previsao deve ser dinamica, em uma distancia maior eu nao precio de tantas previsoes.
- * Realizar a separacao early, late...
- * Outra fonte para busca de previsao do tempo
- * Finish Dagger refactoring
- * Increase test coverage
  *
  * Another option might be https://www.worldweatheronline.com/developer/api/pricing2.aspx
  * Br apenas
