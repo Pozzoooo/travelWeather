@@ -73,7 +73,7 @@ class MapFragment : SupportMapFragment() {
 
     fun updateCamera(cameraUpdate: CameraUpdate, speed: Int = 1000) {
         GlobalScope.launch(CoroutineSettings.ui) {
-            try {//TODO ta bem basicao a mudanca ainda, mas parece que funciona
+            try {
                 map?.animateCamera(cameraUpdate, speed, null)
             } catch (e: IllegalStateException) {
                 Bug.get().logException(e)
