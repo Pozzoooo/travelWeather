@@ -11,10 +11,6 @@ import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
 
-/**
- * todo I'm not really sure about this solution
- *  There is a big issue in here where I'm exposing all those methods which I didn't really want to
- */
 abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastClient {
     abstract fun apiCall(coordinates: LatLng) : Response<ResponseBody>?
     abstract fun handleError(response: Response<ResponseBody>?): Boolean
