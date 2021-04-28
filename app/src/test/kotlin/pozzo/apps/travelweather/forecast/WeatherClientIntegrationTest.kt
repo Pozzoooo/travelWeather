@@ -37,7 +37,8 @@ class WeatherClientIntegrationTest {
     }
 
     private fun setupWeatherUnlocked(): WeatherUnlockedClient {
-        return ForecastModuleWeatherUnlocked().forecastClient(appComponent.retrofitBuilder()) as WeatherUnlockedClient
+        return ForecastModuleWeatherUnlocked().forecastClient(
+                appComponent.retrofitBuilder(), appComponent.mapAnalytics()) as WeatherUnlockedClient
     }
 
     private fun setupOpenWeather(): OpenWeatherClient {

@@ -3,6 +3,7 @@ package pozzo.apps.travelweather.forecast
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import pozzo.apps.travelweather.analytics.MapAnalytics
 import pozzo.apps.travelweather.core.JsonParser
 import pozzo.apps.travelweather.forecast.model.Weather
 import retrofit2.Retrofit
@@ -16,7 +17,7 @@ class ForecastModuleFake : ForecastModule() {
     }
 
     val forecastClient by lazy { mock<ForecastClient>() }
-    override fun forecastClients(retrofitBuilder: Retrofit.Builder): List<ForecastClient> {
+    override fun forecastClients(retrofitBuilder: Retrofit.Builder, mapAnalytics: MapAnalytics): List<ForecastClient> {
         whenever(forecastClient.fromCoordinates(any())).thenReturn(JsonParser.fromJson(Weather::class.java, """
                     {
                       "address": {

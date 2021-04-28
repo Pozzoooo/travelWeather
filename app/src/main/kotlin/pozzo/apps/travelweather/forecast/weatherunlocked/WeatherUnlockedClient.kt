@@ -16,7 +16,7 @@ import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
-class WeatherUnlockedClient (private val api: WeatherUnlockedApi, private val appId: String,
+class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val appId: String,
                             private val appKey: String,
                             private val typeMapper: ForecastTypeMapper,
                             private val mapAnalytics: MapAnalytics) :
@@ -53,7 +53,7 @@ class WeatherUnlockedClient (private val api: WeatherUnlockedApi, private val ap
         return "https://darksky.net/forecast/${coordinates.latitude},${coordinates.longitude}/si12/$language"
     }
 
-w    override fun parseResult(body: String): List<Forecast> {
+    override fun parseResult(body: String): List<Forecast> {
         val jsonResult = JsonParser().parse(body).asJsonObject
         val dailyData = jsonResult.getAsJsonArray("Days")
         val dateTimeParser = DateTimeParserWeatherUnlocked()

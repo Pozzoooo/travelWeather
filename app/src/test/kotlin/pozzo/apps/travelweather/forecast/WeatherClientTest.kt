@@ -80,7 +80,7 @@ class WeatherClientTest {
         val module = ForecastModuleWeatherUnlocked()
         val api = module.createApi(appComponent.retrofitBuilder(), enqueueRequest(mockedResponseJsonFile))
 
-        forecastClients.add(WeatherUnlockedClient(api, "", "", module.forecastTypeMapper()))
+        forecastClients.add(WeatherUnlockedClient(api, "", "", module.forecastTypeMapper(), mock()))
     }
 
     private fun enqueueRequest(jsonFile: String?) : String {
