@@ -13,7 +13,7 @@ import java.util.*
 import java.util.concurrent.CancellationException
 import kotlin.collections.ArrayList
 
-class WeatherPointsAdapter(
+class WeatherPointsTimeCalculator(
         private val weatherPointsData: MutableLiveData<Channel<WeatherPoint>>,
         private val scope: CoroutineScope) {
 

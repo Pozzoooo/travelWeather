@@ -41,7 +41,7 @@ import pozzo.apps.travelweather.map.MapSettings
 import pozzo.apps.travelweather.map.movement.EdgeDetection
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
-import pozzo.apps.travelweather.map.parser.WeatherPointsAdapter
+import pozzo.apps.travelweather.map.parser.WeatherPointsTimeCalculator
 import pozzo.apps.travelweather.route.RequestLimitReached
 import pozzo.apps.travelweather.route.RouteBusiness
 import java.io.IOException
@@ -62,7 +62,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private var updateRouteJob: Job? = null
     private var route = Route()
-    private val weatherPointsAdapter: WeatherPointsAdapter
+    private val weatherPointsTimeCalculator: WeatherPointsTimeCalculator
     private var selectedTime = Time.getDefault()
 
     private val job = Job()
@@ -102,7 +102,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         mapTutorialScript.onAppStart()
         mapSettingsData.postValue(mapSettings)
         selectedDayTime.value = getSelectedDayTime()
-        weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData, scope)
+        weatherPointsTimeCalculator = WeatherPointsTimeCalculator(weatherPointsData, scope)
     }
 
     fun onMapReady(lifecycleOwner: LifecycleOwner) {
@@ -179,7 +179,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                 val route = routeBusiness.createRoute(startPoint, finishPoint)
                 if (isActive) {
                     setRoute(route)
-                    weatherPointsAdapter.updateWeatherPoints(getSelectedDayTime(), route)
+                    weatherPointsTimeCalculator.updateWeatherPoints(getSelectedDayTime(), route)
                 }
             } catch (e: DirectionNotFoundException) {
                 postError(Error.CANT_FIND_ROUTE)
@@ -304,7 +304,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         val day = Day.getByIndex(index)
         if (day != getSelectedDay()) {
             preferencesBusiness.setSelectedDay(day)
-            weatherPointsAdapter.refreshRoute(getSelectedDayTime(), route)
+            weatherPointsTimeCalculator.refreshRoute(getSelectedDayTime(), route)
             mightShowRateMeDialog()
             selectedDayTime.postValue(getSelectedDayTime())
         }
@@ -324,7 +324,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     fun setSelectedTime(time: Time) {
         if (time != selectedTime) {
             selectedTime = time
-            weatherPointsAdapter.refreshRoute(getSelectedDayTime(), route)
+            weatherPointsTimeCalculator.refreshRoute(getSelectedDayTime(), route)
             selectedDayTime.postValue(getSelectedDayTime())//TODO duplicated code with selected day
             mapAnalytics.sendTimeSelectionChanged(time)
         }
