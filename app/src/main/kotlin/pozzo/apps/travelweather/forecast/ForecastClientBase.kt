@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.forecast
 
+import android.util.MalformedJsonException
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonParseException
 import okhttp3.ResponseBody
@@ -10,10 +11,6 @@ import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.map.model.Address
 import retrofit2.Response
 
-/**
- * todo I'm not really sure about this solution
- *  There is a big issue in here where I'm exposing all those methods which I didn't really want to
- */
 abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastClient {
     abstract fun apiCall(coordinates: LatLng) : Response<ResponseBody>?
     abstract fun handleError(response: Response<ResponseBody>?): Boolean
@@ -52,6 +49,8 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
     private fun handleSuccessResponseBody(body: String) : List<Forecast>? {
         try {
             return parseResult(body)
+        } catch (e: MalformedJsonException) {
+            logException(body, e)
         } catch (e: JsonParseException) {
             logException(body, e)
         } catch (e: IllegalStateException) {
@@ -65,6 +64,9 @@ abstract class ForecastClientBase(private val poweredBy: PoweredBy) : ForecastCl
     }
 
     private fun logException(body: String, e: Exception) {
-        Bug.get().logException(Exception("Unexpected body format: $body", e))
+        Bug.get().apply {
+            logEvent(body)
+            logException(Exception("Unexpected body format: $body", e))
+        }
     }
 }

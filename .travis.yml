@@ -1,13 +1,13 @@
 language: android
 
 before_install:
-  - yes | sdkmanager "build-tools;29.0.2"
+  - yes | sdkmanager "build-tools;30.0.3"
 
 android:
   components:
     - tools
-    - build-tools-29.0.2
-    - android-29
+    - build-tools-30.0.3
+    - android-30
     - extra-android-m2repository
 
 script:

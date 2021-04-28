@@ -102,4 +102,11 @@ class MapAnalytics(private val firebaseAnalytics: FirebaseAnalytics, private val
         bundle.putString("topProvider", topProvider)
         firebaseAnalytics.logEvent("forecastRequest", bundle)
     }
+
+    fun sendKnownException(name: String, description: String) = GlobalScope.launch(background) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name)
+        bundle.putString("description", description)
+        firebaseAnalytics.logEvent("exception", bundle)
+    }
 }

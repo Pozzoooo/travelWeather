@@ -40,7 +40,8 @@ class MapAnalyticsTest {
         mapAnalytics.sendEmptyForecastCountByRoute()
         mapAnalytics.sendSingleForecastCountByRoute(0)
         mapAnalytics.sendForecastCountByRoute(0, 0)
+        mapAnalytics.sendKnownException("exc", "it's quite bad")
 
-        Mockito.verify(firebaseAnalytics, Mockito.times(15)).logEvent(any(), any())
+        Mockito.verify(firebaseAnalytics, Mockito.times(16)).logEvent(any(), any())
     }
 }

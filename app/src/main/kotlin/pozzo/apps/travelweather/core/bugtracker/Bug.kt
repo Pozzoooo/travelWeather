@@ -2,7 +2,6 @@ package pozzo.apps.travelweather.core.bugtracker
 
 import android.app.Application
 
-//todo transform it into a library with provided dependencies
 abstract class Bug {
     companion object {
         private var instance: Bug = NullBug()

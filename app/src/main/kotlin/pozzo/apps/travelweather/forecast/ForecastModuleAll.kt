@@ -10,11 +10,11 @@ import kotlin.random.Random
 class ForecastModuleAll : ForecastModule() {
 
     override fun forecastClients(retrofitBuilder: Retrofit.Builder) : List<@JvmSuppressWildcards ForecastClient> {
-        val forecasts = TreeMap<Int, ForecastClient>(kotlin.Comparator { key1, key2 -> key2 - key1 })
+        val forecasts = TreeMap<Int, ForecastClient> { key1, key2 -> key2 - key1 }
 
-        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 1000] = ForecastModuleDarkSky().forecastClient(retrofitBuilder)
-        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 20000] = ForecastModuleWeatherUnlocked().forecastClient(retrofitBuilder)
-        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 1000] = ForecastModuleOpenWeather().forecastClient(retrofitBuilder)
+        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 5] = ForecastModuleDarkSky().forecastClient(retrofitBuilder)
+        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 100] = ForecastModuleWeatherUnlocked().forecastClient(retrofitBuilder)
+        forecasts[Random.nextInt().and(Integer.MAX_VALUE) % 60] = ForecastModuleOpenWeather().forecastClient(retrofitBuilder)
 
         return forecasts.values.toList()
     }

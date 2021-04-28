@@ -28,6 +28,7 @@ import pozzo.apps.travelweather.direction.DirectionModuleFake
 import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.forecast.model.PoweredBy
 import pozzo.apps.travelweather.forecast.model.Route
+import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.Weather
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.LocationModuleFake
@@ -232,6 +233,15 @@ class MapViewModelTest {
         assertEquals(start, mapViewModel.routeData.value!!.startPoint!!.position)
     }
 
+    @Test fun assertNotCrashingOnConnectionError() {
+        val address = "address"
+
+        mapViewModel.error.value = Error.NO_CONNECTION
+        whenever(locationModuleFake.geoCoderBusiness.getPositionFromFirst(address)).thenThrow(IOException())
+
+        mapViewModel.searchAddress(address)
+    }
+
     @Test fun assertClearAction() {
         mapViewModel.requestClear()
         assertTrue(mapViewModel.actionRequest.value is ClearActionRequest)
@@ -260,5 +270,11 @@ class MapViewModelTest {
     @Test fun assertRateMeDialogIsDisplayed() {
         mapViewModel.setSelectedDay(0)
         assertNull(mapViewModel.actionRequest.value)
+    }
+
+    @Test fun assertSelectedTimeUpdate() {
+        val time = Time(10)
+        mapViewModel.setSelectedTime(time)
+        assertEquals(time, mapViewModel.selectedDayTime.value!!.time)
     }
 }

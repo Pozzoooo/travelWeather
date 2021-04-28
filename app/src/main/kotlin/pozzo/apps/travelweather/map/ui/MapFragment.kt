@@ -8,16 +8,19 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.DragEvent
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
 import pozzo.apps.travelweather.App
+import pozzo.apps.travelweather.core.CoroutineSettings
 import pozzo.apps.travelweather.core.PermissionChecker
 import pozzo.apps.travelweather.core.bugtracker.Bug
 import pozzo.apps.travelweather.forecast.ForecastTitleFormatter
@@ -46,8 +49,8 @@ class MapFragment : SupportMapFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.viewModel = ViewModelProviders.of(activity!!).get(MapViewModel::class.java)
-        this.mainThread = Handler()
+        this.viewModel = ViewModelProvider(activity!!).get(MapViewModel::class.java)
+        this.mainThread = Handler(Looper.getMainLooper())
     }
 
     override fun onCreate(bundle: Bundle?) {
@@ -56,11 +59,6 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun initializeMaps() {
-        try {
-            MapsInitializer.initialize(context)
-        } catch (e: GooglePlayServicesNotAvailableException) {
-            Bug.get().logException(e)
-        }
         getMapAsync { onMapReady(it) }
     }
 
@@ -69,11 +67,17 @@ class MapFragment : SupportMapFragment() {
         mapPoint.redirectUrl?.let { AndroidUtil.openUrl(it, activity) }
     }
 
-    fun updateCamera(cameraUpdate: CameraUpdate) {
-        try {
-            map?.animateCamera(cameraUpdate)
-        } catch (e: IllegalStateException) {
-            Bug.get().logException(e)
+    fun updateCameraQuick(cameraUpdate: CameraUpdate) {
+        updateCamera(cameraUpdate, 1)
+    }
+
+    fun updateCamera(cameraUpdate: CameraUpdate, speed: Int = 1000) {
+        GlobalScope.launch(CoroutineSettings.ui) {
+            try {
+                map?.animateCamera(cameraUpdate, speed, null)
+            } catch (e: IllegalStateException) {
+                Bug.get().logException(e)
+            }
         }
     }
 
@@ -137,7 +141,12 @@ class MapFragment : SupportMapFragment() {
             viewModel.dragStarted()
         }
 
-        override fun onMarkerDrag(marker: Marker) {}
+        override fun onMarkerDrag(marker: Marker) {
+            getProjection()?.let {
+                viewModel.checkEdge(it.visibleRegion.latLngBounds, marker.position)
+                        ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
+            }
+        }
     }
 
     @SuppressLint("ObjectAnimatorBinding") fun addMark(mapPoint: MapPoint): Marker? {
@@ -167,7 +176,14 @@ class MapFragment : SupportMapFragment() {
                 viewModel.dragStarted()
                 true
             }
-            else -> false
+            else -> {
+                getProjection()?.let {
+                    viewModel.checkEdge(it.visibleRegion.latLngBounds,
+                            it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                            ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
+                }
+                false
+            }
         }
     }
 

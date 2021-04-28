@@ -3,7 +3,9 @@ package pozzo.apps.travelweather.map.viewmodel
 import android.app.Application
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -36,6 +38,7 @@ import pozzo.apps.travelweather.location.GeoCoderBusiness
 import pozzo.apps.travelweather.location.PermissionDeniedException
 import pozzo.apps.travelweather.map.DaggerMapComponent
 import pozzo.apps.travelweather.map.MapSettings
+import pozzo.apps.travelweather.map.movement.EdgeDetection
 import pozzo.apps.travelweather.map.overlay.LastRunKey
 import pozzo.apps.travelweather.map.overlay.MapTutorialScript
 import pozzo.apps.travelweather.map.parser.WeatherPointsAdapter
@@ -328,4 +331,12 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     private fun getSelectedDayTime() = DayTime(getSelectedDay(), selectedTime)
+
+    fun checkEdge(bounds: LatLngBounds, position: LatLng): CameraUpdate? {
+        val movement = EdgeDetection().checkEdge(bounds, position)
+        if(movement.hasMovement()) {
+            return movement.buildCameraUpdate(bounds)
+        }
+        return null
+    }
 }
