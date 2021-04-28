@@ -71,7 +71,7 @@ class App : Application() {
         Bug.setInstance(bugInstance)
     }
 
-    private fun initComponent() {//todo pq eu nao preciso de todos os compoenents aqui? E da pra usar da forma q usamos no trampo?
+    private fun initComponent() {
         setComponent(DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .networkModule(NetworkModule())

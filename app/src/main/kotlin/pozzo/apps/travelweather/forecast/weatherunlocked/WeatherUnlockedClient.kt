@@ -16,11 +16,10 @@ import java.io.IOException
 import java.net.SocketException
 import java.util.*
 
-class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val appId: String,
+class WeatherUnlockedClient (private val api: WeatherUnlockedApi, private val appId: String,
                             private val appKey: String,
-                            private val typeMapper: ForecastTypeMapper
-////TODO                            ,private val mapAnalytics: MapAnalytics
-                            ) :
+                            private val typeMapper: ForecastTypeMapper,
+                            private val mapAnalytics: MapAnalytics) :
         ForecastClientBase(PoweredBy(R.drawable.poweredbyweatherunlocked)) {
 
     override fun apiCall(coordinates: LatLng): Response<ResponseBody>? {
@@ -30,16 +29,16 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
                     appId,
                     appKey).execute()
         } catch (e: ErrnoException) {
-//            mapAnalytics.sendKnownException("WU MissingSSL", e.toString())
+            mapAnalytics.sendKnownException("WU MissingSSL", e.toString())
             null
         } catch (e: SocketException) {
-//            mapAnalytics.sendKnownException("WU Timeout", e.toString())
+            mapAnalytics.sendKnownException("WU Timeout", e.toString())
             null
         } catch (e: EOFException) {
-//            mapAnalytics.sendKnownException("WU End of file", e.toString())
+            mapAnalytics.sendKnownException("WU End of file", e.toString())
             null
         } catch (e: IOException) {
-//            mapAnalytics.sendKnownException("WU IO", e.toString())
+            mapAnalytics.sendKnownException("WU IO", e.toString())
             null
         }
     }
@@ -54,7 +53,7 @@ class WeatherUnlockedClient(private val api: WeatherUnlockedApi, private val app
         return "https://darksky.net/forecast/${coordinates.latitude},${coordinates.longitude}/si12/$language"
     }
 
-    override fun parseResult(body: String): List<Forecast>? {
+w    override fun parseResult(body: String): List<Forecast> {
         val jsonResult = JsonParser().parse(body).asJsonObject
         val dailyData = jsonResult.getAsJsonArray("Days")
         val dateTimeParser = DateTimeParserWeatherUnlocked()
