@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.forecast
 
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -19,9 +20,9 @@ class ForecastModuleAllTest {
         val repeat = 100
         val maxMatch = repeat - 1
         var matchCount = 0
-        var lastList = forecastModuleAll.forecastClients(retrofitBuilder)
+        var lastList = forecastModuleAll.forecastClients(retrofitBuilder, mock())
         repeat(repeat) {
-            val list = forecastModuleAll.forecastClients(retrofitBuilder)
+            val list = forecastModuleAll.forecastClients(retrofitBuilder, mock())
             if (list[0].javaClass.name == lastList[0].javaClass.name) {
                 ++matchCount
             }

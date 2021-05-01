@@ -15,11 +15,10 @@ import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.model.Address
 import java.util.concurrent.CancellationException
 
-//TODO this test is being ignored by jacoco, I should add it back
-@ExperimentalCoroutinesApi class WeatherPointsAdapterTest {
+@ExperimentalCoroutinesApi class WeatherPointsTimeCalculatorTest {
     private val scope = TestCoroutineScope()
     private val weatherPointsData = mock<MutableLiveData<Channel<WeatherPoint>>>()
-    private val weatherPointsAdapter = WeatherPointsAdapter(weatherPointsData, scope)
+    private val weatherPointsAdapter = WeatherPointsTimeCalculator(weatherPointsData, scope)
     private val tomorrow = DayTime(Day.TOMORROW, Time.getDefault())
     private val weatherPoints = Channel<WeatherPoint>()
     private val route = Route(weatherPoints = weatherPoints)

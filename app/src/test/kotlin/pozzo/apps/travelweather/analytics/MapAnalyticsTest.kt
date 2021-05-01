@@ -21,16 +21,16 @@ class MapAnalyticsTest {
 
     @Before fun setup() {
         MockitoAnnotations.initMocks(this)
-        mapAnalytics = MapAnalytics(firebaseAnalytics, emptyList())
+        mapAnalytics = MapAnalytics(firebaseAnalytics)
     }
 
     @Test fun assertFirebaseIsBeingCalled() {
         mapAnalytics.sendFirebaseUserRequestedCurrentLocationEvent()
         mapAnalytics.sendClearRouteEvent()
-        mapAnalytics.sendDragDurationEvent("untiTest", 1L)
-        mapAnalytics.sendDragDurationEvent("untiTest", 500L)
-        mapAnalytics.sendDragDurationEvent("untiTest", 1000L)
-        mapAnalytics.sendDragDurationEvent("untiTest", 5000L)
+        mapAnalytics.sendDragDurationEvent("unitTest", 1L)
+        mapAnalytics.sendDragDurationEvent("unitTest", 500L)
+        mapAnalytics.sendDragDurationEvent("unitTest", 1000L)
+        mapAnalytics.sendDragDurationEvent("unitTest", 5000L)
         mapAnalytics.sendDaySelectionChanged(Day.TODAY)
         mapAnalytics.sendErrorMessage(Error.CANT_FIND_ROUTE)
         mapAnalytics.sendShowSearch()
