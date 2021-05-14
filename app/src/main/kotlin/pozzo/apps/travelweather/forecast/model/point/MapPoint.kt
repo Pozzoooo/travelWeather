@@ -16,4 +16,17 @@ abstract class MapPoint(open val icon: BitmapDescriptor?,
                         var marker: Marker? = null) {
 
     abstract fun getTitle(context: Context, forecastTitleFormatter: ForecastTitleFormatter): String
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MapPoint) return false
+
+        if (position != other.position) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return position.hashCode()
+    }
 }

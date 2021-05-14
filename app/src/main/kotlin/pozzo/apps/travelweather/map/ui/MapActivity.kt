@@ -166,6 +166,7 @@ class MapActivity : BaseActivity() {
         viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
         viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
+        viewModel.pointMapToRoute.observe(this, { if (it != null) pointMapToRoute(it) })
     }
 
     private fun updateDayTime(dayTime: DayTime) {

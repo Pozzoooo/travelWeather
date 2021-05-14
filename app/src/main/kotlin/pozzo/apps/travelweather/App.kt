@@ -17,9 +17,6 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
- *  has not finished yet
- *
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Feedback Vassilis: Manual override for temperature scale

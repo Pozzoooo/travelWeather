@@ -82,6 +82,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     val isShowingProgress = MutableLiveData<Boolean>()
     val isShowingSearch = MutableLiveData<Boolean>()
     val shouldFinish = MutableLiveData<Boolean>()
+    val pointMapToRoute = MutableLiveData<Route>()
 
     init {
         DaggerMapComponent.builder()
@@ -169,6 +170,12 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
+        val newRoute = Route(startPoint = startPoint, finishPoint = finishPoint)
+        if (route == newRoute) {
+            pointMapToRoute()
+            return
+        }
+
         setRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
         if (startPoint == null || finishPoint == null) return
 
@@ -191,6 +198,11 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
                 hideProgress()
             }
         }
+    }
+
+    private fun pointMapToRoute() {
+        pointMapToRoute.postValue(route)
+        pointMapToRoute.value = null
     }
 
     fun setFinishPosition(finishPosition: LatLng) {
