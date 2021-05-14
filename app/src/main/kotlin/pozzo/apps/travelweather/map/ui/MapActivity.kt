@@ -226,7 +226,7 @@ class MapActivity : BaseActivity() {
                 CameraUpdateFactory.newLatLngBounds(
                     LatLngBounds.builder()
                         .include(route.startPoint!!.position)
-                        .include(route.finishPoint!!.position).build(), 70))
+                        .include(route.finishPoint!!.position).build(), 400))
         } else if (route.startPoint != null) {
             try {
                 mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))
