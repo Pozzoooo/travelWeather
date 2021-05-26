@@ -17,6 +17,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
+ * Não mostrar ajuda quando der algum erro
+ *
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Feedback Vassilis: Manual override for temperature scale
