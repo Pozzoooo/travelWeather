@@ -17,7 +17,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Não mostrar ajuda quando der algum erro
+ * Lots of requests on additional waypoints
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *

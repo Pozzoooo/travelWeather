@@ -96,7 +96,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         isShowingSearch.value = false
         shouldFinish.value = false
         routeData.value = route
-        currentLocationRequester.callback = CurrentLocationBinder(currentLocationRequester, this) {
+        currentLocationRequester.callback = CurrentLocationBinder(currentLocationRequester, warning) {
             setStartPosition(it)
         }
         mapTutorialScript.playTutorialCallback = { overlay.postValue(it) }
