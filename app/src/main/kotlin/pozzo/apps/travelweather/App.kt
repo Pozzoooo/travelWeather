@@ -17,10 +17,12 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Lots of requests on additional waypoints
+ * Lots of requests for additional waypoints
  * Feedback Kathie: Multiplas rotas.
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Parece uma boa dar um offset pra cima no icone da bandeira pra faclitar a colocacao dela
+ *
+ * Improvements on design would be welcome
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
