@@ -33,4 +33,22 @@ class Route(baseRoute: Route? = null,
 
     fun isComplete(): Boolean = startPoint != null && finishPoint != null
     fun isEmpty(): Boolean = startPoint == null && finishPoint == null
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Route
+
+        if (startPoint != other.startPoint) return false
+        if (finishPoint != other.finishPoint) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = startPoint?.hashCode() ?: 0
+        result = 31 * result + (finishPoint?.hashCode() ?: 0)
+        return result
+    }
 }

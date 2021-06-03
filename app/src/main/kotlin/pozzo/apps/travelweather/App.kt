@@ -17,20 +17,21 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Minor bug: Multiples clicks on current location make it request multiple times even if the last one
- *  has not finished yet
+ * Lots of requests for additional waypoints
+ * Feedback Kathie: Multiplas rotas.
+ * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
+ * Parece uma boa dar um offset pra cima no icone da bandeira pra faclitar a colocacao dela
+ *
+ * Improvements on design would be welcome
  *
  * Minor bug: Channel keep flowing after changing route destination.
  *
  * Feedback Vassilis: Manual override for temperature scale
- * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
- * Feedback Kathie: Multiplas rotas.
  * Feedback Pedro: Wind speed (good for motorcycle trip)
  * Feedback Dwight: 10 day forecast at once.
  * Feedback Kathie: Save route for future use.
  *
  * I can add distance and time with new fields from Direction
- *
  * Should I create some espresso tests for integration?
  *
  * Build route if it was triggered when no connection was available (job schedule?)

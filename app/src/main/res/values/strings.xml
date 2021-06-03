@@ -18,9 +18,9 @@
 	<string name="error_needsConnection">Check internet connection</string>
 	<string name="error_cantReach">Can\'t reach internet, check connection or try again later</string>
     <string name="error_pathNotFound">Could not find a route, try adjusting the flags closer to roads</string>
-    <string name="error_currentLocationNotFound">Not able to find your current location</string>
 	<string name="error_limitReached">Free tier limit reached</string>
 
+	<string name="warning_currentLocationNotFound">Not able to find your current location</string>
 	<string name="warning_permissionDenied">Permission has been denied</string>
 
 	<string name="tutorial_flags">Drag the flags to create a route</string>

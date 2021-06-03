@@ -166,6 +166,7 @@ class MapActivity : BaseActivity() {
         viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
         viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
+        viewModel.pointMapToRoute.observe(this, { if (it != null) pointMapToRoute(it) })
     }
 
     private fun updateDayTime(dayTime: DayTime) {
@@ -226,7 +227,7 @@ class MapActivity : BaseActivity() {
                 CameraUpdateFactory.newLatLngBounds(
                     LatLngBounds.builder()
                         .include(route.startPoint!!.position)
-                        .include(route.finishPoint!!.position).build(), 70))
+                        .include(route.finishPoint!!.position).build(), 400))
         } else if (route.startPoint != null) {
             try {
                 mapFragment.updateCamera(CameraUpdateFactory.newLatLngZoom(route.startPoint.position, 8f))

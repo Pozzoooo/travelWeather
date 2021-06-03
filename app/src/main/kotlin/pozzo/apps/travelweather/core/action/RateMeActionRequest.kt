@@ -13,7 +13,7 @@ class RateMeActionRequest(private val context: Context, private val mapAnalytics
     : ActionRequest(R.string.rateMe) {
 
     companion object {
-        const val AMOUNT_OF_OCCURRENCES = 2
+        const val AMOUNT_OF_OCCURRENCES = 7
     }
 
     override fun execute() {

@@ -18,9 +18,9 @@
 	<string name="error_needsConnection">Verifique se está conectado</string>
 	<string name="error_cantReach">Sem comunicação com o servidor, verifique sua conexão com a internet ou tente novamente mais tarde</string>
     <string name="error_pathNotFound">Não conseguimos gerar uma rota, tente colocar as bandeiras mais próximo a ruas</string>
-    <string name="error_currentLocationNotFound">Não foi possível determinar sua localização atual</string>
 	<string name="error_limitReached">Limite gratuito atingido</string>
 
+	<string name="warning_currentLocationNotFound">Não foi possível determinar sua localização atual</string>
 	<string name="warning_permissionDenied">Permissão foi negada</string>
 
 	<string name="tutorial_flags">Arraste as bandeiras para criar a rota</string>

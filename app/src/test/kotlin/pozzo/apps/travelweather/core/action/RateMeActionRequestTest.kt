@@ -38,7 +38,7 @@ class RateMeActionRequestTest {
         }
         val lastRunRepository: LastRunRepository = mock()
 
-        val isTimeToDisplay = rateMeActionRequest.isTimeToDisplay(mapTutorialScript, lastRunRepository, 3)
+        val isTimeToDisplay = rateMeActionRequest.isTimeToDisplay(mapTutorialScript, lastRunRepository, 8)
 
         assertTrue(isTimeToDisplay)
     }
