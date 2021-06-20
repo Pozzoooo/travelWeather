@@ -77,7 +77,7 @@ class MapActivity : BaseActivity() {
         setupMapFragment()
         setupView()
         observeViewModel()
-        showAdd()
+//        showAdd() TODO disabled until I understand Google request
     }
 
     private fun setupViewModel() {
