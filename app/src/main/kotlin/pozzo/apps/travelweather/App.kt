@@ -22,6 +22,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Parece uma boa dar um offset pra cima no icone da bandeira pra faclitar a colocacao dela
  *
+ * Would be nice to create our own weather details, so we can make it 100% consistent with APIs
+ *
  * Improvements on design would be welcome
  *
  * Minor bug: Channel keep flowing after changing route destination.
