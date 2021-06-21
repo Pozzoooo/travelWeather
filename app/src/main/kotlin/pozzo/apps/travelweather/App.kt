@@ -17,6 +17,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
+ * Clean search after search succeed
+ * Search colour is aweful
+ * Offset flag icon so it is easy to see where you are going to drop the flag
+ *
  * Lots of requests for additional waypoints
  * Feedback Kathie: Multiplas rotas.
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
@@ -32,6 +36,10 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * Feedback Pedro: Wind speed (good for motorcycle trip)
  * Feedback Dwight: 10 day forecast at once.
  * Feedback Kathie: Save route for future use.
+ * Feedback Egor: Multiple day trip planning.
+ * Feedback Günther: Vehicle profiles.
+ * Feedback Ti: Varias paradas y poder establecer día y hora para cada una, sería muy muy interesante.
+ * Feedback Karley: ícones de clima fossem um pouco menores seria melhor.
  *
  * I can add distance and time with new fields from Direction
  * Should I create some espresso tests for integration?
