@@ -15,8 +15,8 @@ android {
 		applicationId "pozzo.apps.travelweather"
 		minSdkVersion 21
 		targetSdkVersion 30
-		versionCode 38
-		versionName "1.6.0"
+		versionCode 39
+		versionName "1.6.1-SNAPSHOT"
 
 		//todo Maybe I could use firebase to store my keys!
 		def keys = getKeys('../../keystore/keys.properties')
