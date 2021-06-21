@@ -24,6 +24,9 @@ android {
 		buildConfigField("String", "DARK_SKY", "\"${keys.darksky}\"")
 		buildConfigField("String", "WEATHER_UNLOCKED", "\"${keys.weatherunlocked}\"")
 		buildConfigField("String", "OPEN_WEATHER", "\"${keys.openweather}\"")
+
+		archivesBaseName = ('travelWeather-' + android.defaultConfig.versionName
+				+ '-' + android.defaultConfig.versionCode)
 	}
 
 	buildTypes {
@@ -31,8 +34,6 @@ android {
 			debuggable false
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-			project.ext.set('archivesBaseName', 'travelWeather-' + android.defaultConfig.versionName
-					+ '-' + android.defaultConfig.versionCode)
 		}
 		debug {
 			debuggable true
