@@ -318,6 +318,7 @@ class MapActivity : BaseActivity() {
         spinnerDaySelection.visibility = View.VISIBLE
         spinnerTimeSelection.visibility = View.VISIBLE
         AndroidUtil.hideKeyboard(this, eSearch)
+        bSearch.setImageResource(android.R.drawable.ic_menu_search)
     }
 
     private fun showSearch() {
@@ -327,6 +328,7 @@ class MapActivity : BaseActivity() {
         spinnerTimeSelection.visibility = View.GONE
         eSearch.requestFocus()
         AndroidUtil.showKeyboard(this, eSearch)
+        bSearch.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
     }
 
     private fun addMark(mapPoint: MapPoint) {

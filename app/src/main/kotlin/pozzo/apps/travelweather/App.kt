@@ -17,8 +17,7 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Clean search after search succeed
- * Search colour is aweful
+ * Search colour is aweful and maybe could I swap search icon for an X when opened, feedback is also poor, where is the searching message?
  * Offset flag icon so it is easy to see where you are going to drop the flag
  *
  * Lots of requests for additional waypoints
