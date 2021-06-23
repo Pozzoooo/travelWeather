@@ -44,6 +44,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  * I can add distance and time with new fields from Direction
  * Should I create some espresso tests for integration?
  *
+ * Search history
+ *
  * Build route if it was triggered when no connection was available (job schedule?)
  * Agendar uma viagem
  * Notificar quando o tempo mudar apos ter agendado uma viagem

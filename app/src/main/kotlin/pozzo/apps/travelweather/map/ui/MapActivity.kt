@@ -313,6 +313,7 @@ class MapActivity : BaseActivity() {
 
     private fun hideSearch() {
         eSearch.visibility = View.GONE
+        eSearch.setText("")
         lDaySelection.visibility = View.VISIBLE
         spinnerDaySelection.visibility = View.VISIBLE
         spinnerTimeSelection.visibility = View.VISIBLE
