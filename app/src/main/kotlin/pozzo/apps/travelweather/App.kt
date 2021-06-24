@@ -17,7 +17,6 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Search colour is aweful
  * Offset flag icon so it is easy to see where you are going to drop the flag
  * A better loading animation?
  *
