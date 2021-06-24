@@ -17,6 +17,7 @@ import pozzo.apps.travelweather.common.NetworkHelper
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.core.BaseViewModel
 import pozzo.apps.travelweather.core.CoroutineSettings.background
+import pozzo.apps.travelweather.core.CoroutineSettings.io
 import pozzo.apps.travelweather.core.Error
 import pozzo.apps.travelweather.core.LastRunRepository
 import pozzo.apps.travelweather.core.Warning
@@ -288,13 +289,20 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     }
 
     fun searchAddress(string: String) {
-        try {
-            mapAnalytics.sendSearchAddress()
-            geoCoderBusiness.getPositionFromFirst(string)?.let {
-                addPoint(it)
-            } ?: postError(Error.ADDRESS_NOT_FOUND)
-        } catch (e: IOException) {
-            handleConnectionError(e)
+        showProgress()
+
+        scope.launch(io) {
+            try {
+                mapAnalytics.sendSearchAddress()
+                @Suppress("BlockingMethodInNonBlockingContext")//IO
+                geoCoderBusiness.getPositionFromFirst(string)?.let {
+                    addPoint(it)
+                } ?: postError(Error.ADDRESS_NOT_FOUND)
+            } catch (e: IOException) {
+                handleConnectionError(e)
+            } finally {
+                hideProgress()
+            }
         }
     }
 

@@ -17,8 +17,9 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Search colour is aweful and maybe could I swap search icon for an X when opened, feedback is also poor, where is the searching message?
+ * Search colour is aweful
  * Offset flag icon so it is easy to see where you are going to drop the flag
+ * A better loading animation?
  *
  * Lots of requests for additional waypoints
  * Feedback Kathie: Multiplas rotas.
@@ -94,6 +95,7 @@ class App : Application() {
 
     private fun initCoroutines() {
         CoroutineSettings.background = Dispatchers.Default
+        CoroutineSettings.io = Dispatchers.IO
         CoroutineSettings.ui = Dispatchers.Main
     }
 
