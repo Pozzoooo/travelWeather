@@ -10,7 +10,6 @@ import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import java.util.*
-import java.util.concurrent.CancellationException
 import kotlin.collections.ArrayList
 
 class WeatherPointsTimeCalculator(
@@ -45,8 +44,6 @@ class WeatherPointsTimeCalculator(
                     weatherPoints.add(it)
                 }
                 cachedWeatherPoints = weatherPoints
-            } catch (e: CancellationException) {
-                route.weatherPoints.cancel()
             } finally {
                 cleanup(weatherPointsChannel)
             }
