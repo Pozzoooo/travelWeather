@@ -21,8 +21,10 @@ class WeatherPointsTimeCalculator(
         private const val TWO_HOURS = 2L * 60L * 60L * 1000L
     }
 
+    //TODO clean cache when route is reset
     private var cachedWeatherPoints: ArrayList<WeatherPoint>? = null
-    private var job: Job? = null
+    private var addingPointJob: Job? = null
+    private var refreshingPointsJob: Job? = null
     private lateinit var date: Calendar
 
     private fun calculateGap(route: Route): Long {
@@ -31,8 +33,8 @@ class WeatherPointsTimeCalculator(
     }
 
     fun updateWeatherPoints(dayTime: DayTime, route: Route) {
-        job?.cancel()
-        job = scope.launch(CoroutineSettings.background) {
+        addingPointJob?.cancel()
+        addingPointJob = scope.launch(CoroutineSettings.background) {
             val weatherPoints = ArrayList<WeatherPoint>()
             val weatherPointsChannel = setup(dayTime)
 
@@ -71,10 +73,11 @@ class WeatherPointsTimeCalculator(
 
     fun refreshRoute(dayTime: DayTime, route: Route) {
         scope.launch(CoroutineSettings.background) {
-            if (job?.isActive == true) job?.join()
+            refreshingPointsJob?.cancel()
+            if (addingPointJob?.isActive == true) addingPointJob?.join()
             val cachedWeatherPoints = cachedWeatherPoints ?: return@launch
 
-            job = scope.launch(CoroutineSettings.background) {
+            refreshingPointsJob = scope.launch(CoroutineSettings.background) {
                 val weatherPointsChannel = setup(dayTime)
 
                 try {
