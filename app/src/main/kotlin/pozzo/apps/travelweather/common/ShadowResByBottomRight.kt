@@ -13,7 +13,7 @@ class ShadowResByBottomRight(private val parentView: View, private val shadow: D
         shadow.setBounds(0, 0, width, height)
 
         size.set(width, height)
-        touch.set(width, height)
+        touch.set(width * 2, height)
     }
 
     override fun onDrawShadow(canvas: Canvas) {

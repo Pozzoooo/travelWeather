@@ -17,13 +17,12 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
 /**
  * TODO
  *
- * Offset flag icon so it is easy to see where you are going to drop the flag
- * A better loading animation?
- *
  * Lots of requests for additional waypoints
  * Feedback Kathie: Multiplas rotas.
  * Feedback Paulo: O App podia permitir destinos múltiplos, como o maps permite... assim ficaria mais completo. Estender a precisão para mais dias também seria interessante.
  * Parece uma boa dar um offset pra cima no icone da bandeira pra faclitar a colocacao dela
+ *
+ * A better loading animation?
  *
  * Would be nice to create our own weather details, so we can make it 100% consistent with APIs
  *

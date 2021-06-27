@@ -85,6 +85,8 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
     val shouldFinish = MutableLiveData<Boolean>()
     val pointMapToRoute = MutableLiveData<Route>()
 
+    var flagOffset = 0
+
     init {
         DaggerMapComponent.builder()
                 .appComponent(App.component())

@@ -1,5 +1,6 @@
 package pozzo.apps.travelweather.map.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
@@ -77,7 +78,8 @@ class MapActivity : BaseActivity() {
         setupMapFragment()
         setupView()
         observeViewModel()
-//        showAdd() TODO disabled until I understand Google request
+        observeFlagSizeChange()
+//        showAd() TODO disabled until I understand Google request
     }
 
     private fun setupViewModel() {
@@ -136,6 +138,7 @@ class MapActivity : BaseActivity() {
         return@OnEditorActionListener true
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private val startDraggingFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
         view.visibility = View.INVISIBLE
         val flagResource = if (view.id == R.id.startFlag) R.drawable.start_flag else R.drawable.finish_flag
@@ -167,6 +170,12 @@ class MapActivity : BaseActivity() {
         viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
         viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
         viewModel.pointMapToRoute.observe(this, { if (it != null) pointMapToRoute(it) })
+    }
+
+    private fun observeFlagSizeChange() {
+        startFlag.viewTreeObserver.addOnGlobalLayoutListener {
+            viewModel.flagOffset = startFlag.width
+        }
     }
 
     private fun updateDayTime(dayTime: DayTime) {
@@ -242,7 +251,9 @@ class MapActivity : BaseActivity() {
     }
 
     private fun moveFlagsBackToShelf() {
-        mapFragment.getProjection()?.let { projection ->
+        if (lastDisplayedRoute.startPoint == null) return
+
+        mapFragment.getProjection().let { projection ->
             lastDisplayedRoute.startPoint?.marker?.let { returnAnimation.animate(startFlag, projection.toScreenLocation(it.position)) }
             lastDisplayedRoute.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
         }
@@ -342,7 +353,7 @@ class MapActivity : BaseActivity() {
         }
     }
 
-    private fun showAdd() {
+    private fun showAd() {
         if (Random().nextInt(100) == 7) {
             setupTestDevices()
             MobileAds.initialize(this) {

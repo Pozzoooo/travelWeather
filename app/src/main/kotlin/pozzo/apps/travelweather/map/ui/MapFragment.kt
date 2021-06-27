@@ -13,9 +13,11 @@ import android.view.DragEvent
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
@@ -37,8 +39,10 @@ class MapFragment : SupportMapFragment() {
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
-    @Inject protected lateinit var permissionChecker: PermissionChecker
-    @Inject protected lateinit var forecastTitleFormatter: ForecastTitleFormatter
+    @Inject
+    protected lateinit var permissionChecker: PermissionChecker
+    @Inject
+    protected lateinit var forecastTitleFormatter: ForecastTitleFormatter
 
     init {
         DaggerMapComponent.builder()
@@ -112,7 +116,8 @@ class MapFragment : SupportMapFragment() {
         }
     }
 
-    @SuppressLint("MissingPermission") fun updateMapSettings(mapSettings: MapSettings) {
+    @SuppressLint("MissingPermission")
+    fun updateMapSettings(mapSettings: MapSettings) {
         if (permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
                 || permissionChecker.isGranted(ACCESS_FINE_LOCATION)) {
             map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled()
@@ -124,32 +129,42 @@ class MapFragment : SupportMapFragment() {
     }
 
     private fun addDragListener() {
-        view?.setOnDragListener(dragListener) ?: Bug.get().logException(IllegalStateException("Trying to add drag listener without view"))
+        view?.setOnDragListener(dragListener)
+                ?: Bug.get().logException(IllegalStateException("Trying to add drag listener without view"))
     }
 
     private val markerDragListener = object : GoogleMap.OnMarkerDragListener {
         override fun onMarkerDragEnd(marker: Marker) {
             val tag = marker.tag
+
+            val flagPointOnScreen = getProjection().toScreenLocation(marker.position)
+            val correctedOffsetPosition = correctFlagOffset(flagPointOnScreen)
             if (tag is StartPoint) {
-                viewModel.setStartPosition(marker.position)
+                viewModel.setStartPosition(correctedOffsetPosition)
             } else {
-                viewModel.setFinishPosition(marker.position)
+                viewModel.setFinishPosition(correctedOffsetPosition)
             }
         }
 
         override fun onMarkerDragStart(marker: Marker) {
+            marker.setAnchor(2F, 1F)
             viewModel.dragStarted()
         }
 
         override fun onMarkerDrag(marker: Marker) {
-            getProjection()?.let {
-                viewModel.checkEdge(it.visibleRegion.latLngBounds, marker.position)
-                        ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
-            }
+            viewModel.checkEdge(getProjection().visibleRegion.latLngBounds, marker.position)
+                    ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
         }
     }
 
-    @SuppressLint("ObjectAnimatorBinding") fun addMark(mapPoint: MapPoint): Marker? {
+    private fun correctFlagOffset(flagPointOnScreen: Point): LatLng {
+        val projection = getProjection()
+        flagPointOnScreen.x -= viewModel.flagOffset
+        return projection.fromScreenLocation(flagPointOnScreen)
+    }
+
+    @SuppressLint("ObjectAnimatorBinding")
+    fun addMark(mapPoint: MapPoint): Marker? {
         if (!this.isAdded) return null
 
         val markerOptions = MarkerOptions()
@@ -167,9 +182,8 @@ class MapFragment : SupportMapFragment() {
     private val dragListener = View.OnDragListener { _, event ->
         return@OnDragListener when (event.action) {
             DragEvent.ACTION_DROP -> {
-                getProjection()?.let {
-                    viewModel.flagDragActionFinished(it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
-                } ?: Bug.get().logException(IllegalStateException("Trying to drag to the map with map not ready yet"))
+                viewModel.flagDragActionFinished(
+                        correctFlagOffset(Point(event.x.toInt(), event.y.toInt())))
                 true
             }
             DragEvent.ACTION_DRAG_STARTED -> {
@@ -177,15 +191,15 @@ class MapFragment : SupportMapFragment() {
                 true
             }
             else -> {
-                getProjection()?.let {
-                    viewModel.checkEdge(it.visibleRegion.latLngBounds,
-                            it.fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
-                            ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
-                }
+                viewModel.checkEdge(getProjection().visibleRegion.latLngBounds,
+                        getProjection().fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                        ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
                 false
             }
         }
     }
 
-    fun getProjection(): Projection? = map?.projection
+    fun getProjection(): Projection {
+        return map?.projection ?: throw Exception("Dragging without a map?")
+    }
 }
