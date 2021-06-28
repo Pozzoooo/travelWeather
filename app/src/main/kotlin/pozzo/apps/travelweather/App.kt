@@ -24,6 +24,8 @@ import pozzo.apps.travelweather.forecast.ForecastModuleAll
  *
  * A better loading animation?
  *
+ * Inverter rota
+ *
  * Would be nice to create our own weather details, so we can make it 100% consistent with APIs
  *
  * Improvements on design would be welcome
