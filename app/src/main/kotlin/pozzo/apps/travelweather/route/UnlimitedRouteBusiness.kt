@@ -16,17 +16,20 @@ class UnlimitedRouteBusiness(
         private val directionWeatherFilter: DirectionWeatherFilter) : RouteBusiness {
 
     override fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {
-        if (startPoint == null || finishPoint == null) return Route(startPoint = startPoint, finishPoint = finishPoint)
+        val route = Route(startPoint = startPoint, finishPoint = finishPoint)
+        if (startPoint == null || finishPoint == null) return route
+        return createRoute(route)
+    }
 
-        val direction = googleDirection.getDirection(startPoint.position, finishPoint.position)
+    fun createRoute(route: Route): Route {
+        val direction = googleDirection.getDirection(route.getAllWaypoints())
         if (direction?.isEmpty() != false) throw DirectionNotFoundException()
 
         val directionLine = directionLineBusiness.createDirectionLine(direction.steps)
         val weatherPointLocation = directionWeatherFilter.getWeatherPointsLocations(direction.steps)
         val mapPoints = mapPointCreator.createMapPointsAsync(weatherPointLocation)
 
-        return Route(startPoint = startPoint, finishPoint = finishPoint, polyline = directionLine,
-                weatherPoints = mapPoints, weatherLocationCount = weatherPointLocation.size,
-                direction = direction)
+        return Route(baseRoute = route, polyline = directionLine, weatherPoints = mapPoints,
+                weatherLocationCount = weatherPointLocation.size, direction = direction)
     }
 }
