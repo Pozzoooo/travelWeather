@@ -54,7 +54,7 @@ class UnlimitedRouteBusinessTest {
         val startPoint = StartPoint(LatLng(0.0, 0.0))
         val finishPoint = FinishPoint(LatLng(0.0, 0.0))
 
-        whenever(googleDirection.getDirection(startPoint.position, finishPoint.position))
+        whenever(googleDirection.getDirection(listOf(startPoint.position, finishPoint.position)))
                 .thenReturn(Direction(listOf(LatLng(0.0, 1.0), LatLng(2.0, 3.0)), null, null))
 
         val route = unlimitedRouteBusiness.createRoute(startPoint, finishPoint)
