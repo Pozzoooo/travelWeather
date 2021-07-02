@@ -10,11 +10,6 @@ import java.net.URL
 
 /**
  * https://developers.google.com/maps/documentation/directions/get-directions
- *
- * Requests using more than 10 waypoints (between 11 and 25), or waypoint optimization,
- *          are billed at a higher rate
- *
- * TODO URL limit of 8192 characters
  */
 class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
 
@@ -27,11 +22,17 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
         return request(listOf(start, end))
     }
 
-    private fun request(waypoints: List<LatLng>): String? {
-        if (waypoints.size < 2) return null
+    fun request(waypoints: List<LatLng>): String? {
+        var curatedWaypoints = waypoints
+
+        if (curatedWaypoints.size < 2) return null//We need start/end or nothing to do
+        if (curatedWaypoints.size > 10) {// 10+ waypoints = pricy
+            curatedWaypoints = waypoints.subList(0, 10)
+            Bug.get().logException("10+ waypoints ignored")
+        }
 
         return try {
-            val url = createUrl(waypoints)
+            val url = createUrl(curatedWaypoints)
             val request = Request.Builder().url(url).build()
             okHttp.newCall(request).execute().body()?.string()
         } catch (e: IOException) {
@@ -56,6 +57,11 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
 
         createIntermediateWayPoints(waypoints)?.let {
             urlString += "&$it"
+        }
+
+        if (urlString.length > 8000) {//URL limit of 8192 characters
+            Bug.get().logException("URL 8192 limit reached")
+            urlString = urlString.substring(0, 8000)
         }
 
         return URL(urlString)
