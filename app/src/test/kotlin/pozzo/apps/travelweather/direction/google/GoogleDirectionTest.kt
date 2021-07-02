@@ -5,7 +5,8 @@ import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import pozzo.apps.travelweather.core.FileLoader
@@ -16,8 +17,8 @@ class GoogleDirectionTest {
     private lateinit var parser: GoogleResponseParser
     private lateinit var decoder: PolylineDecoder
 
-    private val start = LatLng(53.380555, -6.159761)
-    private val end = LatLng(53.376611, -6.169778)
+    private val waypoints = listOf(LatLng(53.380555, -6.159761),
+            LatLng(53.376611, -6.169778))
 
     @Before fun setup() {
         requester = mock()
@@ -31,13 +32,18 @@ class GoogleDirectionTest {
         val sample = FileLoader("googleDirectionResponseSample.json").string()
         whenever(requester.request(any())).thenReturn(sample)
 
-        val direction = directionBusiness.getDirection(start, end)
+        val direction = directionBusiness.getDirection(waypoints)
 
-        Assert.assertEquals(78, direction!!.steps.size)
+        assertEquals(78, direction!!.steps.size)
     }
 
     @Test fun shouldBeHandlingNullResponse() {
-        val direction = directionBusiness.getDirection(start, end)
-        Assert.assertNull(direction)
+        val direction = directionBusiness.getDirection(waypoints)
+        assertNull(direction)
+    }
+
+    @Test fun shouldHandleEmptyWaypoints() {
+        val direction = directionBusiness.getDirection(emptyList())
+        assertNull(direction)
     }
 }
