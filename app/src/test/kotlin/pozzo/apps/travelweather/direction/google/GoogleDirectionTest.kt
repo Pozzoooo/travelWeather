@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.direction.google
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Assert
@@ -28,7 +29,7 @@ class GoogleDirectionTest {
 
     @Test fun assertReturnAsExpected() {
         val sample = FileLoader("googleDirectionResponseSample.json").string()
-        whenever(requester.request(start, end)).thenReturn(sample)
+        whenever(requester.request(any())).thenReturn(sample)
 
         val direction = directionBusiness.getDirection(start, end)
 

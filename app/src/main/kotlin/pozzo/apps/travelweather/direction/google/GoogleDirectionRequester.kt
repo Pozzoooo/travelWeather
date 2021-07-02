@@ -18,10 +18,9 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
         private const val COORDINATE_SEPARATOR = ","
     }
 
-    fun request(start: LatLng, end: LatLng): String? {
-        return request(listOf(start, end))
-    }
-
+    /**
+     * @param waypoints sorted list of waypoints, start to end
+     */
     fun request(waypoints: List<LatLng>): String? {
         var curatedWaypoints = waypoints
 

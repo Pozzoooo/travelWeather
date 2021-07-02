@@ -39,7 +39,7 @@ class GoogleDirectionRequesterTest {
     @Test fun assertRequest() {
         val request = mockRequest()
 
-        val response = requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
+        val response = requester.request(listOf(LatLng(0.0, 0.0), LatLng(1.0, 1.0)))
         val requestUrl = request.value.url()
 
         assertEquals(DEFAULT_RESPONSE, response)
@@ -50,14 +50,14 @@ class GoogleDirectionRequesterTest {
     @Test fun shouldNotCrashOnExceptions() {
         val call = mock<Call> { on { execute() } doThrow RuntimeException("No Whatever! Fake!") }
         whenever(okHttp.newCall(any())).thenReturn(call)
-        val response = requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
+        val response = requester.request(listOf(LatLng(0.0, 0.0), LatLng(1.0, 1.0)))
         assertNull(response)
     }
 
     @Test(expected = IOException::class) fun shouldReThrowOnNetworkIssue() {
         val call = mock<Call> { on { execute() } doThrow IOException("No Network! Fake!") }
         whenever(okHttp.newCall(any())).thenReturn(call)
-        requester.request(LatLng(0.0, 0.0), LatLng(1.0, 1.0))
+        requester.request(listOf(LatLng(0.0, 0.0), LatLng(1.0, 1.0)))
     }
 
     @Test fun shouldContainWaypoints() {

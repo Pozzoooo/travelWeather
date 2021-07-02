@@ -10,7 +10,11 @@ class GoogleDirection(private val requester: GoogleDirectionRequester,
                       private val polylineDecoder: PolylineDecoder) {
 
     fun getDirection(start: LatLng, end: LatLng): Direction? {
-        val response = requester.request(start, end)
+        return getDirection(listOf(start, end))
+    }
+
+    fun getDirection(waypoints: List<LatLng>): Direction? {
+        val response = requester.request(waypoints)
         val parsedResponse = response?.let { parser.parse(it) }
         val firstLeg = parsedResponse?.routes?.firstOrNull()?.legs?.firstOrNull() ?: return null
         return parseToDirection(firstLeg)
