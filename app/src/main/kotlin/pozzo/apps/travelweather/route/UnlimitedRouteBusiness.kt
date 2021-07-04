@@ -5,8 +5,6 @@ import pozzo.apps.travelweather.direction.DirectionNotFoundException
 import pozzo.apps.travelweather.direction.DirectionWeatherFilter
 import pozzo.apps.travelweather.direction.google.GoogleDirection
 import pozzo.apps.travelweather.forecast.model.Route
-import pozzo.apps.travelweather.forecast.model.point.FinishPoint
-import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.map.parser.MapPointCreator
 
 class UnlimitedRouteBusiness(
@@ -15,13 +13,9 @@ class UnlimitedRouteBusiness(
         private val googleDirection: GoogleDirection,
         private val directionWeatherFilter: DirectionWeatherFilter) : RouteBusiness {
 
-    override fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {
-        val route = Route(startPoint = startPoint, finishPoint = finishPoint)
-        if (startPoint == null || finishPoint == null) return route
-        return createRoute(route)
-    }
+    override fun createRoute(route: Route): Route {
+        if (!route.isComplete()) return route
 
-    fun createRoute(route: Route): Route {
         val direction = googleDirection.getDirection(route.getAllWaypoints())
         if (direction?.isEmpty() != false) throw DirectionNotFoundException()
 

@@ -2,8 +2,6 @@ package pozzo.apps.travelweather.route
 
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.forecast.model.Route
-import pozzo.apps.travelweather.forecast.model.point.FinishPoint
-import pozzo.apps.travelweather.forecast.model.point.StartPoint
 
 class LimitedRouteBusiness(
         private val unlimitedRouteBusiness: UnlimitedRouteBusiness,
@@ -14,9 +12,9 @@ class LimitedRouteBusiness(
         private const val RESET_SPAN_MILLI = 24L * 60L * 60L * 1000L
     }
 
-    override fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route {
+    override fun createRoute(route: Route): Route {
         assertRemainingRequests()
-        return unlimitedRouteBusiness.createRoute(startPoint, finishPoint).also {
+        return unlimitedRouteBusiness.createRoute(route).also {
             incrementCounter(it)
         }
     }

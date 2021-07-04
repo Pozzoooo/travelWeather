@@ -5,7 +5,8 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import pozzo.apps.travelweather.common.business.PreferencesBusiness
 import pozzo.apps.travelweather.forecast.model.Route
@@ -15,11 +16,11 @@ import pozzo.apps.travelweather.forecast.model.point.StartPoint
 class LimitedRouteBusinessTest {
     private val startPoint = StartPoint(LatLng(.0, .0))
     private val finishPoint = FinishPoint(LatLng(.0, .0))
+    private val route = Route(startPoint = startPoint, finishPoint = finishPoint)
 
     private val preferencesBusiness: PreferencesBusiness = mock()
-    private val route: Route = mock()
     private val unlimitedRouteBusiness: UnlimitedRouteBusiness = mock {
-        on { createRoute(startPoint, finishPoint) } doReturn route
+        on { createRoute(route) } doReturn route
     }
 
     private val business = LimitedRouteBusiness(unlimitedRouteBusiness, preferencesBusiness)
@@ -34,7 +35,7 @@ class LimitedRouteBusinessTest {
     }
 
     @Test fun shouldCreateRoute() {
-        val actualRoute = business.createRoute(startPoint, finishPoint)
+        val actualRoute = business.createRoute(route)
 
         assertEquals(route, actualRoute)
     }
@@ -42,7 +43,7 @@ class LimitedRouteBusinessTest {
     @Test(expected = RequestLimitReached::class) fun shouldBlockWhenLimitReached() {
         mockLimitReached()
 
-        business.createRoute(startPoint, finishPoint)
+        business.createRoute(route)
     }
 
     private fun mockLimitReached() {
@@ -54,7 +55,7 @@ class LimitedRouteBusinessTest {
         whenever(preferencesBusiness.getLastRemainingRequestReset())
                 .thenReturn(System.currentTimeMillis() - 24L * 60L * 60L * 1000L - 1)
 
-        business.createRoute(startPoint, finishPoint)
+        business.createRoute(route)
 
         verify(preferencesBusiness).resetUsedRequestCount()
     }

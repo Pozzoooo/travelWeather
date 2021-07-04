@@ -130,7 +130,7 @@ class MapViewModelTest {
     }
 
     @Test fun assertRouteWillBeUpdated() {
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(emptyRoute)
+        whenever(directionModuleFake.directionBusiness.createRoute(any())).thenReturn(emptyRoute)
         createSampleRoute()
 
         assertEquals(emptyRoute, mapViewModel.routeData.value)
@@ -158,7 +158,7 @@ class MapViewModelTest {
         weatherPoints.send(weatherPoint)
         weatherPoints.close()
         val route = Route(weatherPoints = weatherPoints)
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(route)
+        whenever(directionModuleFake.directionBusiness.createRoute(any())).thenReturn(route)
 
         createSampleRoute()
     }
@@ -182,7 +182,7 @@ class MapViewModelTest {
 
     @Test fun assertRouteNotFindErrorBeingHandled() {
         doAnswer { throw DirectionNotFoundException() }
-                .whenever(directionModuleFake.directionBusiness).createRoute(any(), any())
+                .whenever(directionModuleFake.directionBusiness).createRoute(any())
         createSampleRoute()
 
         assertEquals(Error.CANT_FIND_ROUTE, mapViewModel.error.value)
@@ -190,7 +190,7 @@ class MapViewModelTest {
 
     @Test fun assertInternetErrorBeingHandled() {
         doAnswer { throw IOException() }
-                .whenever(directionModuleFake.directionBusiness).createRoute(any(), any())
+                .whenever(directionModuleFake.directionBusiness).createRoute(any())
         createSampleRoute()
 
         assertEquals(Error.NO_CONNECTION, mapViewModel.error.value)
@@ -219,7 +219,7 @@ class MapViewModelTest {
 
     @Test fun assertSecondDragAddsFinishPosition() {
         mapViewModel.dragStarted()
-        whenever(directionModuleFake.directionBusiness.createRoute(any(), any())).thenReturn(emptyRoute)
+        whenever(directionModuleFake.directionBusiness.createRoute(any())).thenReturn(emptyRoute)
         mapViewModel.flagDragActionFinished(LatLng(0.0, 3.0))
         mapViewModel.flagDragActionFinished(LatLng(1.0, 2.0))
         assertEquals(emptyRoute, mapViewModel.routeData.value)

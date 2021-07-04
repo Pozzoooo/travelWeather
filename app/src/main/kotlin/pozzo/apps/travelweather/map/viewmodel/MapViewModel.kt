@@ -186,7 +186,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         updateRouteJob?.cancel()
         updateRouteJob = scope.launch(background) {
             try {
-                val route = routeBusiness.createRoute(startPoint, finishPoint)
+                val route = routeBusiness.createRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
                 if (isActive) {
                     setRoute(route)
                     weatherPointsTimeCalculator.updateWeatherPoints(getSelectedDayTime(), route)

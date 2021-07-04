@@ -8,5 +8,5 @@ import pozzo.apps.travelweather.forecast.model.point.StartPoint
  * My idea here is to enable a proxy so I can have a better control on whats going on.
  */
 interface RouteBusiness {
-    fun createRoute(startPoint: StartPoint?, finishPoint: FinishPoint?): Route
+    fun createRoute(route: Route): Route
 }
