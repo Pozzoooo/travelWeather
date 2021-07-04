@@ -45,6 +45,7 @@ class WeatherPointsTimeCalculator(
                 }
                 cachedWeatherPoints = weatherPoints
             } finally {
+                route.weatherPoints.cancel()
                 cleanup(weatherPointsChannel)
             }
         }

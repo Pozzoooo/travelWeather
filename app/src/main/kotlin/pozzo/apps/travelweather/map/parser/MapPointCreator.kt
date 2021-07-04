@@ -27,7 +27,7 @@ class MapPointCreator(
                         try {
                             mapPoints.send(it)
                         } catch (e: CancellationException) {
-                            Bug.get().logException(e)
+                            Bug.get().logException(e)//Just to find out how frequent it is
                         }
                     }
             mapPoints.close()
