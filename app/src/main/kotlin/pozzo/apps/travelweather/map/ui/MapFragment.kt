@@ -190,6 +190,9 @@ class MapFragment : SupportMapFragment() {
                 viewModel.dragStarted()
                 true
             }
+            DragEvent.ACTION_DRAG_ENDED -> {
+                false
+            }
             else -> {
                 viewModel.checkEdge(getProjection().visibleRegion.latLngBounds,
                         getProjection().fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
