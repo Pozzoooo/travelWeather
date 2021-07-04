@@ -244,6 +244,7 @@ class MapActivity : BaseActivity() {
                 Bug.get().logException(e)//seems to be some weird TT mars error... gonna keep an eye
             }
         }
+        viewModel.mapIsCentered()
     }
 
     private fun clearMap() {

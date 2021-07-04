@@ -205,6 +205,9 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     private fun pointMapToRoute() {
         pointMapToRoute.postValue(route)
+    }
+
+    fun mapIsCentered() {
         pointMapToRoute.value = null
     }
 
