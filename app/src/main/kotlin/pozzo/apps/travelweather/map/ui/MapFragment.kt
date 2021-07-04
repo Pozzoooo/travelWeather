@@ -137,7 +137,7 @@ class MapFragment : SupportMapFragment() {
         override fun onMarkerDragEnd(marker: Marker) {
             val tag = marker.tag
 
-            val flagPointOnScreen = getProjection().toScreenLocation(marker.position)
+            val flagPointOnScreen = requireProjection().toScreenLocation(marker.position)
             val correctedOffsetPosition = correctFlagOffset(flagPointOnScreen)
             if (tag is StartPoint) {
                 viewModel.setStartPosition(correctedOffsetPosition)
@@ -152,13 +152,13 @@ class MapFragment : SupportMapFragment() {
         }
 
         override fun onMarkerDrag(marker: Marker) {
-            viewModel.checkEdge(getProjection().visibleRegion.latLngBounds, marker.position)
+            viewModel.checkEdge(requireProjection().visibleRegion.latLngBounds, marker.position)
                     ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
         }
     }
 
     private fun correctFlagOffset(flagPointOnScreen: Point): LatLng {
-        val projection = getProjection()
+        val projection = requireProjection()
         flagPointOnScreen.x -= viewModel.flagOffset
         return projection.fromScreenLocation(flagPointOnScreen)
     }
@@ -194,15 +194,19 @@ class MapFragment : SupportMapFragment() {
                 false
             }
             else -> {
-                viewModel.checkEdge(getProjection().visibleRegion.latLngBounds,
-                        getProjection().fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
+                viewModel.checkEdge(requireProjection().visibleRegion.latLngBounds,
+                        requireProjection().fromScreenLocation(Point(event.x.toInt(), event.y.toInt())))
                         ?.let { cameraUpdate -> updateCameraQuick(cameraUpdate) }
                 false
             }
         }
     }
 
-    fun getProjection(): Projection {
-        return map?.projection ?: throw Exception("Dragging without a map?")
+    private fun requireProjection(): Projection {
+        return getProjection() ?: throw Exception("Dragging without a map?")
+    }
+
+    fun getProjection(): Projection? {
+        return map?.projection
     }
 }

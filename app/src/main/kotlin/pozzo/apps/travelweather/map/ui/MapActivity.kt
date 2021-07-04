@@ -252,9 +252,7 @@ class MapActivity : BaseActivity() {
     }
 
     private fun moveFlagsBackToShelf() {
-        if (lastDisplayedRoute.startPoint == null) return
-
-        mapFragment.getProjection().let { projection ->
+        mapFragment.getProjection()?.let { projection ->
             lastDisplayedRoute.startPoint?.marker?.let { returnAnimation.animate(startFlag, projection.toScreenLocation(it.position)) }
             lastDisplayedRoute.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
         }
