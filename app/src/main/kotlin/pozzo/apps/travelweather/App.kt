@@ -1,6 +1,7 @@
 package pozzo.apps.travelweather
 
 import android.app.Application
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.Dispatchers
 import pozzo.apps.travelweather.common.Android
 import pozzo.apps.travelweather.common.Util
@@ -79,6 +80,7 @@ class App : Application() {
 
     private fun initBugTracker() {
         val bugInstance = if (BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
             LogBug()
         } else {
             FirebaseBug()
