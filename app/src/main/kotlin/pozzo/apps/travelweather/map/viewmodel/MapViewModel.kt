@@ -168,25 +168,24 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     fun setStartPosition(startPosition: LatLng) {
         val startPoint = StartPoint(startPosition)
-        updateRoute(startPoint = startPoint)
+        updateRoute(Route(baseRoute = route, startPoint = startPoint))
         logDragEvent("re-startFlag")
     }
 
-    private fun updateRoute(startPoint: StartPoint? = route.startPoint, finishPoint: FinishPoint? = route.finishPoint) {
-        val newRoute = Route(startPoint = startPoint, finishPoint = finishPoint)
+    private fun updateRoute(newRoute: Route) {
         if (route == newRoute) {
             pointMapToRoute()
             return
         }
 
-        setRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
-        if (startPoint == null || finishPoint == null) return
+        setRoute(newRoute)
+        if (!newRoute.isComplete()) return
 
         showProgress()
         updateRouteJob?.cancel()
         updateRouteJob = scope.launch(background) {
             try {
-                val route = routeBusiness.createRoute(Route(startPoint = startPoint, finishPoint = finishPoint))
+                val route = routeBusiness.createRoute(newRoute)
                 if (isActive) {
                     setRoute(route)
                     weatherPointsTimeCalculator.updateWeatherPoints(getSelectedDayTime(), route)
@@ -213,7 +212,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
 
     fun setFinishPosition(finishPosition: LatLng) {
         val finishPoint = FinishPoint(finishPosition)
-        updateRoute(finishPoint = finishPoint)
+        updateRoute(Route(baseRoute = route, finishPoint = finishPoint))
         mapTutorialScript.onFinishPositionSet()
         logDragEvent("re-finishFlag")
     }
