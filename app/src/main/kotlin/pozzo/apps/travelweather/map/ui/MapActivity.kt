@@ -12,7 +12,6 @@ import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -156,19 +155,19 @@ class MapActivity : BaseActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.routeData.observe(this, Observer { updateRoute(it) })
+        viewModel.routeData.observe(this, { updateRoute(it) })
 
-        viewModel.weatherPointsData.observe(this, Observer { updateWeatherPoints(it) })
-        viewModel.selectedDayTime.observe(this, Observer { updateDayTime(it) })
-        viewModel.isShowingProgress.observe(this, Observer { progressDialogStateChanged(it) })
-        viewModel.isShowingSearch.observe(this, Observer { if (it == true) showSearch() else hideSearch() })
-        viewModel.shouldFinish.observe(this, Observer { if (it == true) finish() })
-        viewModel.error.observe(this, Observer { if (it != null) showError(it) })
-        viewModel.warning.observe(this, Observer { if (it != null) showWarning(it) })
-        viewModel.actionRequest.observe(this, Observer { if (it != null) showActionRequest(it) })
-        viewModel.permissionRequest.observe(this, Observer { if (it != null) permissionManager.requestPermissions(it) })
-        viewModel.overlay.observe(this, Observer { it?.let{ showOverlay(it) } })
-        viewModel.mapSettingsData.observe(this, Observer { it?.let { mapFragment.updateMapSettings(it) } })
+        viewModel.weatherPointsData.observe(this, { updateWeatherPoints(it) })
+        viewModel.selectedDayTime.observe(this, { updateDayTime(it) })
+        viewModel.isShowingProgress.observe(this, { progressDialogStateChanged(it) })
+        viewModel.isShowingSearch.observe(this, { if (it == true) showSearch() else hideSearch() })
+        viewModel.shouldFinish.observe(this, { if (it == true) finish() })
+        viewModel.error.observe(this, { if (it != null) showError(it) })
+        viewModel.warning.observe(this, { if (it != null) showWarning(it) })
+        viewModel.actionRequest.observe(this, { if (it != null) showActionRequest(it) })
+        viewModel.permissionRequest.observe(this, { if (it != null) permissionManager.requestPermissions(it) })
+        viewModel.overlay.observe(this, { it?.let{ showOverlay(it) } })
+        viewModel.mapSettingsData.observe(this, { it?.let { mapFragment.updateMapSettings(it) } })
         viewModel.pointMapToRoute.observe(this, { if (it != null) pointMapToRoute(it) })
     }
 
