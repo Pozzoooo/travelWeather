@@ -36,6 +36,7 @@ import javax.inject.Inject
 
 class MapFragment : SupportMapFragment() {
     private var map: GoogleMap? = null
+    private var onMapReadyListener: OnMapReadyCallback? = null
     private lateinit var viewModel: MapViewModel
     private lateinit var mainThread: Handler
 
@@ -99,9 +100,19 @@ class MapFragment : SupportMapFragment() {
         clearMapOverlay()
         addDragListener()
 
+        onMapReadyListener?.onMapReady(googleMap)
         mainThread.postDelayed({
             viewModel.onMapReady(this)
         }, 500)
+    }
+
+    fun setOnMapReadyListener(listener: OnMapReadyCallback) {
+        onMapReadyListener = listener
+        map?.let { listener.onMapReady(it) }
+    }
+
+    fun removeOnMapReadyListener() {
+        onMapReadyListener = null
     }
 
     private fun setupMap(googleMap: GoogleMap, context: Context) {

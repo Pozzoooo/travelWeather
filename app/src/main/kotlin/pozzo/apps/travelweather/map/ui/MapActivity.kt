@@ -154,9 +154,6 @@ class MapActivity : BaseActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.routeData.observe(this, { updateRoute(it) })
-
-        viewModel.weatherPointsData.observe(this, { updateWeatherPoints(it) })
         viewModel.selectedDayTime.observe(this, { updateDayTime(it) })
         viewModel.isShowingProgress.observe(this, { progressDialogStateChanged(it) })
         viewModel.isShowingSearch.observe(this, { if (it == true) showSearch() else hideSearch() })
@@ -166,8 +163,18 @@ class MapActivity : BaseActivity() {
         viewModel.actionRequest.observe(this, { if (it != null) showActionRequest(it) })
         viewModel.permissionRequest.observe(this, { if (it != null) permissionManager.requestPermissions(it) })
         viewModel.overlay.observe(this, { it?.let{ showOverlay(it) } })
-        viewModel.mapSettingsData.observe(this, { it?.let { mapFragment.updateMapSettings(it) } })
+
+        mapFragment.setOnMapReadyListener {
+            mapFragment.removeOnMapReadyListener()
+            observersBoundToMap()
+        }
+    }
+
+    private fun observersBoundToMap() {
+        viewModel.routeData.observe(this, { updateRoute(it) })
+        viewModel.weatherPointsData.observe(this, { updateWeatherPoints(it) })
         viewModel.pointMapToRoute.observe(this, { if (it != null) pointMapToRoute(it) })
+        viewModel.mapSettingsData.observe(this, { it?.let { mapFragment.updateMapSettings(it) } })
     }
 
     private fun observeFlagSizeChange() {
