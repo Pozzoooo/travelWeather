@@ -172,7 +172,7 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         logDragEvent("re-startFlag")
     }
 
-    private fun updateRoute(newRoute: Route) {
+    fun updateRoute(newRoute: Route) {
         if (route == newRoute) {
             pointMapToRoute()
             return

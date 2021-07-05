@@ -19,7 +19,6 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.group_flag_shelf.*
@@ -282,16 +281,15 @@ class MapActivity : BaseActivity() {
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("startPosition", viewModel.routeData.value!!.startPoint?.position)
-        outState.putParcelable("finishPosition", viewModel.routeData.value!!.finishPoint?.position)
+        outState.putParcelable("route", viewModel.routeData.value)
 
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.getParcelable<LatLng?>("startPosition")?.let { viewModel.setStartPosition(it) }
-        savedInstanceState.getParcelable<LatLng?>("finishPosition")?.let { viewModel.setFinishPosition(it) }
+
+        savedInstanceState.getParcelable<Route?>("route")?.let { viewModel.updateRoute(it) }
     }
 
     override fun onBackPressed() {

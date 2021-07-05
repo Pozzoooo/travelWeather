@@ -1,5 +1,7 @@
 package pozzo.apps.travelweather.forecast.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +18,7 @@ class Route(baseRoute: Route? = null,
             polyline: PolylineOptions? = null,
             weatherLocationCount: Int? = null,
             weatherPoints: Channel<WeatherPoint>? = null,
-            direction: Direction? = null) {
+            direction: Direction? = null): Parcelable {
 
     val startPoint: StartPoint? = startPoint ?: baseRoute?.startPoint
     val finishPoint: FinishPoint? = finishPoint ?: baseRoute?.finishPoint
@@ -54,5 +56,46 @@ class Route(baseRoute: Route? = null,
         var result = startPoint?.hashCode() ?: 0
         result = 31 * result + (finishPoint?.hashCode() ?: 0)
         return result
+    }
+
+    override fun writeToParcel(out: Parcel, flags: Int) {
+        out.writeParcelable(startPoint?.position, flags)
+        out.writeParcelable(finishPoint?.position, flags)
+        out.writeParcelableArray(parseWaypoints(), flags)
+    }
+
+    private fun parseWaypoints(): Array<LatLng> {
+        return waypoints?.map {
+            it.position
+        }?.toTypedArray() ?: emptyArray()
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Route> {
+        override fun createFromParcel(parcel: Parcel): Route {
+            val latLngClassLoader = LatLng::class.java.classLoader
+            val startLatLng = parcel.readParcelable<LatLng>(latLngClassLoader)
+            val finishLatLng = parcel.readParcelable<LatLng>(latLngClassLoader)
+            val waypointsLatLng = parcel.readParcelableArray(latLngClassLoader) as Array<LatLng>
+
+            val startPoint = startLatLng?.let { StartPoint(startLatLng) }
+            val finishPoint = finishLatLng?.let { FinishPoint(finishLatLng) }
+
+            return Route(startPoint = startPoint, finishPoint = finishPoint,
+                    waypoints = unParseWaypoints(waypointsLatLng))
+        }
+
+        private fun unParseWaypoints(waypointsLatLng: Array<LatLng>?): List<WayPoint>? {
+            return waypointsLatLng?.map {
+                WayPoint(position = it)
+            }?.toList()
+        }
+
+        override fun newArray(size: Int): Array<Route?> {
+            return arrayOfNulls(size)
+        }
     }
 }
