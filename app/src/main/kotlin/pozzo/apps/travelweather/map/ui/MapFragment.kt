@@ -79,7 +79,7 @@ class MapFragment : SupportMapFragment() {
     fun updateCamera(cameraUpdate: CameraUpdate, speed: Int = 1000) {
         GlobalScope.launch(CoroutineSettings.ui) {
             try {
-                map?.animateCamera(cameraUpdate, speed, null)
+                requireMap()?.animateCamera(cameraUpdate, speed, null)
             } catch (e: IllegalStateException) {
                 Bug.get().logException(e)
             }
@@ -87,7 +87,7 @@ class MapFragment : SupportMapFragment() {
     }
 
     fun plotRoute(polylineOptions: PolylineOptions) {
-        map?.addPolyline(polylineOptions)
+        requireMap()?.addPolyline(polylineOptions)
     }
 
     private fun onMapReady(googleMap: GoogleMap) {
@@ -131,12 +131,12 @@ class MapFragment : SupportMapFragment() {
     fun updateMapSettings(mapSettings: MapSettings) {
         if (permissionChecker.isGranted(ACCESS_COARSE_LOCATION)
                 || permissionChecker.isGranted(ACCESS_FINE_LOCATION)) {
-            map?.isMyLocationEnabled = mapSettings.isMyLocationEnabled()
+            requireMap()?.isMyLocationEnabled = mapSettings.isMyLocationEnabled()
         }
     }
 
     fun clearMapOverlay() {
-        map?.clear()
+        requireMap()?.clear()
     }
 
     private fun addDragListener() {
@@ -219,5 +219,10 @@ class MapFragment : SupportMapFragment() {
 
     fun getProjection(): Projection? {
         return map?.projection
+    }
+
+    private fun requireMap(): GoogleMap? {
+        if (map == null) Bug.get().logException("Missing map")
+        return map
     }
 }
