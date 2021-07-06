@@ -16,7 +16,7 @@ class UnlimitedRouteBusiness(
     override fun createRoute(route: Route): Route {
         if (!route.isComplete()) return route
 
-        val direction = googleDirection.getDirection(route.getAllWaypoints())
+        val direction = googleDirection.getDirection(route.getAllPointsPosition())
         if (direction?.isEmpty() != false) throw DirectionNotFoundException()
 
         val directionLine = directionLineBusiness.createDirectionLine(direction.steps)

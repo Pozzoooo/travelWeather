@@ -33,7 +33,6 @@ import pozzo.apps.travelweather.forecast.model.DayTime
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
-import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.map.factory.AdapterFactory
 import pozzo.apps.travelweather.map.manager.DaySelectionListManager
@@ -173,31 +172,12 @@ class MapActivity : BaseActivity() {
             mapFragment.getProjection()?.let { flagShelf.moveFlagsBackToShelf(lastDisplayedRoute, it) }
         } else {
             route.polyline?.let { mapFragment.plotRoute(it) }
-            setStartPoint(route.startPoint)
-            setFinishPoint(route)
+            flagShelf.updateFlagsVisibility(route)
+            route.getAllPoints().forEach(::addMark)
             pointMapToRoute(route)
         }
 
         lastDisplayedRoute = route
-    }
-
-    private fun setStartPoint(startPoint: StartPoint?) {
-        if (startPoint != null) {
-            addMark(startPoint)
-            flagShelf.hideStartFlag()
-        } else {
-            flagShelf.showStartFlag()
-        }
-    }
-
-    private fun setFinishPoint(route: Route) {
-        val finishPoint = route.finishPoint
-        if (finishPoint != null) {
-            addMark(finishPoint)
-            flagShelf.hideFinishFlag()
-        } else {
-            flagShelf.showFinishFlag(route.startPoint != null)
-        }
     }
 
     private fun pointMapToRoute(route: Route) {

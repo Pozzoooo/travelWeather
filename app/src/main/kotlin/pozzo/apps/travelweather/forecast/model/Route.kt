@@ -6,10 +6,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.channels.Channel
 import pozzo.apps.travelweather.direction.Direction
-import pozzo.apps.travelweather.forecast.model.point.FinishPoint
-import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.forecast.model.point.WayPoint
-import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
+import pozzo.apps.travelweather.forecast.model.point.*
 
 class Route(baseRoute: Route? = null,
             startPoint: StartPoint? = null,
@@ -31,13 +28,17 @@ class Route(baseRoute: Route? = null,
     fun isComplete(): Boolean = startPoint != null && finishPoint != null
     fun isEmpty(): Boolean = startPoint == null && finishPoint == null
 
-    fun getAllWaypoints(): List<LatLng> {
+    fun getAllPoints(): List<MapPoint> {
         val totalSize = (waypoints?.size ?: 0) + 2
-        val allWaypoints = ArrayList<LatLng>(totalSize)
-        startPoint?.let { allWaypoints.add(startPoint.position) }
-        waypoints?.forEach { allWaypoints.add(it.position) }
-        finishPoint?.let { allWaypoints.add(finishPoint.position) }
+        val allWaypoints = ArrayList<MapPoint>(totalSize)
+        startPoint?.let { allWaypoints.add(startPoint) }
+        waypoints?.forEach { allWaypoints.add(it) }
+        finishPoint?.let { allWaypoints.add(finishPoint) }
         return allWaypoints
+    }
+
+    fun getAllPointsPosition(): List<LatLng> {
+        return getAllPoints().map { it.position }
     }
 
     override fun equals(other: Any?): Boolean {

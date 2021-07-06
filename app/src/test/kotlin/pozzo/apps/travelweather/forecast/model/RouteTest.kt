@@ -3,7 +3,6 @@ package pozzo.apps.travelweather.forecast.model
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.*
 import org.junit.Test
-import org.mockito.Mockito
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WayPoint
@@ -34,7 +33,7 @@ class RouteTest {
                 waypoints = listOf(WayPoint(position = LatLng(.0, .0)))
         )
 
-        val allWaypoints = route.getAllWaypoints()
+        val allWaypoints = route.getAllPointsPosition()
 
         assertEquals(3, allWaypoints.size)
         assertTrue(route.isComplete())

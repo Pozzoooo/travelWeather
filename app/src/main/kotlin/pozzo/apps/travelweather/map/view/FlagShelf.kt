@@ -20,7 +20,6 @@ import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.map.ReturnAnimation
 
-//TODO implement Waypoint flag
 //TODO animate flag when getting current location
 class FlagShelf: LinearLayout {
     private val returnAnimation = ReturnAnimation(resources)
@@ -39,6 +38,8 @@ class FlagShelf: LinearLayout {
             waypoint.visibility = View.VISIBLE
             waypoint.setOnTouchListener(startDraggingFlag)
         }
+
+        updateFlagsVisibility(Route())
     }
 
     fun moveFlagsBackToShelf(route: Route, projection: Projection) {
@@ -48,8 +49,10 @@ class FlagShelf: LinearLayout {
         route.finishPoint?.marker?.let {
             returnAnimation.animate(finishFlag, correctRelativePoint(it.position, projection))
         }
-        route.waypoints?.getOrNull(0)?.marker?.let {
-            returnAnimation.animate(finishFlag, correctRelativePoint(it.position, projection))
+        if (BuildConfig.DEBUG) {
+            route.waypoints?.getOrNull(0)?.marker?.let {//TODO all flags
+                returnAnimation.animate(waypoint, correctRelativePoint(it.position, projection))
+            }
         }
     }
 
@@ -60,23 +63,36 @@ class FlagShelf: LinearLayout {
         return point
     }
 
-    fun showStartFlag() {
-        startFlag.visibility = View.VISIBLE
+    fun updateFlagsVisibility(route: Route) {
+        startFlag.visibility = if (route.startPoint == null) View.VISIBLE else View.INVISIBLE
+        finishFlag.visibility = if (route.finishPoint == null) View.VISIBLE else View.INVISIBLE
+
+        updateWaypointVisibilityState(route)
+        updateFinishFlagEnabledState(route)
+        updateDragTheFlagMessageVisibility(route)
     }
 
-    fun hideStartFlag() {
-        startFlag.visibility = View.INVISIBLE
+    private fun updateWaypointVisibilityState(route: Route) {
+        //TODO global definition of max waypoints
+        waypoint.visibility = if(BuildConfig.DEBUG && route.waypoints?.size ?: 0 < 5)
+            View.VISIBLE else View.INVISIBLE
+
+        val isRouteComplete = route.isComplete()
+        waypoint.isEnabled = isRouteComplete
+        waypoint.alpha = if (!isRouteComplete) .4F else 1F//TODO define standard alpha config for flags
+
     }
 
-    fun hideFinishFlag() {
-        finishFlag.visibility = View.INVISIBLE
-        lDragTheFlag.visibility = View.INVISIBLE
+    private fun updateFinishFlagEnabledState(route: Route) {
+        val enableFinishFlag = route.startPoint != null
+        finishFlag.alpha = if (!enableFinishFlag) .4F else 1F
+        finishFlag.isEnabled = enableFinishFlag
     }
 
-    fun showFinishFlag(isEnabled: Boolean) {
-        finishFlag.visibility = View.VISIBLE
-        finishFlag.alpha = if (!isEnabled) .4F else 1F
-        finishFlag.isEnabled = isEnabled
+    private fun updateDragTheFlagMessageVisibility(route: Route) {
+        if (lDragTheFlag.visibility == View.VISIBLE && route.finishPoint == null) {
+            lDragTheFlag.visibility = View.GONE
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

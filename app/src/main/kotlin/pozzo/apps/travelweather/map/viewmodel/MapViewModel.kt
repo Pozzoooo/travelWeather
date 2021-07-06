@@ -33,7 +33,6 @@ import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
-import pozzo.apps.travelweather.forecast.model.point.WayPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
