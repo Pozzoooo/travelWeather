@@ -30,16 +30,6 @@
 			layout="@layout/group_top_bar"
 			app:viewModel="@{viewModel}"/>
 
-		<com.google.android.gms.ads.AdView
-			xmlns:ads="http://schemas.android.com/apk/res-auto"
-			android:id="@+id/adView"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_below="@id/topBar"
-			ads:adSize="BANNER"
-			ads:adUnitId="ca-app-pub-4203395906383965/6252565237"/>
-
 		<TextView
 			android:id="@+id/remainingWeatherRequests"
 			style="@style/remainingWeatherLabel"

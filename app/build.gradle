@@ -62,7 +62,6 @@ dependencies {
 	implementation 'com.google.firebase:firebase-messaging:22.0.0'
 	implementation 'com.google.android.gms:play-services-maps:17.0.1'
 	implementation 'com.google.android.gms:play-services-location:18.0.0'
-	implementation 'com.google.firebase:firebase-ads:20.2.0'
 	implementation 'com.google.firebase:firebase-crashlytics:18.0.1'
 	kapt 'androidx.lifecycle:lifecycle-compiler:2.3.1'
 

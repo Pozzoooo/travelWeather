@@ -19,6 +19,8 @@ import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.map.ReturnAnimation
 
+//TODO implement Waypoint flag
+//TODO animate flag when getting current location
 class FlagShelf: LinearLayout {
     private val returnAnimation = ReturnAnimation(resources)
 

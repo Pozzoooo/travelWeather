@@ -1,21 +1,15 @@
 package pozzo.apps.travelweather.map.ui
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapsInitializer
@@ -27,9 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import pozzo.apps.tools.AndroidUtil
-import pozzo.apps.travelweather.BuildConfig
 import pozzo.apps.travelweather.R
-import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.core.BaseActivity
 import pozzo.apps.travelweather.core.CoroutineSettings.ui
 import pozzo.apps.travelweather.core.Error
@@ -43,7 +35,6 @@ import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.MapPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
-import pozzo.apps.travelweather.map.ReturnAnimation
 import pozzo.apps.travelweather.map.factory.AdapterFactory
 import pozzo.apps.travelweather.map.manager.DaySelectionListManager
 import pozzo.apps.travelweather.map.manager.PermissionManager
@@ -75,7 +66,6 @@ class MapActivity : BaseActivity() {
         setupView()
         observeViewModel()
         observeFlagSizeChange()
-//        showAd() TODO disabled until I understand Google request
     }
 
     private fun setupViewModel() {
@@ -321,25 +311,6 @@ class MapActivity : BaseActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (!permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-    private fun showAd() {
-        if (Random().nextInt(100) == 7) {
-            setupTestDevices()
-            MobileAds.initialize(this) {
-                val adRequest = AdRequest.Builder().build()
-                adView.loadAd(adRequest)
-            }
-        }
-    }
-
-    private fun setupTestDevices() {
-        if (BuildConfig.DEBUG) {
-            //search for "Use RequestConfiguration.Builder"
-            val testDeviceIds = listOf("9E8F0A1C9CCFBB1C6000A97B644FBE47")
-            val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
-            MobileAds.setRequestConfiguration(configuration)
         }
     }
 }
