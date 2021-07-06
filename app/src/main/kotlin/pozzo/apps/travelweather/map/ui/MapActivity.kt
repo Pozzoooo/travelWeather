@@ -55,7 +55,6 @@ import java.util.*
 
 class MapActivity : BaseActivity() {
     private lateinit var mainThread: Handler
-    private lateinit var returnAnimation: ReturnAnimation
 
     private lateinit var mapFragment: MapFragment
     private lateinit var viewModel: MapViewModel
@@ -70,7 +69,6 @@ class MapActivity : BaseActivity() {
         setupViewModel()
         this.mainThread = Handler()
         this.permissionManager = PermissionManager(this, viewModel)
-        this.returnAnimation = ReturnAnimation(resources)
         setupMaps()
         setupDataBind()
         setupMapFragment()
@@ -103,9 +101,6 @@ class MapActivity : BaseActivity() {
 
     private fun setupView() {
         eSearch.setOnEditorActionListener(onSearchGo)
-
-        startFlag.setOnTouchListener(startDraggingFlag)
-        finishFlag.setOnTouchListener(startDraggingFlag)
         setupDaySelection()
     }
 
@@ -136,23 +131,6 @@ class MapActivity : BaseActivity() {
         return@OnEditorActionListener true
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private val startDraggingFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
-        view.visibility = View.INVISIBLE
-        val flagResource = if (view.id == R.id.startFlag) R.drawable.start_flag else R.drawable.finish_flag
-        val flag = resources.getDrawable(flagResource, null)
-        if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                startFlag.startDragAndDrop(null, ShadowResByBottomRight(startFlag, flag), null, 0)
-            } else {
-                @Suppress("DEPRECATION")
-                startFlag.startDrag(null, ShadowResByBottomRight(startFlag, flag), null, 0)
-            }
-        }
-
-        return@OnTouchListener true
-    }
-
     private fun observeViewModel() {
         viewModel.selectedDayTime.observe(this, { updateDayTime(it) })
         viewModel.isShowingProgress.observe(this, { progressDialogStateChanged(it) })
@@ -177,7 +155,7 @@ class MapActivity : BaseActivity() {
         viewModel.mapSettingsData.observe(this, { it?.let { mapFragment.updateMapSettings(it) } })
     }
 
-    private fun observeFlagSizeChange() {
+    private fun observeFlagSizeChange() {//TODO can I improve this?
         startFlag.viewTreeObserver.addOnGlobalLayoutListener {
             viewModel.flagOffset = startFlag.width
         }
@@ -202,7 +180,7 @@ class MapActivity : BaseActivity() {
     private fun updateRoute(route: Route) {
         clearMap()
         if (route.isEmpty()) {
-            moveFlagsBackToShelf()
+            mapFragment.getProjection()?.let { flagShelf.moveFlagsBackToShelf(lastDisplayedRoute, it) }
         } else {
             route.polyline?.let { mapFragment.plotRoute(it) }
             setStartPoint(route.startPoint)
@@ -216,9 +194,9 @@ class MapActivity : BaseActivity() {
     private fun setStartPoint(startPoint: StartPoint?) {
         if (startPoint != null) {
             addMark(startPoint)
-            startFlag.visibility = View.INVISIBLE
+            flagShelf.hideStartFlag()
         } else {
-            startFlag.visibility = View.VISIBLE
+            flagShelf.showStartFlag()
         }
     }
 
@@ -226,12 +204,9 @@ class MapActivity : BaseActivity() {
         val finishPoint = route.finishPoint
         if (finishPoint != null) {
             addMark(finishPoint)
-            finishFlag.visibility = View.INVISIBLE
-            lDragTheFlag.visibility = View.INVISIBLE
+            flagShelf.hideFinishFlag()
         } else {
-            finishFlag.visibility = View.VISIBLE
-            finishFlag.alpha = if (route.startPoint == null) .4F else 1F
-            finishFlag.isEnabled = route.startPoint != null
+            flagShelf.showFinishFlag(route.startPoint != null)
         }
     }
 
@@ -254,13 +229,6 @@ class MapActivity : BaseActivity() {
 
     private fun clearMap() {
         mapFragment.clearMapOverlay()
-    }
-
-    private fun moveFlagsBackToShelf() {
-        mapFragment.getProjection()?.let { projection ->
-            lastDisplayedRoute.startPoint?.marker?.let { returnAnimation.animate(startFlag, projection.toScreenLocation(it.position)) }
-            lastDisplayedRoute.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
-        }
     }
 
     private fun progressDialogStateChanged(isShowingProgress: Boolean?) {

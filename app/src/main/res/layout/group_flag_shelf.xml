@@ -2,7 +2,8 @@
 <merge
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	tools:parentTag="android.widget.RelativeLayout"
+	tools:parentTag="android.widget.LinearLayout"
+	tools:orientation="vertical"
 	android:layout_width="wrap_content"
 	android:layout_height="match_parent">
 
@@ -12,25 +13,18 @@
 		android:layout_height="wrap_content"
 		android:lines="3"
 		android:gravity="center|bottom"
-		android:text="@string/tutorial_dragTheFlags"
-		android:layout_above="@id/startFlag"
-		android:layout_alignStart="@id/startFlag"/>
+		android:text="@string/tutorial_dragTheFlags"/>
 
 	<ImageView
 		android:id="@+id/startFlag"
 		style="@style/buttonsOnButtonBar"
 		android:src="@drawable/start_flag"
-		android:contentDescription="@string/startPosition"
-		android:layout_centerVertical="true"
-		android:layout_alignParentEnd="true"/>
+		android:contentDescription="@string/startPosition"/>
 
 	<ImageView
 		android:id="@+id/finishFlag"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		style="@style/buttonsOnButtonBar"
 		android:src="@drawable/finish_flag"
 		android:contentDescription="@string/finishPosition"
-		android:alpha=".4"
-		android:layout_below="@id/startFlag"
-		android:layout_alignStart="@id/startFlag"/>
+		android:alpha=".4"/>
 </merge>
