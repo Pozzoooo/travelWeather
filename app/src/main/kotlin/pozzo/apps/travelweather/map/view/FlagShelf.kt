@@ -2,6 +2,7 @@ package pozzo.apps.travelweather.map.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Point
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.google.android.gms.maps.Projection
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_flag_shelf.view.*
 import pozzo.apps.travelweather.R
@@ -32,12 +34,18 @@ class FlagShelf: LinearLayout {
 
     fun moveFlagsBackToShelf(route: Route, projection: Projection) {
         route.startPoint?.marker?.let {
-            val point = projection.toScreenLocation(it.position)
-            point.x -= x.toInt()
-            point.y -= y.toInt()
-            returnAnimation.animate(startFlag, point)
+            returnAnimation.animate(startFlag, correctRelativePoint(it.position, projection))
         }
-        route.finishPoint?.marker?.let { returnAnimation.animate(finishFlag, projection.toScreenLocation(it.position)) }
+        route.finishPoint?.marker?.let {
+            returnAnimation.animate(finishFlag, correctRelativePoint(it.position, projection))
+        }
+    }
+
+    private fun correctRelativePoint(position: LatLng, projection: Projection): Point {
+        val point = projection.toScreenLocation(position)
+        point.x -= x.toInt()
+        point.y -= y.toInt()
+        return point
     }
 
     fun showStartFlag() {
