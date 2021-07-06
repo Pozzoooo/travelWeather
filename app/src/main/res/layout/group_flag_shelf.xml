@@ -22,6 +22,14 @@
 		android:contentDescription="@string/startPosition"/>
 
 	<ImageView
+		android:id="@+id/waypoint"
+		style="@style/buttonsOnButtonBar"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:src="@drawable/waypoint"
+		android:contentDescription="@string/startPosition"/>
+
+	<ImageView
 		android:id="@+id/finishFlag"
 		style="@style/buttonsOnButtonBar"
 		android:src="@drawable/finish_flag"

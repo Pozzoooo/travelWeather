@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.LinearLayout
 import com.google.android.gms.maps.Projection
 import com.google.android.gms.maps.model.LatLng
@@ -68,7 +69,7 @@ class FlagShelf: LinearLayout {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private val startDraggingFlag = View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+    private val startDraggingFlag = OnTouchListener { view: View, motionEvent: MotionEvent ->
         view.visibility = View.INVISIBLE
         val flagResource = if (view.id == R.id.startFlag) R.drawable.start_flag else R.drawable.finish_flag
         val flag = resources.getDrawable(flagResource, null)
