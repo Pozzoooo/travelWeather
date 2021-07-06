@@ -14,6 +14,7 @@ import com.google.android.gms.maps.Projection
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.group_flag_shelf.*
 import kotlinx.android.synthetic.main.group_flag_shelf.view.*
+import pozzo.apps.travelweather.BuildConfig
 import pozzo.apps.travelweather.R
 import pozzo.apps.travelweather.common.ShadowResByBottomRight
 import pozzo.apps.travelweather.forecast.model.Route
@@ -33,6 +34,11 @@ class FlagShelf: LinearLayout {
 
         startFlag.setOnTouchListener(startDraggingFlag)
         finishFlag.setOnTouchListener(startDraggingFlag)
+
+        if (BuildConfig.DEBUG) {
+            waypoint.visibility = View.VISIBLE
+            waypoint.setOnTouchListener(startDraggingFlag)
+        }
     }
 
     fun moveFlagsBackToShelf(route: Route, projection: Projection) {
@@ -40,6 +46,9 @@ class FlagShelf: LinearLayout {
             returnAnimation.animate(startFlag, correctRelativePoint(it.position, projection))
         }
         route.finishPoint?.marker?.let {
+            returnAnimation.animate(finishFlag, correctRelativePoint(it.position, projection))
+        }
+        route.waypoints?.getOrNull(0)?.marker?.let {
             returnAnimation.animate(finishFlag, correctRelativePoint(it.position, projection))
         }
     }

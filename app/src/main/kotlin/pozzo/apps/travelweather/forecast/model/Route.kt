@@ -32,7 +32,7 @@ class Route(baseRoute: Route? = null,
     fun isEmpty(): Boolean = startPoint == null && finishPoint == null
 
     fun getAllWaypoints(): List<LatLng> {
-        val totalSize = waypoints?.size ?: 0 + 2
+        val totalSize = (waypoints?.size ?: 0) + 2
         val allWaypoints = ArrayList<LatLng>(totalSize)
         startPoint?.let { allWaypoints.add(startPoint.position) }
         waypoints?.forEach { allWaypoints.add(it.position) }
@@ -48,6 +48,7 @@ class Route(baseRoute: Route? = null,
 
         if (startPoint != other.startPoint) return false
         if (finishPoint != other.finishPoint) return false
+        if (waypoints != other.waypoints) return false
 
         return true
     }
@@ -68,6 +69,13 @@ class Route(baseRoute: Route? = null,
         return waypoints?.map {
             it.position
         }?.toTypedArray() ?: emptyArray()
+    }
+
+    fun copyRouteAddingWaypoint(latLng: LatLng): Route {
+        val waypoint = WayPoint(position = latLng)
+        val waypointList = waypoints?.let { ArrayList(it) } ?: ArrayList(1)
+        waypointList.add(waypoint)
+        return Route(baseRoute = this, waypoints = waypointList)
     }
 
     override fun describeContents(): Int {

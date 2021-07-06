@@ -33,6 +33,7 @@ import pozzo.apps.travelweather.forecast.model.Route
 import pozzo.apps.travelweather.forecast.model.Time
 import pozzo.apps.travelweather.forecast.model.point.FinishPoint
 import pozzo.apps.travelweather.forecast.model.point.StartPoint
+import pozzo.apps.travelweather.forecast.model.point.WayPoint
 import pozzo.apps.travelweather.forecast.model.point.WeatherPoint
 import pozzo.apps.travelweather.location.CurrentLocationRequester
 import pozzo.apps.travelweather.location.GeoCoderBusiness
@@ -269,13 +270,17 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
         addPoint(latLng)
     }
 
+    //TODO ugly if else, can I remove it?
     private fun addPoint(latLng: LatLng) {
         if (route.startPoint == null) {
             setStartPosition(latLng)
             logDragEvent("startFlag")
-        } else {
+        } else if (route.finishPoint == null) {
             setFinishPosition(latLng)
             logDragEvent("finishFlag")
+        } else {
+            setWaypoint(latLng)
+            logDragEvent("waypoint")
         }
     }
 
@@ -286,6 +291,10 @@ class MapViewModel(application: Application) : BaseViewModel(application), Error
             mapAnalytics.sendDragDurationEvent(flagName, dragTime)
             dragStart = 0L
         }
+    }
+
+    private fun setWaypoint(latLng: LatLng) {
+        updateRoute(route.copyRouteAddingWaypoint(latLng))
     }
 
     fun dragStarted() {
