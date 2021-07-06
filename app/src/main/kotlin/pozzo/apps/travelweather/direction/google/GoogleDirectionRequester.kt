@@ -69,8 +69,8 @@ class GoogleDirectionRequester(private val okHttp: OkHttpClient) {
     private fun createIntermediateWayPoints(waypoints: List<LatLng>): String? {
         if (waypoints.size <= 2) return null
 
-        val intermediate = waypoints.subList(1, waypoints.lastIndex)//TODO Validar range
-        var intermediateUrlParameter = "waypoints=via:"
+        val intermediate = waypoints.subList(1, waypoints.lastIndex)
+        var intermediateUrlParameter = "waypoints="
 
         intermediate.forEach {
             intermediateUrlParameter += "${it.latitude},${it.longitude}$WAYPOINTS_SEPARATOR"
